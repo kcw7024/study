@@ -38,6 +38,15 @@ train_set = train_set.dropna() #null값이 있는 행을 삭제
 #print(train_set.isnull().sum()) #null의 갯수(합계)를 구한다
 #print(train_set.shape) # (1328, 10)
 
+#결측치를 0값으로 넣어준다. 방법은 여러가지가있음.
+
+#print(test_set)
+#test_set = test_set.replace(to_replace=np.nan, value=0)
+test_set = test_set.fillna(test_set.mean())
+#결측치 처리, Nan값이 있는곳에 지정한 value값을 넣어준다
+#test_set.head()
+
+
 x = train_set.drop(['count'], axis=1) #count라는 컬럼을 drop한다.
 #print(x)
 #print(x.columns)
@@ -64,7 +73,7 @@ model.add(Dense(1))
 
 #3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
-model.fit(x_train, y_train, epochs=2222, batch_size=100)
+model.fit(x_train, y_train, epochs=510, batch_size=100)
 
 #4. 평가, 예측
 loss = model.evaluate(x_test, y_test) #test로 평가
@@ -82,7 +91,29 @@ print("RMSE : ", rmse)
 # 데이터 수정전, 데이터 안에 null값이 있으면 loss 값이 nan이 나옴
 
 
+
+# 22.06.27
+
+#1 to_read()를 사용해서 submission.csv를 불러온다.
+
+result = pd.read_csv(path + 'submission.csv', index_col=0)
+#index_col=0 의 의미 : index col을 없애준다.
+
+y_summit = model.predict(test_set)
+#print(y_summit)
+#print(y_summit.shape) # (715,1)
+
+result['count'] = y_summit
+#result 에서 지정해준 submission의 count 값에 y_summit값을 넣어준다.
+
+#.to_csv() 를 사용해서 submission.csv를 완성
+
+#2
+result.to_csv(path + 'submission.csv', index=True)
+
+
 '''
+
 1. train_size를 0.7->0.9로 늘렸을 경우,
 random_state를 777로 늘렸을경우,
 RMSE 수치가 49에서 아래와 같이 낮아졌음
@@ -133,6 +164,11 @@ RMSE :  28.115020603301012
 loss :  781.6456298828125
 RMSE :  27.95792743207647
 
+loss :  767.9179077148438
+RMSE :  27.71133298169974
+
+loss :  788.3487548828125
+RMSE :  28.07754919880681
 
 
 6. activation 함수 사용

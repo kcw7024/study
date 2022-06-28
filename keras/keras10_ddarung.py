@@ -42,7 +42,7 @@ train_set = train_set.dropna() #null값이 있는 행을 삭제
 
 #print(test_set)
 #test_set = test_set.replace(to_replace=np.nan, value=0)
-test_set = test_set.fillna(test_set.mean())
+test_set = test_set.fillna(0)
 #결측치 처리, Nan값이 있는곳에 지정한 value값을 넣어준다
 #test_set.head()
 

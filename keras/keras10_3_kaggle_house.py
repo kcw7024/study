@@ -290,3 +290,7 @@ result['SalePrice'] = y_summit
 #2
 #result = abs(result) #절대값처리.... 인데 이걸로하면 안되는디 
 result.to_csv(path + 'sample_submission.csv', index=True)
+
+
+#재근바보
+

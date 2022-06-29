@@ -292,5 +292,3 @@ result['SalePrice'] = y_summit
 result.to_csv(path + 'sample_submission.csv', index=True)
 
 
-#재근바보
-

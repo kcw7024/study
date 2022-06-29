@@ -4,7 +4,7 @@
 
 from pickletools import optimize
 import numpy as np
-import seaborn as sns
+import seaborn as sns #데이터 시각화할때 사용. 여기선 사용안했음 
 import datetime as dt
 import pandas as pd #csv 파일 사용시 주로 사용함
 from tensorflow.keras.models import Sequential

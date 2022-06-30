@@ -1,4 +1,4 @@
-#kaggle bike 문제풀이!!
+#kaggle 집값~ 문제풀이!!
 #https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/data
 
 import numpy as np
@@ -233,31 +233,31 @@ test_set.drop(['MSZoning', 'Neighborhood' , 'Condition2', 'MasVnrType', 'ExterQu
 x = train_set.drop('SalePrice',axis=1)
 #print(x)
 #print(x.columns)
-print(x.shape) #(1338, 12)
+#print(x.shape) #(1338, 12)
 
 y = train_set['SalePrice']
 #print(y)
-print(y.shape) #(1338, )
+#print(y.shape) #(1338, )
 
 
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size=0.99, random_state=32
+    x, y, train_size=0.99, random_state=777
     )
 
 
 #2. 모델 구성
 model = Sequential()
-model.add(Dense(100, activation='selu', input_dim=12))
-model.add(Dense(80, activation='selu'))
-model.add(Dense(200, activation='selu'))
-model.add(Dense(100, activation='selu'))
-model.add(Dense(90, activation='selu'))
-model.add(Dense(70, activation='selu'))
+model.add(Dense(100, activation='relu', input_dim=12))
+model.add(Dense(200, activation='relu'))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(200, activation='relu'))
+model.add(Dense(20, activation='relu'))
 model.add(Dense(1))
+
 
 #3. 컴파일, 훈련
 model.compile(loss='mae', optimizer='adam')
-model.fit(x_train, y_train, epochs=666, batch_size=100)
+model.fit(x_train, y_train, epochs=5550, batch_size=200)
 
 #4. 평가, 예측
 loss = model.evaluate(x_test, y_test) #test로 평가
@@ -279,10 +279,11 @@ result = pd.read_csv(path + 'sample_submission.csv', index_col=0)
 
 y_summit = model.predict(test_set)
 #print(y_summit)
-#print(y_summit.shape) # (715,1)
+print(y_summit.shape) # (1459, 1)
 
 
 result['SalePrice'] = y_summit
+
 #result 에서 지정해준 submission의 count 값에 y_summit값을 넣어준다.
 
 #.to_csv() 를 사용해서 sampleSubmission.csv를 완성

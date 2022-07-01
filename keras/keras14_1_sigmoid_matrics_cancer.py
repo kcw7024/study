@@ -73,6 +73,8 @@ print('loss : ', loss)
 y_predict = model.predict(x_test)
 
 ####### 과제1. accuracy_score 완성할 것.
+
+
 # #from sklearn.metrics import r2_score #결정계수, 회귀모델에서 사용
 # from sklearn.metrics import r2_score, accuracy_score
 # acc = accuracy_score(y_test, y_predict) 

@@ -11,6 +11,7 @@ from tensorflow.python.keras.layers import Dense, Activation
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.metrics import accuracy_score, confusion_matrix
 
 
 #데이터 경로 정의
@@ -260,8 +261,18 @@ model.add(Dense(1))
 
 
 #3. 컴파일, 훈련
-model.compile(loss='mae', optimizer='adam')
-model.fit(x_train, y_train, epochs=4950, batch_size=200)
+model.compile(loss='mse', optimizer='adam', metrics=['accuracy','mse'])
+
+
+from tensorflow.python.keras.callbacks import EarlyStopping
+earlyStopping = EarlyStopping(monitor='loss', patience=100, mode='min', verbose=1, restore_best_weights=True)
+
+hist = model.fit(x_train, y_train, epochs=700, batch_size=100,
+                 validation_split=0.2,
+                 callbacks=[earlyStopping],
+                 verbose=1                 
+                 )
+
 
 #4. 평가, 예측
 loss = model.evaluate(x_test, y_test)  # test로 평가
@@ -279,6 +290,12 @@ def RMSE(y_test, y_predict):  # mse에 루트를 씌운다.
 rmse = RMSE(y_test, y_predict)
 print("RMSE : ", rmse)
 
+y_predict = model.predict(x)
+from sklearn.metrics import r2_score
+r2 = r2_score(y, y_predict)
+print('r2스코어 : ', r2)
+
+
 
 #5.csv로 내보낸다
 result = pd.read_csv(path + 'sample_submission.csv', index_col=0)
@@ -286,7 +303,7 @@ result = pd.read_csv(path + 'sample_submission.csv', index_col=0)
 
 y_summit = model.predict(test_set)
 #print(y_summit)
-print(y_summit.shape)  # (1459, 1)
+#print(y_summit.shape)  # (1459, 1)
 
 
 result['SalePrice'] = y_summit
@@ -298,3 +315,10 @@ result['SalePrice'] = y_summit
 #2
 #result = abs(result) #절대값처리.... 인데 이걸로하면 안되는디
 result.to_csv(path + 'sample_submission.csv', index=True)
+
+
+
+'''
+r2스코어 :  0.8923099628563093
+
+'''

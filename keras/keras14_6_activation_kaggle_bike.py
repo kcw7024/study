@@ -7,10 +7,11 @@ import numpy as np
 import seaborn as sns #데이터 시각화할때 사용. 여기선 사용안했음 
 import datetime as dt
 import pandas as pd #csv 파일 사용시 주로 사용함
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
+from sklearn.metrics import accuracy_score, confusion_matrix
 
 
 
@@ -98,17 +99,26 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 #2. 모델 구성
 model = Sequential()
-model.add(Dense(100, activation='selu', input_dim=15))
-model.add(Dense(80, activation='selu'))
-model.add(Dense(200, activation='selu'))
-model.add(Dense(100, activation='selu'))
-model.add(Dense(90, activation='selu'))
-model.add(Dense(70, activation='selu'))
+model.add(Dense(100, activation='relu', input_dim=15))
+model.add(Dense(200, activation='relu'))
+model.add(Dense(300, activation='relu'))
+model.add(Dense(200, activation='relu'))
+model.add(Dense(100, activation='relu'))
 model.add(Dense(1))
 
 #3. 컴파일, 훈련
-model.compile(loss='mae', optimizer='adam')
-model.fit(x_train, y_train, epochs=530, batch_size=100)
+model.compile(loss='mse', optimizer='adam', metrics=['accuracy'])
+
+
+from tensorflow.python.keras.callbacks import EarlyStopping
+earlyStopping = EarlyStopping(monitor='val_loss', patience=50, mode='min', verbose=1, restore_best_weights=True)
+
+hist = model.fit(x_train, y_train, epochs=550, batch_size=100,
+                 validation_split=0.2,
+                 callbacks=[earlyStopping],
+                 verbose=1                 
+                 )
+
 
 #4. 평가, 예측
 loss = model.evaluate(x_test, y_test) #test로 평가
@@ -124,20 +134,10 @@ rmse = RMSE(y_test, y_predict)
 print("RMSE : ", rmse)
 
 
-
-# test 결과값 정리
-# 1. 
-# loss :  3082.132568359375
-# RMSE :  55.51695588853348
-# 2. 
-# loss :  2924.53955078125
-# RMSE :  54.079014917996005
-# 3. 
-# loss :  2808.505126953125
-# RMSE :  52.99533144284872
-# #4.
-# loss :  2625.53955078125
-# RMSE :  51.24001534011661
+y_predict = model.predict(x)
+from sklearn.metrics import r2_score
+r2 = r2_score(y, y_predict)
+print('r2스코어 : ', r2)
 
 
 # 22.06.28
@@ -162,3 +162,13 @@ result = abs(result) #절대값처리.... 인데 이걸로하면 안되는디
 result.to_csv(path + 'sampleSubmission.csv', index=True)
 
 #####
+
+'''
+activation 'selu' 로 했을때도 기존보다 올라갔다.
+r2스코어 :  0.9581048826932501
+
+activation 'relu'로 적용했다.
+r2스코어 :  0.9232385367198545
+
+
+'''

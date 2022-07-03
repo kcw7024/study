@@ -3,10 +3,11 @@
 from pickletools import optimize
 import numpy as np
 import pandas as pd #csv 파일 사용시 주로 사용함
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
+from sklearn.metrics import accuracy_score, confusion_matrix
 
 
 #1. 데이터
@@ -63,17 +64,26 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 #2. 모델 구성
 model = Sequential()
-model.add(Dense(10, input_dim=9))
-model.add(Dense(20))
-model.add(Dense(10))
-model.add(Dense(30))
-model.add(Dense(40))
-model.add(Dense(10))
+model.add(Dense(100, activation='relu', input_dim=9))
+model.add(Dense(200, activation='relu'))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(300, activation='relu'))
+model.add(Dense(400, activation='relu'))
+model.add(Dense(100, activation='relu'))
 model.add(Dense(1))
 
 #3. 컴파일, 훈련
-model.compile(loss='mse', optimizer='adam')
-model.fit(x_train, y_train, epochs=510, batch_size=100)
+model.compile(loss='mse', optimizer='adam', metrics=['accuracy'])
+
+
+from tensorflow.python.keras.callbacks import EarlyStopping
+earlyStopping = EarlyStopping(monitor='loss', patience=50, mode='min', verbose=1, restore_best_weights=True)
+
+hist = model.fit(x_train, y_train, epochs=1000, batch_size=100,
+                 validation_split=0.2,
+                 callbacks=[earlyStopping],
+                 verbose=1                 
+                 )
 
 #4. 평가, 예측
 loss = model.evaluate(x_test, y_test) #test로 평가
@@ -89,6 +99,11 @@ rmse = RMSE(y_test, y_predict)
 print("RMSE : ", rmse)
 
 # 데이터 수정전, 데이터 안에 null값이 있으면 loss 값이 nan이 나옴
+
+y_predict = model.predict(x)
+from sklearn.metrics import r2_score
+r2 = r2_score(y, y_predict)
+print('r2스코어 : ', r2)
 
 
 
@@ -114,69 +129,17 @@ result.to_csv(path + 'submission.csv', index=True)
 
 '''
 
-1. train_size를 0.7->0.9로 늘렸을 경우,
-random_state를 777로 늘렸을경우,
-RMSE 수치가 49에서 아래와 같이 낮아졌음
-
-loss :  2215.654541015625
-RMSE :  47.07073949571291
-
-2. 다른조건들은 동일하되, random_state를 750으로 
-조정하였을때 RMSE 수치가 47에서 45로 낮아졌음
-
-loss :  2114.784423828125
-RMSE :  45.986785517117845
-
-3. 다른조건들은 동일하되, epochs를 888로 변경하였을때
-아래와 같이 미세하게 수치가 낮아졌음
-
-#1
-loss :  2070.074462890625
-RMSE :  45.49806849664057
-#2
-loss :  2041.0472412109375
-RMSE :  45.177950848307844
-
-4. train_size=0.99, random_state=777, epochs=300
-
-loss :  1037.4530029296875
-RMSE :  32.20951999176865
-
-5. epochs만 조절
-
-#400
-loss :  944.0969848632812
-RMSE :  30.726162289416347
-
-#100 
-loss :  902.3173217773438
-RMSE :  30.03860354084897
-
-#300
-loss :  901.3604736328125
-RMSE :  30.02267188530714
-
-#500
-loss :  790.4541625976562
-RMSE :  28.115020603301012
-
-#510
-loss :  781.6456298828125
-RMSE :  27.95792743207647
-
-loss :  767.9179077148438
-RMSE :  27.71133298169974
-
-loss :  788.3487548828125
-RMSE :  28.07754919880681
-
-
-6. activation 함수 사용
-random_state=750, epochs=500
+activation 함수 사용
 
 loss :  681.2056274414062
 RMSE :  26.09991689722984
 
-**결과값의 편차가 너무 커서 신뢰도가 낮음
+# 새로 적용했을때
+loss :  636.5626220703125
+RMSE :  25.23019247646492
+r2스코어 :  0.6257268467892095
+
+activation, fit 옵션, 컴파일 옵션 추가 후 결과값
+r2스코어 :  0.9041249933701784
 
 '''

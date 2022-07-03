@@ -1,4 +1,4 @@
-#kaggle 집값~ 문제풀이!!
+#kaggle 집값~ 문제풀이!!123123122
 #https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/data
 
 import numpy as np

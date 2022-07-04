@@ -261,7 +261,7 @@ model.add(Dense(1))
 
 
 #3. 컴파일, 훈련
-model.compile(loss='mse', optimizer='adam', metrics=['accuracy','mse'])
+model.compile(loss='mse', optimizer='adam', metrics=['mse'])
 
 
 from tensorflow.python.keras.callbacks import EarlyStopping

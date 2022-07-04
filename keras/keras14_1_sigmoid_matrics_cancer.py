@@ -96,6 +96,10 @@ print('accyracy 스코어 : ', acc)
 
 
 '''
+**이진분류는 마지막 activation이 sigmoid
+**이진분류는 binary_crossentropy < 무조건~
+
+activation (활성화함수, y값을 제한시킨다.)
 
 
 # 과제 1을 수행하기 위해 accuracy_score 작업 부터 한다.

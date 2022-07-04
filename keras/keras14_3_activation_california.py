@@ -35,7 +35,7 @@ model.add(Dense(1))
 
 import time
 # 3. 컴파일, 훈련
-model.compile(loss='mse', optimizer='adam', metrics=['accuracy','mse'])
+model.compile(loss='mse', optimizer='adam', metrics=['mse'])
 
 from tensorflow.python.keras.callbacks import EarlyStopping
 earlyStopping = EarlyStopping(monitor='val_loss', patience=80, mode='min', verbose=1, restore_best_weights=True)

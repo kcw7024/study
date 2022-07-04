@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.metrics import r2_score
 import time
+from sklearn.metrics import classification_report
 
 #1. 데이터
 
@@ -59,7 +60,7 @@ earlyStopping = EarlyStopping(monitor='var_loss', patience=50, mode='min', verbo
 
 
 start_time = time.time()
-hist = model.fit(x_train, y_train, epochs=1000, batch_size=100,
+hist = model.fit(x_train, y_train, epochs=500, batch_size=100,
                  validation_split=0.2,
                  callbacks=[earlyStopping],
                  verbose=1                 
@@ -74,25 +75,15 @@ print('loss : ', loss)
 # print('걸린시간 :', end_time)
 
 y_predict = model.predict(x_test)
+
+y_predict = y_predict.flatten()                
+y_predict = np.where(y_predict > 0.5, 1 , 0)   
+
 #print(y_predict)
-#print(y_test)
 
-
-
-# ####### 과제1. accuracy_score 완성할 것.
-y_predict = y_test.flatten()
-y_predict_class = np.where(y_predict > 0.5, 1, 0)
+print(classification_report(y_test, y_predict))
 acc = accuracy_score(y_test, y_predict)
-print('accyracy 스코어 : ', acc)
-# # #from sklearn.metrics import r2_score #결정계수, 회귀모델에서 사용
-# # from sklearn.metrics import accuracy_score
-
-# # print(y_predict)
-# # relu는 히든에서만 사용가능, 아웃풋에서는 사용할수 없음. 성능이 80퍼 이상. 좋은 활성화함수
-
-# r2 = r2_score(y, y_predict)
-# print('r2스코어 : ', r2)
-
+print('acc 스코어 : ', acc)  
 
 
 '''
@@ -111,10 +102,10 @@ activation (활성화함수, y값을 제한시킨다.)
 
 # 결과값 확인해봄
 
-loss :  0.19885525107383728
-accuracy : 0.9210526347160339
-mse :  0.0559052936732769
-accyracy 스코어 :  1.0 (<값이 나오긴 했는데 맞게나온건지 잘모르겠다.....흠)
+loss :  0.280094176530838
+accuracy : 0.9035087823867798
+mse :  0.07709896564483643
+accyracy 스코어 :  0.9035087719298246
 
 
 # activation 은 relu를 사용할때 값이 더 좋아졌다.

@@ -319,6 +319,7 @@ result.to_csv(path + 'sample_submission.csv', index=True)
 
 
 '''
+
 r2스코어 :  0.8923099628563093
 
 '''

@@ -7,8 +7,8 @@ y = np.array([1,2,3])
 
 #2. 모델구성
 
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense
 
 model = Sequential() #순차적모델
 model.add(Dense(4, input_dim=1)) #add:층을 쌓아감

@@ -164,6 +164,7 @@ result.to_csv(path + 'sampleSubmission.csv', index=True)
 #####
 
 '''
+
 activation 'selu' 로 했을때도 기존보다 올라갔다.
 r2스코어 :  0.9581048826932501
 

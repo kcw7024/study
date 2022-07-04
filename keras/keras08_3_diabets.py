@@ -2,8 +2,8 @@
 from pickletools import optimize
 import numpy as np
 
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense
 from sklearn.model_selection import train_test_split
 
 #from sklearn.datasets import load_diabetes

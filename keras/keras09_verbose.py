@@ -2,8 +2,8 @@
 from pickletools import optimize
 from tabnanny import verbose
 
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense
 from sklearn.model_selection import train_test_split #훈련용과 테스트용 분리하는 모듈
 from sklearn.datasets import load_boston
 

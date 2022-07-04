@@ -42,6 +42,7 @@ earlyStopping = EarlyStopping(monitor='val_loss', patience=80, mode='min', verbo
 #restore_best_weights=True로 하게되면 Earlystopping 전에 나오는 최적값을 가져온다
 
 start_time = time.time()
+
 hist = model.fit(x_train, y_train, epochs=500, batch_size=100,
                  validation_split=0.2,
                  callbacks=[earlyStopping],
@@ -92,6 +93,7 @@ print('r2스코어 : ', r2)
 # plt.show()
 
 '''
+
 #기존결과값
 #r2스코어 :  0.5493332485717641
 

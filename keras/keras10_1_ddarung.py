@@ -3,8 +3,8 @@
 from pickletools import optimize
 import numpy as np
 import pandas as pd #csv 파일 사용시 주로 사용함
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
 

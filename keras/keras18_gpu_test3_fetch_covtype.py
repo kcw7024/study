@@ -1,3 +1,7 @@
+#만들어서 속도 비교
+#GPU와 CPU
+
+
 import numpy as np
 from sklearn.datasets import fetch_covtype
 import pandas as pd 
@@ -9,6 +13,7 @@ from sklearn.metrics import accuracy_score, r2_score
 from sklearn.metrics import classification_report
 from sklearn.preprocessing import OneHotEncoder
 import tensorflow as tf
+import time
 
 
 #1. 데이터
@@ -56,13 +61,16 @@ model.compile(#loss='binary_crossentropy', #음수가 나올수 없다. (이진�
 from tensorflow.python.keras.callbacks import EarlyStopping
 earlyStopping = EarlyStopping(monitor='var_loss', patience=50, mode='min', verbose=1, restore_best_weights=True)
 
-hist = model.fit(x_train, y_train, epochs=2, 
+start_time = time.time()
+
+hist = model.fit(x_train, y_train, epochs=100, 
                  batch_size=128,
                  validation_split=0.2,
                  callbacks=[earlyStopping],
                  verbose=1                 
                  )
 
+end_time = time.time() - start_time
 
 # # 4. 평가, 예측
 
@@ -76,6 +84,7 @@ results = model.evaluate(x_test, y_test)
 print('loss : ', results[0])
 print('accuracy : ', results[1])
 
+print('걸린시간 :', end_time)
 
 # print("#" * 80)
 # print(y_test[:5])
@@ -109,8 +118,22 @@ print("acc 스코어 : ", acc)
 
 '''
 
-loss :  0.5808834433555603
-accuracy :  0.7585604786872864
-acc 스코어 :  0.7585604502465513
+epochs = 2
+
+GPU
+걸린시간 : 27.442648887634277
+
+CPU
+걸린시간 : 11.278942823410034
+
+epochs = 100
+
+CPU
+걸린시간 : 564.0292217731476
+
+GPU
+걸린시간 : 1335.0220313072205
+
+
 
 '''

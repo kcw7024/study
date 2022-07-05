@@ -9,6 +9,8 @@
 - 범주형 데이터의 각 범주를 컬럼레벨로 변경
 - 해당 범주에 해당하면 1로, 아니면 0으로 채우는 인코딩 기법
 - 결과값을 데이터프레임으로 주기때문에 argmax를 사용할때에는 np.argmax가 아닌 tf.argmax를 사용한다
+- (numpy는 오로지 숫자만 취급, pandas는 섞여있어도 상관없음)
+
 
 # 2. tensorflow 의 to_categorical
 

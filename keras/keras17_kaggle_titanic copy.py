@@ -8,6 +8,7 @@ from sklearn.metrics import r2_score, accuracy_score
 from sklearn.preprocessing import OneHotEncoder
 import tensorflow as tf
 import seaborn as sns
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 #datasets.descibe()
 #datasets.info()
@@ -95,6 +96,16 @@ x_train, x_test, y_train, y_test = train_test_split(
 )
 
 
+#scaler = MinMaxScaler()
+scaler = StandardScaler()
+
+scaler.fit(x_train)
+#print(x_train)
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진행
+
+
+
 # 2. 모델
 
 model = Sequential()
@@ -148,11 +159,11 @@ submission_set = pd.read_csv(path + 'gender_submission.csv',
 
 #print(submission_set)
 
-submission_set['Survived'] = y_summit
+#submission_set['Survived'] = y_summit
 #print(submission_set)
 
 
-submission_set.to_csv(path + 'gender_submission.csv', index = True)
+#submission_set.to_csv(path + 'gender_submission.csv', index = True)
 
 
 acc= accuracy_score(y_test, y_predict)
@@ -162,7 +173,17 @@ print('acc스코어 : ', acc)
 
 '''
 
-loss :  [0.7461358904838562, 0.8212290406227112]
-acc스코어 :  0.8212290502793296
+loss :  [0.7262710332870483, 0.8156424760818481]
+acc스코어 :  0.8156424581005587
+
+MinMaxScaler
+loss :  [0.40248748660087585, 0.8156424760818481]
+acc스코어 :  0.8156424581005587
+
+StandardScaler
+loss :  [0.7417616844177246, 0.7988826632499695]
+acc스코어 :  0.7988826815642458
+
+
 
 '''

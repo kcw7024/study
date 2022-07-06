@@ -15,7 +15,7 @@ from sklearn.metrics import classification_report
 from sklearn.preprocessing import OneHotEncoder
 import tensorflow as tf
 import time
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, MaxAbsScaler, RobustScaler
 
 
 #1. 데이터
@@ -42,14 +42,16 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, train_size=0.8, random_state=66
 )
 
+
 #scaler = MinMaxScaler()
-scaler = StandardScaler()
+#scaler = StandardScaler()
+#scaler = MaxAbsScaler()
+scaler = RobustScaler()
 
 scaler.fit(x_train)
 #print(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진행
-
 
 # 2. 모델
 
@@ -134,28 +136,45 @@ print("acc 스코어 : ", acc)
 
 '''
 
+1. 스케일러 하기전
 
-7/6
+loss :  0.33587926626205444
+accuracy :  0.8616300821304321
+걸린시간 : 360.1812152862549
+acc 스코어 :  0.8616300783972876
 
-기존작업대로 했을때 결과값
+2. MinMaxScaler (모든 feature 값이 0~1사이에 있도록 데이터를 재조정한다. 다만 이상치가 있는경우엔 변환된 값이 매우 좁은 범위로 압축 될 수 있음. 
+MinMaxSacler역시 아웃라이어의 존재에 매우 민감.)
 
-accuracy :  0.8289114832878113
-걸린시간 : 392.3568162918091
-acc 스코어 :  0.8289114738862163
+loss :  0.20541371405124664
+accuracy :  0.9175838828086853
+걸린시간 : 371.8857171535492
+acc 스코어 :  0.9175838833765049
 
+3. Standard Scaler (평균을 제거하고 데이터를 단위 분산으로 조정, 그러나 이상치가 있다면 평균과 표준편차에 영향을 미쳐 
+변환된 데이터의 확산은 매우 달라짐. 때문에 이상치가 있는경우에는 균형잡힌 처곧를 보장할 수 없다.)
 
-MinMaxScaler
+loss :  0.19293271005153656
+accuracy :  0.9233927130699158
+걸린시간 : 349.7699761390686
+acc 스코어 :  0.9233926834935414
 
-accuracy :  0.911069393157959
-걸린시간 : 381.10819935798645
-acc 스코어 :  0.911069421615621
+4. MaxAbsSacler (절대값이 0~1 사이에 매핑되도록 하는 것. 양수데이터로만 구성된 특징 
+데이터셋에서는 MinMax와 유사하게 동작하며, 큰 이상치에 민감할 수 있다.)
 
+loss :  0.23256166279315948
+accuracy :  0.9062932729721069
+걸린시간 : 368.678386926651
+acc 스코어 :  0.9062932970749464
 
-StandardScaler
+5. RobustScaler (아웃라이어의 영향을 최소화 한 기법. 중앙값(median)과 IQR(interquartile range)를 사용하기 때문에 
+StandardScaler와 비교하면 표준화 후 동일한 값을 더 넓게 분포 시키고 있음을 확인 할 수 있음.
+* IQR = Q3 - Q1 : 25퍼센타일과 75퍼센타일의 값들을 다룸.
 
-accuracy :  0.9162155985832214
-걸린시간 : 363.7694630622864
-acc 스코어 :  0.9162155882378252
+loss :  0.1873703896999359
+accuracy :  0.9250277280807495
+걸린시간 : 349.2278513908386
+acc 스코어 :  0.9250277531561147
 
 
 '''

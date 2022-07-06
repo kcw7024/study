@@ -8,7 +8,7 @@ from sklearn.metrics import accuracy_score, r2_score
 from sklearn.datasets import load_iris
 from sklearn.metrics import classification_report
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, MaxAbsScaler, RobustScaler
 
 
 
@@ -47,11 +47,13 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 #scaler = MinMaxScaler()
 #scaler = StandardScaler()
+#scaler = MaxAbsScaler()
+scaler = RobustScaler()
 
-#scaler.fit(x_train)
+scaler.fit(x_train)
 #print(x_train)
-#x_train = scaler.transform(x_train)
-#x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진행
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진행
 
 
 
@@ -86,14 +88,22 @@ model.compile(#loss='binary_crossentropy', #음수가 나올수 없다. (이진�
               metrics=['accuracy'] 
               )
 
+
 from tensorflow.python.keras.callbacks import EarlyStopping
 earlyStopping = EarlyStopping(monitor='var_loss', patience=50, mode='min', verbose=1, restore_best_weights=True)
+
+import time
+
+start_time = time.time()
 
 hist = model.fit(x_train, y_train, epochs=500, batch_size=100,
                  validation_split=0.2,
                  callbacks=[earlyStopping],
                  verbose=1                 
                  )
+
+end_time = time.time() - start_time
+
 
 
 # # 4. 평가, 예측
@@ -106,9 +116,9 @@ hist = model.fit(x_train, y_train, epochs=500, batch_size=100,
 # 두번째 방법
 results = model.evaluate(x_test, y_test)
 print('loss : ', results[0])
-print('accuracy : ', results[1])
+#print('accuracy : ', results[1])
 
-
+print('걸린시간 :', end_time)
 #print("#" * 80)
 #print(y_test[:5])
 #print("#" * 80)
@@ -147,33 +157,51 @@ from sklearn.metrics import accuracy_score
 
 y_predict = model.predict(x_test)
 y_predict = np.argmax(y_predict, axis=1)
-print(y_predict)
+#print(y_predict)
 y_test = np.argmax(y_test, axis=1)
-print(y_test)
+#print(y_test)
 
 acc = accuracy_score(y_test, y_predict)
 print("acc 스코어 : ", acc)
 
 
 
+
 '''
 
-1. 기존대로작업 했을때 결과값
+1. 스케일러 하기전
 
-loss :  0.0625213012099266
-accuracy :  0.9666666388511658
-acc 스코어 :  0.9666666666666667
+loss :  0.05754564702510834
+걸린시간 : 15.824750185012817
+acc 스코어 :  1.0
 
-2. MinMaxScaler
+2. MinMaxScaler (모든 feature 값이 0~1사이에 있도록 데이터를 재조정한다. 다만 이상치가 있는경우엔 변환된 값이 매우 좁은 범위로 압축 될 수 있음. 
+MinMaxSacler역시 아웃라이어의 존재에 매우 민감.)
 
-loss :  0.11124221980571747
-accuracy :  0.9666666388511658
-acc 스코어 :  0.9666666666666667
+loss :  0.3455403745174408
+걸린시간 : 15.768676042556763
+acc 스코어 :  0.96666666666666675
 
-3. Standardsacler
+3. Standard Scaler (평균을 제거하고 데이터를 단위 분산으로 조정, 그러나 이상치가 있다면 평균과 표준편차에 영향을 미쳐 
+변환된 데이터의 확산은 매우 달라짐. 때문에 이상치가 있는경우에는 균형잡힌 처곧를 보장할 수 없다.)
 
-loss :  1.0162760019302368
-accuracy :  0.8999999761581421
+loss :  1.0016261339187622
+걸린시간 : 16.1255145072937
+acc 스코어 :  0.9
+
+4. MaxAbsSacler (절대값이 0~1 사이에 매핑되도록 하는 것. 양수데이터로만 구성된 특징 
+데이터셋에서는 MinMax와 유사하게 동작하며, 큰 이상치에 민감할 수 있다.)
+
+loss :  0.04309871047735214
+걸린시간 : 15.906254053115845
+acc 스코어 :  1.0
+
+5. RobustScaler (아웃라이어의 영향을 최소화 한 기법. 중앙값(median)과 IQR(interquartile range)를 사용하기 때문에 
+StandardScaler와 비교하면 표준화 후 동일한 값을 더 넓게 분포 시키고 있음을 확인 할 수 있음.
+* IQR = Q3 - Q1 : 25퍼센타일과 75퍼센타일의 값들을 다룸.
+
+loss :  2.0109810829162598
+걸린시간 : 16.117822647094727
 acc 스코어 :  0.9
 
 

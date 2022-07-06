@@ -8,19 +8,19 @@ from sklearn import datasets
 from sklearn.metrics import accuracy_score, r2_score
 from sklearn.metrics import classification_report
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.datasets import load_wine, load_digits
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.datasets import load_wine
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, MaxAbsScaler, RobustScaler
+
 
 #1. 데이터
 
-datasets = load_digits()
+datasets = load_wine()
 
 x = datasets.data
 y = datasets.target
 
-print(x.shape, y.shape) #(1797, 64) (1797,) - 8 x 8 의 이미지가 1797장 있다. /  #원핫 인코딩으로 1797,10으로 만들어준다. 
-print(np.unique(y, return_counts=True))     #[0 1 2 3 4 5 6 7 8 9]
-
+print(x.shape, y.shape) #(178, 13) (178,)
+print(np.unique(y, return_counts=True))     #[0 1 2]
 
 from tensorflow.keras.utils import to_categorical
 y = to_categorical(y)
@@ -32,7 +32,9 @@ x_train, x_test, y_train, y_test = train_test_split(
 )
 
 #scaler = MinMaxScaler()
-scaler = StandardScaler()
+#scaler = StandardScaler()
+#scaler = MaxAbsScaler()
+scaler = RobustScaler()
 
 scaler.fit(x_train)
 #print(x_train)
@@ -44,12 +46,12 @@ x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진�
 # 2. 모델
 
 model = Sequential()
-model.add(Dense(100, input_dim=64, activation='linear'))
+model.add(Dense(100, input_dim=13, activation='linear'))
 model.add(Dense(200, activation='relu'))
 model.add(Dense(300, activation='relu'))
 model.add(Dense(200, activation='relu'))
 model.add(Dense(100, activation='relu'))
-model.add(Dense(10, activation='softmax'))
+model.add(Dense(3, activation='softmax'))
 
 
 # 3. 컴파일, 훈련
@@ -62,7 +64,7 @@ model.compile(#loss='binary_crossentropy', #음수가 나올수 없다. (이진�
 from tensorflow.python.keras.callbacks import EarlyStopping
 earlyStopping = EarlyStopping(monitor='var_loss', patience=50, mode='min', verbose=1, restore_best_weights=True)
 
-hist = model.fit(x_train, y_train, epochs=500, batch_size=100,
+hist = model.fit(x_train, y_train, epochs=550, batch_size=100,
                  validation_split=0.2,
                  callbacks=[earlyStopping],
                  verbose=1                 
@@ -85,7 +87,7 @@ print('accuracy : ', results[1])
 #print("#" * 80)
 #print(y_test[:5])
 #print("#" * 80)
-y_pred = model.predict(x_test[:5])
+y_pred = model.predict(x_test)
 #print(y_pred)
 #print("#"*15 + "pred" + "#"*15)
 
@@ -111,38 +113,41 @@ y_test = np.argmax(y_test, axis=1)
 acc = accuracy_score(y_test, y_predict)
 print("acc 스코어 : ", acc)
 
-# import matplotlib.pyplot as plt
-
-# plt.gray()
-# plt.matshow(datasets.images[0])
-# plt.show()
-
 '''
-loss :  0.10082201659679413
-accuracy :  0.9861111044883728
-acc 스코어 :  0.9861111111111112
 
+1. 스케일러 하기전
 
+loss :  0.2294347584247589
+accuracy :  0.8888888955116272
+acc 스코어 :  0.8888888888888888
 
+2. MinMaxScaler (모든 feature 값이 0~1사이에 있도록 데이터를 재조정한다. 다만 이상치가 있는경우엔 변환된 값이 매우 좁은 범위로 압축 될 수 있음. 
+MinMaxSacler역시 아웃라이어의 존재에 매우 민감.)
 
-7/6
-
-기존대로 작업시 결과값 
-
-loss :  0.11340334266424179
-accuracy :  0.9777777791023254
-acc 스코어 :  0.9777777777777777
-
-MinMaxSacler
-loss :  0.1902695596218109
-accuracy :  0.980555534362793
-acc 스코어 :  0.9805555555555555
-
-Standard Sacler
-loss :  0.2180686593055725
+loss :  0.18783718347549438
 accuracy :  0.9722222089767456
 acc 스코어 :  0.9722222222222222
 
+3. Standard Scaler (평균을 제거하고 데이터를 단위 분산으로 조정, 그러나 이상치가 있다면 평균과 표준편차에 영향을 미쳐 
+변환된 데이터의 확산은 매우 달라짐. 때문에 이상치가 있는경우에는 균형잡힌 처곧를 보장할 수 없다.)
+
+loss :  0.08004675805568695
+accuracy :  0.9722222089767456
+acc 스코어 :  0.9722222222222222
+
+4. MaxAbsSacler (절대값이 0~1 사이에 매핑되도록 하는 것. 양수데이터로만 구성된 특징 
+데이터셋에서는 MinMax와 유사하게 동작하며, 큰 이상치에 민감할 수 있다.)
+
+loss :  0.0006286170100793242
+accuracy :  1.0
+acc 스코어 :  1.0
+
+5. RobustScaler (아웃라이어의 영향을 최소화 한 기법. 중앙값(median)과 IQR(interquartile range)를 사용하기 때문에 
+StandardScaler와 비교하면 표준화 후 동일한 값을 더 넓게 분포 시키고 있음을 확인 할 수 있음.
+* IQR = Q3 - Q1 : 25퍼센타일과 75퍼센타일의 값들을 다룸.
+
+loss :  0.06003196910023689
+accuracy :  0.9722222089767456
+acc 스코어 :  0.9722222222222222
 
 '''
-

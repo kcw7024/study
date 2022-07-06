@@ -8,7 +8,7 @@ from sklearn.metrics import r2_score, accuracy_score
 from sklearn.preprocessing import OneHotEncoder
 import tensorflow as tf
 import seaborn as sns
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, MaxAbsScaler, RobustScaler
 
 
 #datasets.descibe()

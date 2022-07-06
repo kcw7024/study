@@ -1,6 +1,6 @@
 from sklearn.datasets import load_boston
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, MaxAbsScaler, RobustScaler
 import numpy as np
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense
@@ -26,8 +26,10 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.7, random_state=66    
 )
 
-scaler = MinMaxScaler()
+#scaler = MinMaxScaler()
 #scaler = StandardScaler()
+#scaler = MaxAbsScaler()
+scaler = RobustScaler()
 
 scaler.fit(x_train)
 #print(x_train)
@@ -65,7 +67,7 @@ from tensorflow.python.keras.callbacks import EarlyStopping
 earlyStopping = EarlyStopping(monitor='val_loss', patience=30, mode='min', verbose=1, restore_best_weights=True)
 #restore_best_weights=True로 하게되면 Earlystopping 전에 나오는 최적값을 가져온다
 
-#start_time = time.time()
+start_time = time.time()
 
 hist = model.fit(x_train, y_train, epochs=100, batch_size=100,
                  validation_split=0.2,
@@ -73,7 +75,7 @@ hist = model.fit(x_train, y_train, epochs=100, batch_size=100,
                  verbose=1                 
                  )
 
-#end_time = time.time() - start_time
+end_time = time.time() - start_time
 
 
 # 4. 평가, 예측
@@ -93,7 +95,7 @@ print('loss : ', loss)
 # print("~" * 70)
 # print(hist.history['val_loss']) #val_loss만 출력
 
-# print('걸린시간 :', end_time)
+print('걸린시간 :', end_time)
 
 
 
@@ -124,20 +126,55 @@ print('r2스코어 : ', r2)
 
 '''
 
+sklearn 에서 제공하는 스케일러 요약.
+
+1	StandardScaler	기본 스케일. 평균과 표준편차 사용
+2	MinMaxScaler	최대/최소값이 각각 1, 0이 되도록 스케일링
+3	MaxAbsScaler	최대절대값과 0이 각각 1, 0이 되도록 스케일링
+4	RobustScaler	중앙값(median)과 IQR(interquartile range) 사용. 아웃라이어의 영향을 최소화
+
+
+
 보스턴에 대해서 3가지 비교
+
+
+
 1. 스케일러 하기전
-loss :  [16.320646286010742, 16.320646286010742]
-r2스코어 :  0.8273437373203322
 
-2. Min Max
+loss :  [30.221460342407227, 30.221460342407227]
+걸린시간 : 4.543193578720093
+r2스코어 :  0.6341984749007327
 
-loss :  [11.096799850463867, 11.096799850463867]
-r2스코어 :  0.8656839912825005
 
-3. Standard Scaler 
+2. MinMaxScaler (모든 feature 값이 0~1사이에 있도록 데이터를 재조정한다. 다만 이상치가 있는경우엔 변환된 값이 매우 좁은 범위로 압축 될 수 있음. 
+MinMaxSacler역시 아웃라이어의 존재에 매우 민감.)
 
-loss :  [11.390154838562012, 11.390154838562012]
-r2스코어 :  0.8621332090320466
+loss :  [10.821368217468262, 10.821368217468262]
+걸린시간 : 4.642900466918945
+r2스코어 :  0.8690178180675869
+
+3. Standard Scaler (평균을 제거하고 데이터를 단위 분산으로 조정, 그러나 이상치가 있다면 평균과 표준편차에 영향을 미쳐 
+변환된 데이터의 확산은 매우 달라짐. 때문에 이상치가 있는경우에는 균형잡힌 처곧를 보장할 수 없다.)
+
+loss :  [12.231386184692383, 12.231386184692383]
+걸린시간 : 4.501947402954102
+r2스코어 :  0.8519509141663436
+
+4. MaxAbsSacler (절대값이 0~1 사이에 매핑되도록 하는 것. 양수데이터로만 구성된 특징 
+데이터셋에서는 MinMax와 유사하게 동작하며, 큰 이상치에 민감할 수 있다.)
+
+loss :  [11.058802604675293, 11.058802604675293]
+걸린시간 : 4.649078607559204
+r2스코어 :  0.8661439128707745
+
+5. RobustScaler (아웃라이어의 영향을 최소화 한 기법. 중앙값(median)과 IQR(interquartile range)를 사용하기 때문에 
+StandardScaler와 비교하면 표준화 후 동일한 값을 더 넓게 분포 시키고 있음을 확인 할 수 있음.
+* IQR = Q3 - Q1 : 25퍼센타일과 75퍼센타일의 값들을 다룸.
+
+loss :  [14.110677719116211, 14.110677719116211]
+걸린시간 : 4.519812345504761
+r2스코어 :  0.8292039150332386
+
 
 
 '''

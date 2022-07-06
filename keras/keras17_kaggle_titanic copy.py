@@ -159,7 +159,6 @@ acc= accuracy_score(y_test, y_predict)
 print('loss : ' , loss)
 print('acc스코어 : ', acc) 
 
-model.summary()
 
 '''
 

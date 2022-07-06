@@ -1,5 +1,6 @@
-#만들어서 속도 비교
-#GPU와 CPU
+
+#keras18_gpu_test3파일의 summary를 확인
+#summary와 time
 
 
 import numpy as np
@@ -14,6 +15,7 @@ from sklearn.metrics import classification_report
 from sklearn.preprocessing import OneHotEncoder
 import tensorflow as tf
 import time
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 
 #1. 데이터
@@ -39,6 +41,15 @@ print(y)
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, train_size=0.8, random_state=66
 )
+
+#scaler = MinMaxScaler()
+scaler = StandardScaler()
+
+scaler.fit(x_train)
+#print(x_train)
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진행
+
 
 # 2. 모델
 
@@ -68,7 +79,7 @@ earlyStopping = EarlyStopping(monitor='var_loss', patience=50, mode='min', verbo
 start_time = time.time()
 
 hist = model.fit(x_train, y_train, epochs=10, 
-                 batch_size=128,
+                 batch_size=64,
                  validation_split=0.2,
                  callbacks=[earlyStopping],
                  verbose=1                 
@@ -119,33 +130,32 @@ y_test = tf.argmax(y_test, axis=1)
 acc = accuracy_score(y_test, y_predict)
 print("acc 스코어 : ", acc)
 
+#model.summary()
 
 '''
 
-epochs = 2
 
-GPU
-걸린시간 : 27.442648887634277
+7/6
 
-CPU
-걸린시간 : 11.278942823410034
+기존작업대로 했을때 결과값
 
-epochs = 100
-
-CPU
-걸린시간 : 564.0292217731476
-
-GPU
-걸린시간 : 1335.0220313072205
+accuracy :  0.8289114832878113
+걸린시간 : 392.3568162918091
+acc 스코어 :  0.8289114738862163
 
 
-07/06
+MinMaxScaler
 
-CPU
-걸린시간 : 97.43256640434265
+accuracy :  0.911069393157959
+걸린시간 : 381.10819935798645
+acc 스코어 :  0.911069421615621
 
-GPU
-걸린시간 : 176.20923447608948
+
+StandardScaler
+
+accuracy :  0.9162155985832214
+걸린시간 : 363.7694630622864
+acc 스코어 :  0.9162155882378252
 
 
 '''

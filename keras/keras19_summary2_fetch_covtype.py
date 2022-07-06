@@ -1,5 +1,5 @@
-#만들어서 속도 비교
-#GPU와 CPU
+#keras18_gpu_test3파일의 summary를 확인
+#summary와 time
 
 
 import numpy as np
@@ -68,7 +68,7 @@ earlyStopping = EarlyStopping(monitor='var_loss', patience=50, mode='min', verbo
 start_time = time.time()
 
 hist = model.fit(x_train, y_train, epochs=10, 
-                 batch_size=128,
+                 batch_size=64,
                  validation_split=0.2,
                  callbacks=[earlyStopping],
                  verbose=1                 
@@ -119,6 +119,7 @@ y_test = tf.argmax(y_test, axis=1)
 acc = accuracy_score(y_test, y_predict)
 print("acc 스코어 : ", acc)
 
+model.summary()
 
 '''
 
@@ -146,6 +147,12 @@ CPU
 
 GPU
 걸린시간 : 176.20923447608948
+
+
+batchsize 128
+Total params: 408,007
+Trainable params: 408,007
+batchsize 64
 
 
 '''

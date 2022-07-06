@@ -96,8 +96,8 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, train_size=0.8, random_state=66
 )
 
-#scaler = MinMaxScaler()
-scaler = StandardScaler()
+scaler = MinMaxScaler()
+#scaler = StandardScaler()
 
 scaler.fit(x_train)
 #print(x_train)
@@ -177,17 +177,17 @@ print('acc스코어 : ', acc)
 
 1.기존값으로 진행했을때 결과값
 
-loss :  [0.4005916714668274, 0.8156424760818481]
-acc스코어 :  0.8156424581005587
+loss :  [0.41233864426612854, 0.826815664768219]
+acc스코어 :  0.8268156424581006
 
 2.MinMaxScaler
 
-loss :  [0.4342561960220337, 0.8156424760818481]
-acc스코어 :  0.8156424581005587
+loss :  [0.43972915410995483, 0.8100558519363403]
+acc스코어 :  0.8100558659217877
 
 3.StandardScaler
 
-loss :  [0.5687280297279358, 0.8156424760818481]
-acc스코어 :  0.8156424581005587
+loss :  [0.5032137036323547, 0.8212290406227112]
+acc스코어 :  0.8212290502793296
 
 '''

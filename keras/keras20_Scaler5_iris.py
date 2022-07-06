@@ -10,6 +10,8 @@ from sklearn.metrics import classification_report
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
+
+
 # weight의 난수
 #import tensorflow as tf
 #tf.random.set_seed(66) 
@@ -34,7 +36,7 @@ y = datasets.target
 #1-2. keras 를 이용한 Onehotincoding
 #keras의 utils 에서 to_categorical을 이용한다
 from tensorflow.keras.utils import to_categorical
-y = to_categorical(y, return_counts=True) #단어 텍스트를 정수 시퀀스로 변환한다.
+y = to_categorical(y) #단어 텍스트를 정수 시퀀스로 변환한다.
 #print(y)
 #print(y.shape) # (150, 3) < 확인.
 
@@ -50,6 +52,8 @@ x_train, x_test, y_train, y_test = train_test_split(
 #print(x_train)
 #x_train = scaler.transform(x_train)
 #x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진행
+
+
 
 
 #print(y_train)
@@ -154,36 +158,23 @@ print("acc 스코어 : ", acc)
 
 '''
 
-1. accuracy_score 적용 전, 결과값
-loss :  0.05518637225031853
-accuracy :  1.0
+1. 기존대로작업 했을때 결과값
 
-2. argmax 사용(자습)
-loss :  0.2333674430847168
+loss :  0.0625213012099266
 accuracy :  0.9666666388511658
-acc :  1.0
+acc 스코어 :  0.9666666666666667
 
-3. argmax 풀이해주신것
-acc 스코어 :  1.0
+2. MinMaxScaler
 
+loss :  0.11124221980571747
+accuracy :  0.9666666388511658
+acc 스코어 :  0.9666666666666667
 
-'''
+3. Standardsacler
 
-'''
-내가 한거
+loss :  1.0162760019302368
+accuracy :  0.8999999761581421
+acc 스코어 :  0.9
 
-# loss = model.evaluate(x_test, y_test)
-# print('loss : ', loss)
-
-# y_predict = model.predict(x_test)
-
-# y_predict = y_predict.flatten()                
-# y_predict = np.where(y_predict > 0.5, 1 , 0)   
-
-# #print(y_predict)
-
-# print(classification_report(y_test, y_predict))
-# acc = accuracy_score(y_test, y_predict)
-# print('acc 스코어 : ', acc)  
 
 '''

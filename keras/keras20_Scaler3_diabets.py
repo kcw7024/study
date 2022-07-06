@@ -22,8 +22,8 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 
 
-#scaler = MinMaxScaler()
-scaler = StandardScaler()
+scaler = MinMaxScaler()
+#scaler = StandardScaler()
 
 scaler.fit(x_train)
 #print(x_train)
@@ -81,9 +81,9 @@ print('loss : ', loss)
 
 # print('걸린시간 :', end_time)
 
-y_predict = model.predict(VERIFY_X509_TRUSTED_FIRST)
+y_predict = model.predict(x_test)
 from sklearn.metrics import r2_score
-r2 = r2_score(y, y_predict)
+r2 = r2_score(y_test, y_predict)
 print('r2스코어 : ', r2)
 
 
@@ -111,11 +111,11 @@ loss :  [2300.401123046875, 2300.401123046875]
 r2스코어 :  0.500738537071638
 
 MinMaxScaler
-loss :  [2390.906982421875, 2390.906982421875]
-r2스코어 :  -2.3541684496311817
+loss :  [2430.3525390625, 2430.3525390625]
+r2스코어 :  0.6319442581528558
 
 Standard Scaler
-loss :  [2658.138916015625, 2658.138916015625]
-r2스코어 :  -1.8966387364745332
+loss :  [3427.16357421875, 3427.16357421875]
+r2스코어 :  0.48098592842050314
 
 '''

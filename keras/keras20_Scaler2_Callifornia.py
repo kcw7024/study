@@ -25,11 +25,11 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 
 #scaler = MinMaxScaler()
-#scaler = StandardScaler()
+scaler = StandardScaler()
 
-#scaler.fit(x_train)
-#x_train = scaler.transform(x_train)
-#x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진행
+scaler.fit(x_train)
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진행
 
 
 
@@ -84,7 +84,7 @@ print('loss : ', loss)
 
 y_predict = model.predict(x_test)
 from sklearn.metrics import r2_score
-r2 = r2_score(y, y_predict)
+r2 = r2_score(y_test, y_predict)
 print('r2스코어 : ', r2)
 
 
@@ -114,14 +114,14 @@ r2스코어 :  0.8273437373203322
 
 2. Min Max
 
-loss :  [13.167623519897461, 13.167623519897461]
-r2스코어 :  -147872.90882738438
+loss :  [0.24638988077640533, 0.24638988077640533]
+r2스코어 :  0.8119078300346037
 
 
 3. Standard Scaler 
 
-loss :  [10.720586776733398, 10.720586776733398]
-r2스코어 :  -65074.3495332598
+loss :  [0.27102115750312805, 0.27102115750312805]
+r2스코어 :  0.7931044839421408
 
 
 '''

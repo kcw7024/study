@@ -26,8 +26,8 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.7, random_state=66    
 )
 
-#scaler = MinMaxScaler()
-scaler = StandardScaler()
+scaler = MinMaxScaler()
+#scaler = StandardScaler()
 
 scaler.fit(x_train)
 #print(x_train)
@@ -101,7 +101,7 @@ y_predict = model.predict(x_test)
 
 
 from sklearn.metrics import r2_score
-r2 = r2_score(y, y_predict)
+r2 = r2_score(y_test, y_predict)
 print('r2스코어 : ', r2)
 
 # import matplotlib
@@ -131,14 +131,13 @@ r2스코어 :  0.8273437373203322
 
 2. Min Max
 
-loss :  [13.167623519897461, 13.167623519897461]
-r2스코어 :  -147872.90882738438
-
+loss :  [11.096799850463867, 11.096799850463867]
+r2스코어 :  0.8656839912825005
 
 3. Standard Scaler 
 
-loss :  [10.720586776733398, 10.720586776733398]
-r2스코어 :  -65074.3495332598
+loss :  [11.390154838562012, 11.390154838562012]
+r2스코어 :  0.8621332090320466
 
 
 '''

@@ -63,8 +63,8 @@ x_train, x_test, y_train, y_test = train_test_split(
     )
 
 
-#scaler = MinMaxScaler()
-scaler = StandardScaler()
+scaler = MinMaxScaler()
+#scaler = StandardScaler()
 
 scaler.fit(x_train)
 #print(x_train)
@@ -111,9 +111,9 @@ print("RMSE : ", rmse)
 
 # 데이터 수정전, 데이터 안에 null값이 있으면 loss 값이 nan이 나옴
 
-y_predict = model.predict(x)
+y_predict = model.predict(x_test)
 from sklearn.metrics import r2_score
-r2 = r2_score(y, y_predict)
+r2 = r2_score(y_test, y_predict)
 print('r2스코어 : ', r2)
 
 
@@ -122,20 +122,20 @@ print('r2스코어 : ', r2)
 
 #1 to_read()를 사용해서 submission.csv를 불러온다.
 
-result = pd.read_csv(path + 'submission.csv', index_col=0)
+#result = pd.read_csv(path + 'submission.csv', index_col=0)
 #index_col=0 의 의미 : index col을 없애준다.
 
-y_summit = model.predict(test_set)
+#y_summit = model.predict(test_set)
 #print(y_summit)
 #print(y_summit.shape) # (715,1)
 
-result['count'] = y_summit
+#result['count'] = y_summit
 #result 에서 지정해준 submission의 count 값에 y_summit값을 넣어준다.
 
 #.to_csv() 를 사용해서 submission.csv를 완성
 
 #2
-result.to_csv(path + 'submission.csv', index=True)
+#result.to_csv(path + 'submission.csv', index=True)
 
 
 '''
@@ -149,15 +149,15 @@ r2스코어 :  0.598763826580324
 
 MinMaxScaler
 
-loss :  [627.1629638671875, 627.1629638671875]
-RMSE :  25.043221878486914
-r2스코어 :  -5894905.4033514485
+loss :  [632.2528686523438, 632.2528686523438]
+RMSE :  25.144638841411545
+r2스코어 :  0.8552094937032997
 
 Standard Sacaler
 
-loss :  [764.8575439453125, 764.8575439453125]
-RMSE :  27.656058649064406
-r2스코어 :  -34088.35762434328
+loss :  [388.8082580566406, 388.8082580566406]
+RMSE :  19.718220734061862
+r2스코어 :  0.9109600862892775
 
 
 '''

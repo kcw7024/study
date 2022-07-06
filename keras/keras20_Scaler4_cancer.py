@@ -87,7 +87,7 @@ print('loss : ', loss)
 
 # print('걸린시간 :', end_time)
 
-y_predict = model.predict(x_test)
+y_predict = model.predict(x)
 
 y_predict = y_predict.flatten()                
 y_predict = np.where(y_predict > 0.5, 1 , 0)   

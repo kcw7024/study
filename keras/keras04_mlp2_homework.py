@@ -16,7 +16,7 @@ y = np.array(
 
 #x = np.transpose(x) # 방법 2
 
-#print(x.shape) #(2,10)
+print(x.shape) #(2,10)
 #print(y.shape) #(10, )
 
 x = x.T #x를 전치한다. 방법 1

@@ -6,8 +6,8 @@ import datetime as dt
 import pandas as pd
 from collections import Counter
 import datetime as dt
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, Activation
+from tensorflow.python.keras.models import Sequential, Model
+from tensorflow.python.keras.layers import Dense, Activation, Input
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
@@ -255,58 +255,71 @@ x_train, x_test, y_train, y_test = train_test_split(
 #scaler = MinMaxScaler()
 #scaler = StandardScaler()
 #scaler = MaxAbsScaler()
-scaler = RobustScaler()
+#scaler = RobustScaler()
 
-scaler.fit(x_train)
+#scaler.fit(x_train)
 #print(x_train)
-x_train = scaler.transform(x_train)
-x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진행
+#x_train = scaler.transform(x_train)
+#x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진행
 
 
 #2. 모델 구성
-model = Sequential()
-model.add(Dense(100, activation='relu', input_dim=12))
-model.add(Dense(200, activation='relu'))
-model.add(Dense(100, activation='relu'))
-model.add(Dense(200, activation='relu'))
-model.add(Dense(20, activation='relu'))
-model.add(Dense(1))
+# model = Sequential()
+# model.add(Dense(100, activation='relu', input_dim=12))
+# model.add(Dense(200, activation='relu'))
+# model.add(Dense(100, activation='relu'))
+# model.add(Dense(200, activation='relu'))
+# model.add(Dense(20, activation='relu'))
+# model.add(Dense(1))
 
+
+input = Input(shape=(12,))
+dense1 = Dense(100, activation='relu')(input)
+dense2 = Dense(200, activation='relu')(dense1)
+dense3 = Dense(100, activation='relu')(dense2)
+dense4 = Dense(200, activation='relu')(dense3)
+dense5 = Dense(20, activation='relu')(dense4)
+output = Dense(1)(dense5)
+
+model = Model(inputs = input, outputs = output)
+
+model.summary()
+model.save("./_save/keras23_017_save_model_kaggle_house.h5")
 
 #3. 컴파일, 훈련
-model.compile(loss='mse', optimizer='adam', metrics=['mse'])
+# model.compile(loss='mse', optimizer='adam', metrics=['mse'])
 
 
-from tensorflow.python.keras.callbacks import EarlyStopping
-earlyStopping = EarlyStopping(monitor='loss', patience=100, mode='min', verbose=1, restore_best_weights=True)
+# from tensorflow.python.keras.callbacks import EarlyStopping
+# earlyStopping = EarlyStopping(monitor='loss', patience=100, mode='min', verbose=1, restore_best_weights=True)
 
-hist = model.fit(x_train, y_train, epochs=100, batch_size=100,
-                 validation_split=0.2,
-                 callbacks=[earlyStopping],
-                 verbose=1                 
-                 )
-
-
-#4. 평가, 예측
-loss = model.evaluate(x_test, y_test)  # test로 평가
-print('loss : ', loss)
-
-y_predict = model.predict(x_test)
-
-#RMSE 함수정의, 사용
+# hist = model.fit(x_train, y_train, epochs=100, batch_size=100,
+#                  validation_split=0.2,
+#                  callbacks=[earlyStopping],
+#                  verbose=1                 
+#                  )
 
 
-def RMSE(y_test, y_predict):  # mse에 루트를 씌운다.
-    return np.sqrt(mean_squared_error(y_test, y_predict))
+# #4. 평가, 예측
+# loss = model.evaluate(x_test, y_test)  # test로 평가
+# print('loss : ', loss)
+
+# y_predict = model.predict(x_test)
+
+# #RMSE 함수정의, 사용
 
 
-rmse = RMSE(y_test, y_predict)
-print("RMSE : ", rmse)
+# def RMSE(y_test, y_predict):  # mse에 루트를 씌운다.
+#     return np.sqrt(mean_squared_error(y_test, y_predict))
 
-y_predict = model.predict(x_test)
-from sklearn.metrics import r2_score
-r2 = r2_score(y_test, y_predict)
-print('r2스코어 : ', r2)
+
+# rmse = RMSE(y_test, y_predict)
+# print("RMSE : ", rmse)
+
+# y_predict = model.predict(x_test)
+# from sklearn.metrics import r2_score
+# r2 = r2_score(y_test, y_predict)
+# print('r2스코어 : ', r2)
 
 
 
@@ -333,40 +346,29 @@ print('r2스코어 : ', r2)
 
 '''
 
-1. 스케일러 하기전
+#220707, model을 변경하여 적용하고 결과비교하기
 
-loss :  [1397838464.0, 1397838464.0]
-RMSE :  37387.67601676982
-r2스코어 :  0.20881843387415877
 
-2. MinMaxScaler (모든 feature 값이 0~1사이에 있도록 데이터를 재조정한다. 다만 이상치가 있는경우엔 변환된 값이 매우 좁은 범위로 압축 될 수 있음. 
+1. 모델변경전
+
+loss :  [1596056320.0, 1596056320.0]
+RMSE :  39950.673072125894
+r2스코어 :  0.09662634785747726
+
+2. 모델변경후
+
+loss :  [1521376384.0, 1521376384.0]
+RMSE :  39004.826990916416
+r2스코어 :  0.1388953578435267
+
+3.  MinMaxScaler (모든 feature 값이 0~1사이에 있도록 데이터를 재조정한다. 다만 이상치가 있는경우엔 변환된 값이 매우 좁은 범위로 압축 될 수 있음. 
 MinMaxSacler역시 아웃라이어의 존재에 매우 민감.)
 
-loss :  [287830880.0, 287830880.0]
-RMSE :  16965.57928041872
-r2스코어 :  0.8370866760845996
-
-3. Standard Scaler (평균을 제거하고 데이터를 단위 분산으로 조정, 그러나 이상치가 있다면 평균과 표준편차에 영향을 미쳐 
-변환된 데이터의 확산은 매우 달라짐. 때문에 이상치가 있는경우에는 균형잡힌 처곧를 보장할 수 없다.)
-
-loss :  [396279456.0, 396279456.0]
-RMSE :  19906.768174411507
-r2스코어 :  0.7757044091268505
-
-4. MaxAbsSacler (절대값이 0~1 사이에 매핑되도록 하는 것. 양수데이터로만 구성된 특징 
-데이터셋에서는 MinMax와 유사하게 동작하며, 큰 이상치에 민감할 수 있다.)
-
-loss :  [311991200.0, 311991200.0]
-RMSE :  17663.27189372167
-r2스코어 :  0.8234118620952322
-
-5. RobustScaler (아웃라이어의 영향을 최소화 한 기법. 중앙값(median)과 IQR(interquartile range)를 사용하기 때문에 
-StandardScaler와 비교하면 표준화 후 동일한 값을 더 넓게 분포 시키고 있음을 확인 할 수 있음.
-* IQR = Q3 - Q1 : 25퍼센타일과 75퍼센타일의 값들을 다룸.
-
-loss :  [391949504.0, 391949504.0]
-RMSE :  19797.713941173704
-r2스코어 :  0.7781551719459185
+loss :  [334666208.0, 334666208.0]
+RMSE :  18293.88402298386
+r2스코어 :  0.8105777191610357
 
 
 '''
+
+

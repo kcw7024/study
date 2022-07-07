@@ -1,8 +1,8 @@
 #[실습]
 import pandas as pd
 import numpy as np
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense
+from tensorflow.python.keras.models import Sequential, Model
+from tensorflow.python.keras.layers import Dense, Input
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, accuracy_score
 from sklearn.preprocessing import OneHotEncoder
@@ -96,10 +96,10 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, train_size=0.8, random_state=66
 )
 
-#scaler = MinMaxScaler()
+scaler = MinMaxScaler()
 #scaler = StandardScaler()
 #scaler = MaxAbsScaler()
-scaler = RobustScaler()
+#scaler = RobustScaler()
 
 scaler.fit(x_train)
 #print(x_train)
@@ -109,13 +109,25 @@ x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진�
 
 # 2. 모델
 
-model = Sequential()
-model.add(Dense(100, input_dim=8, activation='linear'))
-model.add(Dense(200, activation='sigmoid'))
-model.add(Dense(300, activation='relu'))
-model.add(Dense(200, activation='relu'))
-model.add(Dense(100, activation='linear'))
-model.add(Dense(1, activation='sigmoid'))
+# model = Sequential()
+# model.add(Dense(100, input_dim=8, activation='linear'))
+# model.add(Dense(200, activation='sigmoid'))
+# model.add(Dense(300, activation='relu'))
+# model.add(Dense(200, activation='relu'))
+# model.add(Dense(100, activation='linear'))
+# model.add(Dense(1, activation='sigmoid'))
+
+
+input = Input(shape=(8,))
+dense1 = Dense(100, activation='sigmoid')(input)
+dense2 = Dense(200, activation='relu')(dense1)
+dense3 = Dense(300, activation='relu')(dense2)
+dense4 = Dense(200, activation='linear')(dense3)
+dense5 = Dense(100, activation='sigmoid')(dense4)
+output = Dense(1)(dense5)
+
+model = Model(inputs = input, outputs = output)
+
 
 
 # 3. 컴파일, 훈련
@@ -174,37 +186,30 @@ print('acc스코어 : ', acc)
 #model.summary()
 
 
+
+
+
 '''
 
-1. 스케일러 하기전
+#220707, model을 변경하여 적용하고 결과비교하기
 
-loss :  [0.40614479780197144, 0.8435754179954529]
-acc스코어 :  0.8435754189944135
 
-2. MinMaxScaler (모든 feature 값이 0~1사이에 있도록 데이터를 재조정한다. 다만 이상치가 있는경우엔 변환된 값이 매우 좁은 범위로 압축 될 수 있음. 
-MinMaxSacler역시 아웃라이어의 존재에 매우 민감.)
+1. 모델변경전
 
-loss :  [0.4298607110977173, 0.8156424760818481]
-acc스코어 :  0.8156424581005587
+loss :  [0.41144034266471863, 0.7988826632499695]
+acc스코어 :  0.7988826815642458
 
-3. Standard Scaler (평균을 제거하고 데이터를 단위 분산으로 조정, 그러나 이상치가 있다면 평균과 표준편차에 영향을 미쳐 
-변환된 데이터의 확산은 매우 달라짐. 때문에 이상치가 있는경우에는 균형잡힌 처곧를 보장할 수 없다.)
+2. 모델변경후
 
-loss :  [0.5796253085136414, 0.8100558519363403]
-acc스코어 :  0.8100558659217877
-
-4. MaxAbsSacler (절대값이 0~1 사이에 매핑되도록 하는 것. 양수데이터로만 구성된 특징 
-데이터셋에서는 MinMax와 유사하게 동작하며, 큰 이상치에 민감할 수 있다.)
-
-loss :  [0.47396472096443176, 0.7821229100227356]
+loss :  [0.503936231136322, 0.7932960987091064]
 acc스코어 :  0.7821229050279329
 
-5. RobustScaler (아웃라이어의 영향을 최소화 한 기법. 중앙값(median)과 IQR(interquartile range)를 사용하기 때문에 
-StandardScaler와 비교하면 표준화 후 동일한 값을 더 넓게 분포 시키고 있음을 확인 할 수 있음.
-* IQR = Q3 - Q1 : 25퍼센타일과 75퍼센타일의 값들을 다룸.
+3. MinMaxScaler (모든 feature 값이 0~1사이에 있도록 데이터를 재조정한다. 다만 이상치가 있는경우엔 변환된 값이 매우 좁은 범위로 압축 될 수 있음. 
+MinMaxSacler역시 아웃라이어의 존재에 매우 민감.)
 
-loss :  [0.5629486441612244, 0.8044692873954773]
-acc스코어 :  0.8044692737430168
+loss :  [0.5008866190910339, 0.74301677942276]
+acc스코어 :  0.7430167597765364
 
 
 '''
+

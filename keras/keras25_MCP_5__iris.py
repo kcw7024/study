@@ -23,9 +23,7 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler, MaxAbsScaler, Ro
 datasets = load_iris()
 #print(datasets.DESCR)
 #print(datasets.feature_names)
-
-x = datasets.data
-y = datasets.target
+x, y = datasets.data, datasets.target
 
 
 #print(x.shape, y.shape) #(150, 4) (150,)
@@ -45,14 +43,10 @@ x_train, x_test, y_train, y_test = train_test_split(
 )
 
 
-#scaler = MinMaxScaler()
-#scaler = StandardScaler()
 scaler = MaxAbsScaler()
-#scaler = RobustScaler()
 
 scaler.fit(x_train)
-#print(x_train)
-x_train = scaler.transform(x_train)
+x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진행
 
 
@@ -82,8 +76,6 @@ output = Dense(3)(dense5)
 
 model = Model(inputs = input, outputs = output)
 
-model.summary()
-model.save("./_save/keras23_011_save_model_iris.h5")
 
 # sigmoid 0~1 사이
 # softmax 다중분류에서 사용(마찬가지로 중간레이어에서는 사용할수없고, 아웃풋에서만 사용가능)
@@ -92,123 +84,53 @@ model.save("./_save/keras23_011_save_model_iris.h5")
 # ex) 출력값 70,20,10 일때 -> [0.7,0.2,0.1]
 
 
-
+import time
 
 # 3. 컴파일, 훈련
-# model.compile(#loss='binary_crossentropy', #음수가 나올수 없다. (이진분류에서 사용)
-#               loss='categorical_crossentropy',#다중분류에서는 loss는 이것만 사용한다(당분간~)
-#               optimizer='adam', 
-#               metrics=['accuracy'] 
-#               )
+model.compile(loss='mse', optimizer='adam')
+
+from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M") # 0707_1723 : 문자열형태로 출력된다!
+print(date) #2022-07-07 17:21:36.266674 : 현재시간
+
+filepath = './_ModelCheckPoint/k25_5/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
+
+earlyStopping = EarlyStopping(monitor='val_loss', patience=10, mode='min', verbose=1, restore_best_weights=True)
+#restore_best_weights=True로 하게되면 Earlystopping 전에 나오는 최적값을 가져온다
+
+mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, 
+                      save_best_only=True, 
+                      filepath="".join([filepath,'k25_',date,'_',filename]) # ""< 처음에 빈공간을 만들어주고 join으로 문자열을 묶어줌
+                      )
+
+start_time = time.time()
+
+hist = model.fit(x_train, y_train, epochs=100, batch_size=1,
+                 validation_split=0.2,
+                 callbacks=[earlyStopping, mcp],
+                 verbose=1                 
+                 )
+
+end_time = time.time() - start_time
 
 
-# from tensorflow.python.keras.callbacks import EarlyStopping
-# earlyStopping = EarlyStopping(monitor='var_loss', patience=50, mode='min', verbose=1, restore_best_weights=True)
+#4. 평가, 예측
+print(('#'*70) + '1.기본출력')
 
-# import time
+loss = model.evaluate(x_test, y_test)
+print('loss : ', loss)
 
-# start_time = time.time()
-
-# hist = model.fit(x_train, y_train, epochs=500, batch_size=100,
-#                  validation_split=0.2,
-#                  callbacks=[earlyStopping],
-#                  verbose=1                 
-#                  )
-
-# end_time = time.time() - start_time
-
-
-
-# # # 4. 평가, 예측
-
-# # 첫번째 방법
-# # loss, acc = model.evaluate(x_test, y_test)
-# # print('loss : ', loss )
-# # print('acc : ', acc)
-
-# # 두번째 방법
-# results = model.evaluate(x_test, y_test)
-# print('loss : ', results[0])
-# #print('accuracy : ', results[1])
-
-# print('걸린시간 :', end_time)
-# #print("#" * 80)
-# #print(y_test[:5])
-# #print("#" * 80)
-# y_pred = model.predict(x_test[:5])
-# #print(y_pred)
-# #print("#"*15 + "pred" + "#"*15)
-
-# '''
-# ################################################################################
-# [[0. 1. 0.]
-#  [0. 1. 0.]
-#  [0. 1. 0.]
-#  [1. 0. 0.]
-#  [0. 1. 0.]]
-# ################################################################################
-# [[4.9661531e-07 9.9999928e-01 2.7846119e-07]
-#  [1.6254176e-06 9.9993074e-01 6.7580280e-05]
-#  [5.0330500e-06 9.9961519e-01 3.7977946e-04]
-#  [1.0000000e+00 1.0639704e-08 2.1361866e-29]
-#  [8.9578879e-07 9.9999309e-01 5.9722643e-06]]
-# ################################################################################
-
-# '''
-
-# # 2. argmax 사용
-# # y_pred = np.argmax(y_test, axis =1)
-# # #print(y_test)
-# # y_pred = to_categorical(y_pred)
-# # #print(y_pred)
-# # acc2 = accuracy_score(y_test, y_pred)
-# # print("acc : ", acc2)
-
-
-# #풀이해주신것
-# from sklearn.metrics import accuracy_score
-
-# y_predict = model.predict(x_test)
-# y_predict = np.argmax(y_predict, axis=1)
-# #print(y_predict)
-# y_test = np.argmax(y_test, axis=1)
-# #print(y_test)
-
-# acc = accuracy_score(y_test, y_predict)
-# print("acc 스코어 : ", acc)
-
-
+y_predict = model.predict(x_test)
+from sklearn.metrics import r2_score
+r2 = r2_score(y_test, y_predict)
+print('r2 score : ' , r2)
 
 
 '''
-
-#220707, model을 변경하여 적용하고 결과비교하기
-
-
-1. 모델변경전
-
-loss :  0.06984784454107285
-걸린시간 : 15.93791151046753
-acc 스코어 :  0.9666666666666667
-
-2. 모델변경후
-
-loss :  5.910277843475342
-걸린시간 : 13.698678016662598
-acc 스코어 :  0.36666666666666664
-
-3. MaxAbsSacler (절대값이 0~1 사이에 매핑되도록 하는 것. 양수데이터로만 구성된 특징 
-데이터셋에서는 MinMax와 유사하게 동작하며, 큰 이상치에 민감할 수 있다.)
-
-loss :  5.3726983070373535
-걸린시간 : 14.124694108963013
-acc 스코어 :  0.5333333333333333
-
+loss :  23.0333194732666
+r2 score :  0.7180569176045343
 
 '''
-
-
-
-
-
-

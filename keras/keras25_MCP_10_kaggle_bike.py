@@ -132,93 +132,54 @@ output = Dense(1)(dense5)
 model = Model(inputs = input, outputs = output)
 
 model.summary()
-model.save("./_save/keras23_016_save_model_kaggle_bike.h5")
 
-#3. 컴파일, 훈련
-# model.compile(loss='mse', optimizer='adam', metrics=['mse'])
+import time
 
+# 3. 컴파일, 훈련
+model.compile(loss='mse', optimizer='adam')
 
-# from tensorflow.python.keras.callbacks import EarlyStopping
-# earlyStopping = EarlyStopping(monitor='val_loss', patience=50, mode='min', verbose=1, restore_best_weights=True)
+from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M") # 0707_1723 : 문자열형태로 출력된다!
+print(date) #2022-07-07 17:21:36.266674 : 현재시간
 
-# hist = model.fit(x_train, y_train, epochs=150, batch_size=100,
-#                  validation_split=0.2,
-#                  callbacks=[earlyStopping],
-#                  verbose=1                 
-#                  )
+filepath = './_ModelCheckPoint/k25_10/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 
+earlyStopping = EarlyStopping(monitor='val_loss', patience=10, mode='min', verbose=1, restore_best_weights=True)
+#restore_best_weights=True로 하게되면 Earlystopping 전에 나오는 최적값을 가져온다
 
-# #4. 평가, 예측
-# loss = model.evaluate(x_test, y_test) #test로 평가
-# print('loss : ', loss)
+mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, 
+                      save_best_only=True, 
+                      filepath="".join([filepath,'k25_',date,'_',filename]) # ""< 처음에 빈공간을 만들어주고 join으로 문자열을 묶어줌
+                      )
 
-# y_predict = model.predict(x_test)
+start_time = time.time()
 
-# #RMSE 함수정의, 사용
-# def RMSE(y_test, y_predict): #mse에 루트를 씌운다.
-#     return np.sqrt(mean_squared_error(y_test, y_predict))
+hist = model.fit(x_train, y_train, epochs=100, batch_size=1,
+                 validation_split=0.2,
+                 callbacks=[earlyStopping, mcp],
+                 verbose=1                 
+                 )
 
-# rmse = RMSE(y_test, y_predict)
-# print("RMSE : ", rmse)
-
-
-# y_predict = model.predict(x_test)
-# from sklearn.metrics import r2_score
-# r2 = r2_score(y_test, y_predict)
-# print('r2스코어 : ', r2)
+end_time = time.time() - start_time
 
 
-# 22.06.28
+#4. 평가, 예측
+print(('#'*70) + '1.기본출력')
 
-#1 to_read()를 사용해서 submission.csv를 불러온다.
+loss = model.evaluate(x_test, y_test)
+print('loss : ', loss)
 
-#result = pd.read_csv(path + 'sampleSubmission.csv', index_col=0)
-#index_col=0 의 의미 : index col을 없애준다.
-
-#y_summit = model.predict(test_set)
-#print(y_summit)
-#print(y_summit.shape) # (715,1)
-
-
-#result['count'] = y_summit
-#result 에서 지정해준 submission의 count 값에 y_summit값을 넣어준다.
-
-#.to_csv() 를 사용해서 sampleSubmission.csv를 완성
-
-#2
-#result = abs(result) #절대값처리.... 인데 이걸로하면 안되는디 
-#result.to_csv(path + 'sampleSubmission.csv', index=True)
-
-#####
-
+y_predict = model.predict(x_test)
+from sklearn.metrics import r2_score
+r2 = r2_score(y_test, y_predict)
+print('r2 score : ' , r2)
 
 
 '''
-
-#220707, model을 변경하여 적용하고 결과비교하기
-
-
-1. 모델변경전
-
-loss :  [5194.17333984375, 5194.17333984375]
-RMSE :  72.07061477014545
-r2스코어 :  0.765022753674311
-
-2. 모델변경후
-
-loss :  [17473.41796875, 17473.41796875]
-RMSE :  132.18706211596788
-r2스코어 :  0.20952660479943752
-
-3. RobustScaler (아웃라이어의 영향을 최소화 한 기법. 중앙값(median)과 IQR(interquartile range)를 사용하기 때문에 
-StandardScaler와 비교하면 표준화 후 동일한 값을 더 넓게 분포 시키고 있음을 확인 할 수 있음.
-* IQR = Q3 - Q1 : 25퍼센타일과 75퍼센타일의 값들을 다룸.
-
-loss :  [39147.375, 39147.375]
-RMSE :  197.8569579333148
-r2스코어 :  -0.7709732921592214
-
+loss :  23.0333194732666
+r2 score :  0.7180569176045343
 
 '''
-
-

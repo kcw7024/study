@@ -99,89 +99,54 @@ output = Dense(1)(dense6)
 model = Model(inputs = input, outputs = output)
 
 model.summary()
-model.save("./_save/keras23_015_save_model_Ddarung.h5")
 
-#3. 컴파일, 훈련
-# model.compile(loss='mse', optimizer='adam', metrics=['mse'])
+import time
 
+# 3. 컴파일, 훈련
+model.compile(loss='mse', optimizer='adam')
 
-# from tensorflow.python.keras.callbacks import EarlyStopping
-# earlyStopping = EarlyStopping(monitor='loss', patience=50, mode='min', verbose=1, restore_best_weights=True)
+from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M") # 0707_1723 : 문자열형태로 출력된다!
+print(date) #2022-07-07 17:21:36.266674 : 현재시간
 
-# hist = model.fit(x_train, y_train, epochs=100, batch_size=100,
-#                  validation_split=0.2,
-#                  callbacks=[earlyStopping],
-#                  verbose=1                 
-#                  )
+filepath = './_ModelCheckPoint/k25_9/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 
-# #4. 평가, 예측
-# loss = model.evaluate(x_test, y_test) #test로 평가
-# print('loss : ', loss)
+earlyStopping = EarlyStopping(monitor='val_loss', patience=10, mode='min', verbose=1, restore_best_weights=True)
+#restore_best_weights=True로 하게되면 Earlystopping 전에 나오는 최적값을 가져온다
 
-# y_predict = model.predict(x_test)
+mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, 
+                      save_best_only=True, 
+                      filepath="".join([filepath,'k25_',date,'_',filename]) # ""< 처음에 빈공간을 만들어주고 join으로 문자열을 묶어줌
+                      )
 
-# #RMSE 함수정의, 사용
-# def RMSE(y_test, y_predict): #mse에 루트를 씌운다.
-#     return np.sqrt(mean_squared_error(y_test, y_predict))
+start_time = time.time()
 
-# rmse = RMSE(y_test, y_predict)
-# print("RMSE : ", rmse)
+hist = model.fit(x_train, y_train, epochs=100, batch_size=1,
+                 validation_split=0.2,
+                 callbacks=[earlyStopping, mcp],
+                 verbose=1                 
+                 )
 
-# # 데이터 수정전, 데이터 안에 null값이 있으면 loss 값이 nan이 나옴
-
-# y_predict = model.predict(x_test)
-# from sklearn.metrics import r2_score
-# r2 = r2_score(y_test, y_predict)
-# print('r2스코어 : ', r2)
+end_time = time.time() - start_time
 
 
+#4. 평가, 예측
+print(('#'*70) + '1.기본출력')
 
-# # 22.06.27
+loss = model.evaluate(x_test, y_test)
+print('loss : ', loss)
 
-# #1 to_read()를 사용해서 submission.csv를 불러온다.
-
-# #result = pd.read_csv(path + 'submission.csv', index_col=0)
-# #index_col=0 의 의미 : index col을 없애준다.
-
-# #y_summit = model.predict(test_set)
-# #print(y_summit)
-# #print(y_summit.shape) # (715,1)
-
-# #result['count'] = y_summit
-# #result 에서 지정해준 submission의 count 값에 y_summit값을 넣어준다.
-
-# #.to_csv() 를 사용해서 submission.csv를 완성
-
-# #2
-# #result.to_csv(path + 'submission.csv', index=True)
-
+y_predict = model.predict(x_test)
+from sklearn.metrics import r2_score
+r2 = r2_score(y_test, y_predict)
+print('r2 score : ' , r2)
 
 
 '''
-
-#220707, model을 변경하여 적용하고 결과비교하기
-
-
-1. 모델변경전
-
-loss :  [661.3758544921875, 661.3758544921875]
-RMSE :  25.717229199838172
-r2스코어 :  0.8485401112875656
-
-2. 모델변경후
-
-loss :  [870.8780517578125, 870.8780517578125]
-RMSE :  29.510642312918456
-r2스코어 :  0.800562598548703
-
-3. MinMaxScaler (모든 feature 값이 0~1사이에 있도록 데이터를 재조정한다. 다만 이상치가 있는경우엔 변환된 값이 매우 좁은 범위로 압축 될 수 있음. 
-MinMaxSacler역시 아웃라이어의 존재에 매우 민감.)
-
-loss :  [1058.466796875, 1058.466796875]
-RMSE :  32.53408684534787
-r2스코어 :  0.757603398953244
+loss :  23.0333194732666
+r2 score :  0.7180569176045343
 
 '''
-
-
-

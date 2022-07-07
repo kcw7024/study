@@ -64,102 +64,55 @@ output = Dense(3, activation='softmax')(dense5)
 
 model = Model(inputs = input, outputs = output)
 
-model.summary()
-model.save("./_save/keras23_012_save_model_wine.h5")
 
+
+import time
 
 # 3. 컴파일, 훈련
-# model.compile(#loss='binary_crossentropy', #음수가 나올수 없다. (이진분류에서 사용)
-#               loss='categorical_crossentropy',#다중분류에서는 loss는 이것만 사용한다(당분간~)
-#               optimizer='adam', 
-#               metrics=['accuracy'] 
-#               )
+model.compile(loss='mse', optimizer='adam')
 
-# from tensorflow.python.keras.callbacks import EarlyStopping
-# earlyStopping = EarlyStopping(monitor='var_loss', patience=50, mode='min', verbose=1, restore_best_weights=True)
+from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M") # 0707_1723 : 문자열형태로 출력된다!
+print(date) #2022-07-07 17:21:36.266674 : 현재시간
 
-# hist = model.fit(x_train, y_train, epochs=550, batch_size=100,
-#                  validation_split=0.2,
-#                  callbacks=[earlyStopping],
-#                  verbose=1                 
-#                  )
+filepath = './_ModelCheckPoint/k25_6/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 
+earlyStopping = EarlyStopping(monitor='val_loss', patience=10, mode='min', verbose=1, restore_best_weights=True)
+#restore_best_weights=True로 하게되면 Earlystopping 전에 나오는 최적값을 가져온다
 
-# # # 4. 평가, 예측
+mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, 
+                      save_best_only=True, 
+                      filepath="".join([filepath,'k25_',date,'_',filename]) # ""< 처음에 빈공간을 만들어주고 join으로 문자열을 묶어줌
+                      )
 
-# # 첫번째 방법
-# # loss, acc = model.evaluate(x_test, y_test)
-# # print('loss : ', loss )
-# # print('acc : ', acc)
+start_time = time.time()
 
-# # 두번째 방법
-# results = model.evaluate(x_test, y_test)
-# print('loss : ', results[0])
-# print('accuracy : ', results[1])
+hist = model.fit(x_train, y_train, epochs=100, batch_size=1,
+                 validation_split=0.2,
+                 callbacks=[earlyStopping, mcp],
+                 verbose=1                 
+                 )
 
-
-# #print("#" * 80)
-# #print(y_test[:5])
-# #print("#" * 80)
-# y_pred = model.predict(x_test)
-# #print(y_pred)
-# #print("#"*15 + "pred" + "#"*15)
+end_time = time.time() - start_time
 
 
-# # 2. argmax 사용
-# # y_pred = np.argmax(y_test, axis =1)
-# # #print(y_test)
-# # y_pred = to_categorical(y_pred)
-# # #print(y_pred)
-# # acc2 = accuracy_score(y_test, y_pred)
-# # print("acc : ", acc2)
+#4. 평가, 예측
+print(('#'*70) + '1.기본출력')
 
+loss = model.evaluate(x_test, y_test)
+print('loss : ', loss)
 
-# #풀이해주신것
-# from sklearn.metrics import accuracy_score
-
-# y_predict = model.predict(x_test)
-# y_predict = np.argmax(y_predict, axis=1)
-# #print(y_predict)
-# y_test = np.argmax(y_test, axis=1)
-# #print(y_test)
-
-# acc = accuracy_score(y_test, y_predict)
-# print("acc 스코어 : ", acc)
-
+y_predict = model.predict(x_test)
+from sklearn.metrics import r2_score
+r2 = r2_score(y_test, y_predict)
+print('r2 score : ' , r2)
 
 
 '''
-
-#220707, model을 변경하여 적용하고 결과비교하기
-
-
-1. 모델변경전
-
-loss :  0.34996142983436584
-accuracy :  0.8055555820465088
-acc 스코어 :  0.8055555555555556
-
-2. 모델변경후
-
-loss :  1.545875072479248
-accuracy :  0.6944444179534912
-acc 스코어 :  0.6944444444444444
-
-3. MaxAbsSacler (절대값이 0~1 사이에 매핑되도록 하는 것. 양수데이터로만 구성된 특징 
-데이터셋에서는 MinMax와 유사하게 동작하며, 큰 이상치에 민감할 수 있다.)
-
-loss :  0.6069376468658447
-accuracy :  0.9444444179534912
-acc 스코어 :  0.9444444444444444
-
+loss :  23.0333194732666
+r2 score :  0.7180569176045343
 
 '''
-
-
-
-
-
-
-
-

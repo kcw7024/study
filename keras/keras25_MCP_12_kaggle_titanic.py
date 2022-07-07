@@ -129,89 +129,54 @@ output = Dense(1)(dense5)
 model = Model(inputs = input, outputs = output)
 
 model.summary()
-model.save("./_save/keras23_018_save_model_kaggle_titanic.h5")
 
+import time
 
 # 3. 컴파일, 훈련
-# model.compile(loss='binary_crossentropy', #음수가 나올수 없다. (이진분류에서 사용)
-#               #loss='categorical_crossentropy',#다중분류에서는 loss는 이것만 사용한다(당분간~)
-#               optimizer='adam', 
-#               metrics=['accuracy'] 
-#               )
+model.compile(loss='mse', optimizer='adam')
 
-# from tensorflow.python.keras.callbacks import EarlyStopping
-# earlyStopping = EarlyStopping(monitor='var_loss', patience=100, mode='min', verbose=1, restore_best_weights=True)
+from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M") # 0707_1723 : 문자열형태로 출력된다!
+print(date) #2022-07-07 17:21:36.266674 : 현재시간
 
-# hist = model.fit(x_train, y_train, epochs=100, batch_size=64,
-#                  validation_split=0.2,
-#                  callbacks=[earlyStopping],
-#                  verbose=1                 
-#                  )
+filepath = './_ModelCheckPoint/k25_12/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 
+earlyStopping = EarlyStopping(monitor='val_loss', patience=10, mode='min', verbose=1, restore_best_weights=True)
+#restore_best_weights=True로 하게되면 Earlystopping 전에 나오는 최적값을 가져온다
 
-# # # 4. 평가, 예측
-# loss = model.evaluate(x_test, y_test)
-# y_predict = model.predict(x_test)
+mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, 
+                      save_best_only=True, 
+                      filepath="".join([filepath,'k25_',date,'_',filename]) # ""< 처음에 빈공간을 만들어주고 join으로 문자열을 묶어줌
+                      )
 
-# #print(y_predict)
-# y_predict = y_predict.round(0) #predict 반올림처리 소수점처리 
-# #print(y_predict)
+start_time = time.time()
 
+hist = model.fit(x_train, y_train, epochs=100, batch_size=1,
+                 validation_split=0.2,
+                 callbacks=[earlyStopping, mcp],
+                 verbose=1                 
+                 )
 
-# y_summit = model.predict(test_set)
-
-# #print(y_summit)
-# #print(y_summit.shape) # (418, 1)
-# y_summit = y_summit.round()
-# df = pd.DataFrame(y_summit) 
-# #print(df)
-# oh = OneHotEncoder(sparse=False) # sparse=true 는 매트릭스반환 False는 array 반환
-# y_summit = oh.fit_transform(df)
-# #print(y_summit)
-# y_summit = np.argmax(y_summit, axis= 1)
-
-# #submission_set = pd.read_csv(path + 'gender_submission.csv', index_col=0)
-
-# #print(submission_set)
-
-# #submission_set['Survived'] = y_summit
-# #print(submission_set)
+end_time = time.time() - start_time
 
 
-# #submission_set.to_csv(path + 'gender_submission.csv', index = True)
+#4. 평가, 예측
+print(('#'*70) + '1.기본출력')
 
+loss = model.evaluate(x_test, y_test)
+print('loss : ', loss)
 
-# acc = accuracy_score(y_test, y_predict)
-# print('loss : ' , loss)
-# print('acc스코어 : ', acc) 
-
-# #model.summary()
-
-
-
+y_predict = model.predict(x_test)
+from sklearn.metrics import r2_score
+r2 = r2_score(y_test, y_predict)
+print('r2 score : ' , r2)
 
 
 '''
-
-#220707, model을 변경하여 적용하고 결과비교하기
-
-
-1. 모델변경전
-
-loss :  [0.41144034266471863, 0.7988826632499695]
-acc스코어 :  0.7988826815642458
-
-2. 모델변경후
-
-loss :  [0.503936231136322, 0.7932960987091064]
-acc스코어 :  0.7821229050279329
-
-3. MinMaxScaler (모든 feature 값이 0~1사이에 있도록 데이터를 재조정한다. 다만 이상치가 있는경우엔 변환된 값이 매우 좁은 범위로 압축 될 수 있음. 
-MinMaxSacler역시 아웃라이어의 존재에 매우 민감.)
-
-loss :  [0.5008866190910339, 0.74301677942276]
-acc스코어 :  0.7430167597765364
-
+loss :  23.0333194732666
+r2 score :  0.7180569176045343
 
 '''
-

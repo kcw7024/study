@@ -39,7 +39,7 @@ model = Sequential()
 # model.add(Dense(1))
 
 # model.summary()
-#model = load_model("./_save/keras23_3_save_model.h5")
+model = load_model("./_save/keras23_3_save_model.h5")
 #model.summary()
 
 import time

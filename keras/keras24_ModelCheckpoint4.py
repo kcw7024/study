@@ -36,17 +36,25 @@ import time
 model.compile(loss='mse', optimizer='adam')
 
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M") # 0707_1723 : 문자열형태로 출력된다!
+print(date) #2022-07-07 17:21:36.266674 : 현재시간
+
+filepath = './_ModelCheckPoint/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
+
 earlyStopping = EarlyStopping(monitor='val_loss', patience=10, mode='min', verbose=1, restore_best_weights=True)
 #restore_best_weights=True로 하게되면 Earlystopping 전에 나오는 최적값을 가져온다
 
 mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, 
                       save_best_only=True, 
-                      filepath='./_ModelCheckPoint/keras24_ModelCheckPoint3.hdf5'
+                      filepath="".join([filepath,'k24_',date,'_',filename]) # ""< 처음에 빈공간을 만들어주고 join으로 문자열을 묶어줌
                       )
 
 start_time = time.time()
 
-hist = model.fit(x_train, y_train, epochs=50, batch_size=1,
+hist = model.fit(x_train, y_train, epochs=100, batch_size=1,
                  validation_split=0.2,
                  callbacks=[earlyStopping, mcp],
                  verbose=1                 
@@ -54,10 +62,11 @@ hist = model.fit(x_train, y_train, epochs=50, batch_size=1,
 
 end_time = time.time() - start_time
 
-model.save('./_save/kares24_3_save_model.h5')
+#model.save('./_save/kares24_3_save_model.h5')
+
 
 #4. 평가, 예측
-print(('*'*70) + '1.기본출력')
+print(('#'*70) + '1.기본출력')
 
 loss = model.evaluate(x_test, y_test)
 print('loss : ', loss)
@@ -67,6 +76,7 @@ from sklearn.metrics import r2_score
 r2 = r2_score(y_test, y_predict)
 print('r2 score : ' , r2)
 
+'''
 print(('*'*70) + '2. load_model 출력')
 
 model2 = load_model('./_save/kares24_3_save_model.h5')
@@ -89,6 +99,8 @@ y_predict3 = model3.predict(x_test)
 from sklearn.metrics import r2_score
 r2 = r2_score(y_test, y_predict3)
 print('r2 스코어 : ', r2)
+
+'''
 
 '''
 **********************************************************************1.기본출력

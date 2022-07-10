@@ -31,16 +31,10 @@ x_train,x_test,y_train,y_test=train_test_split(x_train,y_train,
 
 #2. 모델구성
 model=Sequential()
-model.add(Conv2D(filters=50,kernel_size=(6,6),
-                 padding='same',
-                 input_shape=(28,28,1)))
+model.add(Conv2D(filters=50,kernel_size=(6,6), padding='same', input_shape=(28,28,1)))
 # model.add(MaxPooling2D())
-model.add(Conv2D(70,(4,4),
-                 padding='valid', 
-                 activation='relu'))
-model.add(Conv2D(40,(2,2),
-                 padding='valid',
-                 activation='relu')) 
+model.add(Conv2D(70,(4,4), padding='valid', activation='relu'))
+model.add(Conv2D(40,(2,2), padding='valid', activation='relu')) 
 model.add(Flatten())
 model.add(Dense(100,activation='relu'))
 model.add(Dense(200,activation='relu'))

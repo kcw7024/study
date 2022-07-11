@@ -34,15 +34,17 @@ model=Sequential()
 model.add(Conv2D(filters=50,kernel_size=(6,6), padding='same', input_shape=(28,28,1)))
 # model.add(MaxPooling2D())
 model.add(Conv2D(70,(4,4), padding='valid', activation='relu'))
+model.add(Dropout(0.25))
 model.add(Conv2D(40,(2,2), padding='valid', activation='relu')) 
+model.add(Dropout(0.25))
 model.add(Flatten())
 model.add(Dense(100,activation='relu'))
+model.add(Dropout(0.25))
 model.add(Dense(200,activation='relu'))
 model.add(Dense(10,activation='softmax'))
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-earlyStopping=EarlyStopping(monitor='val_loss',patience=50,mode='auto',
-                            verbose=1,restore_best_weights=True)
+earlyStopping=EarlyStopping(monitor='val_loss',patience=50,mode='auto', verbose=1,restore_best_weights=True)
 model.fit(x_train,y_train, validation_split=0.2, callbacks=[earlyStopping],
           epochs=1000, batch_size=248, verbose=1)
 
@@ -58,5 +60,5 @@ acc=accuracy_score(y_test,y_predict)
 print('acc score :', acc)
 
 
-#loss :  0.3246806859970093
-#accuracy :  0.8829166889190674
+# loss :  0.28217318654060364
+# accuracy :  0.9010000228881836

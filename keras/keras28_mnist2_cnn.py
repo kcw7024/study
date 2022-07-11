@@ -16,10 +16,9 @@ from tensorflow.keras.utils import to_categorical
 #print(x_train.shape, y_train.shape)   #(60000, 28, 28) (60000,)
 #print(x_test.shape, y_test.shape)     #(10000, 28, 28) (10000,)
 
-#원한인코딩 해준다.
+# y는 꼭 원핫인코딩 해준다.
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
-
 
 x_train = x_train.reshape(60000, 28, 28, 1)
 x_test = x_test.reshape(10000, 28, 28, 1)
@@ -42,10 +41,10 @@ model = Sequential()
   
 model.add(Conv2D(filters = 64, kernel_size=(3,3),   # 출력 (N, 28, 28, 64) 패딩이 세임이므로
                  padding='same',
-                 input_shape=(28, 28, 1))) # (batch_size, rows, cols, channels)  
+                 input_shape=(28, 28, 1))) # (batch_size: 행을 자르는 단위, rows, cols, channels) : 데이터는 항상 변동이 있을 수 있기때문에 생략 
 model.add(MaxPooling2D())
 model.add(Conv2D(32, (2,2), 
-                 padding='valid',  
+                 padding='valid', #디폴트옵션  
                  activation='relu'))  
 model.add(Conv2D(32, (2,2), 
                  padding='valid', activation='relu'))

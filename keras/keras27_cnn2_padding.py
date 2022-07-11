@@ -16,7 +16,7 @@ model.add(Conv2D(filters = 10, kernel_size=(3, 3), padding='same', input_shape =
 # 4+D tensor with shape: batch_shape + (channels, rows, cols) if data_format='channels_first' 
 # 4+D tensor with shape: batch_shape + (rows, cols, channels) if data_format='channels_last'
 # filters = output node의 수
-model.add(MaxPooling2D()) 
+model.add(MaxPooling2D()) # 전체 크기가 반으로줄어든다. 옵션도 추가할수 있음.
 model.add(Conv2D(32, (2, 2), 
                     padding='valid', #디폴트 값(연산 후 결과값표기) (None, 7, 7, 7)
                     #padding = 'same', #인풋값을 그대로 받는다(연산없이) (None, 8, 8, 7) 

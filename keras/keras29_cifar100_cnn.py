@@ -61,7 +61,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 earlyStopping=EarlyStopping(monitor='val_loss',patience=100,mode='auto',
                             verbose=1,restore_best_weights=True)
 model.fit(x_train,y_train, validation_split=0.2, callbacks=[earlyStopping],
-          epochs=1000, batch_size=100, verbose=1)
+          epochs=3000, batch_size=100, verbose=1)
 
 loss = model.evaluate(x_test,y_test)
 y_predict = model.predict(x_test)
@@ -73,6 +73,6 @@ acc = accuracy_score(y_test,y_predict)
 print('acc score :', acc)
 
 
-#loss :  4.605720520019531
-#accuracy :  0.009800000116229057
-#acc score : 1.0
+# loss :  0.28217318654060364
+# accuracy :  0.9010000228881836
+# acc score : 1.0

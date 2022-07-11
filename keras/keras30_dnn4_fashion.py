@@ -16,8 +16,8 @@ from tensorflow.python.keras.callbacks import EarlyStopping
 print(x_train.shape, y_train.shape) #(60000, 28, 28) (60000,)
 print(x_test.shape, y_test.shape) #(10000, 28, 28) (10000,)
 
-x_train = x_train.reshape(60000, 28, 28, 1)
-x_test = x_test.reshape(10000, 28, 28, 1)
+x_train = x_train.reshape(60000, 784)
+x_test = x_test.reshape(10000, 784)
 
 print(np.unique(y_train, return_counts=True))
 # (array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], dtype=uint8), array([6000, 6000, 6000, 6000, 6000, 6000, 6000, 6000, 6000, 6000],
@@ -31,17 +31,25 @@ x_train,x_test,y_train,y_test=train_test_split(x_train,y_train,
 
 #2. 모델구성
 model=Sequential()
-model.add(Conv2D(filters=50,kernel_size=(6,6), padding='same', input_shape=(28,28,1)))
-# model.add(MaxPooling2D())
-model.add(Conv2D(70,(4,4), padding='valid', activation='relu'))
+model.add(Dense(50, input_shape=(784, )))
+model.add(Dense(200, activation='relu'))
 model.add(Dropout(0.5))
-model.add(Conv2D(40,(2,2), padding='valid', activation='relu')) 
+model.add(Dense(100))
+model.add(Dense(200, activation='relu')) 
 model.add(Dropout(0.5))
-model.add(Flatten())
 model.add(Dense(100,activation='relu'))
 model.add(Dropout(0.5))
-model.add(Dense(200,activation='relu'))
-model.add(Dense(10,activation='softmax'))
+model.add(Dense(100))
+model.add(Dropout(0.5))
+model.add(Dense(200, activation='relu')) 
+model.add(Dense(300)) 
+model.add(Dropout(0.5))
+model.add(Dense(100, activation='relu')) 
+model.add(Dropout(0.5))
+model.add(Dense(200, activation='relu')) 
+model.add(Dropout(0.5))
+model.add(Dense(100, activation='relu')) 
+model.add(Dense(10, activation='softmax'))
 
 
 #3. 컴파일, 훈련
@@ -49,7 +57,7 @@ model.add(Dense(10,activation='softmax'))
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 earlyStopping=EarlyStopping(monitor='val_loss',patience=50,mode='auto', verbose=1,restore_best_weights=True)
 model.fit(x_train,y_train, validation_split=0.2, callbacks=[earlyStopping],
-          epochs=800, batch_size=248, verbose=1)
+          epochs=1800, batch_size=248, verbose=1)
 
 
 
@@ -66,5 +74,8 @@ acc=accuracy_score(y_test,y_predict)
 print('acc score :', acc)
 
 
-# loss :  0.28217318654060364
-# accuracy :  0.9010000228881836
+# loss :  0.7498573660850525
+# accuracy :  0.7604166865348816
+
+# loss :  0.7783417105674744
+# accuracy :  0.6969166398048401

@@ -1,28 +1,23 @@
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.preprocessing import MaxAbsScaler, RobustScaler
+#Dacon 쇼핑몰 문제
+
 import numpy as np
+import datetime as dt
 import pandas as pd
-from sqlalchemy import true #pandas : 엑셀땡겨올때 씀
-from tensorflow.python.keras.models import Sequential, Model, load_model
-from tensorflow.python.keras.layers import Activation, Dense, Conv2D, Flatten, MaxPooling2D, Input, Dropout
+from collections import Counter
+import datetime as dt
+from pyparsing import col
+from tensorflow.python.keras.models import Sequential, Model
+from tensorflow.python.keras.layers import Dense, Activation, Input, Dropout, Conv2D, Flatten
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
-from tensorflow.keras.utils import to_categorical
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from tensorflow.python.keras.callbacks import EarlyStopping
+from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 from keras.layers import BatchNormalization
 
-###########################폴더 생성시 현재 파일명으로 자동생성###########################################
-import inspect, os
-a = inspect.getfile(inspect.currentframe()) #현재 파일이 위치한 경로 + 현재 파일 명
-print(a)
-print(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))) #현재 파일이 위치한 경로
-print(a.split("\\")[-1]) #현재 파일 명
-current_name = a.split("\\")[-1]
-##########################밑에 filepath경로에 추가로  + current_name + '/' 삽입해야 돌아감#######################
+#데이터 경로 정의
 
-
-#1. 데이터
-path = './_data/shopping/'
+path = './_data/shopping/'  # 경로 정의
 train_set = pd.read_csv(path + 'train.csv', # + 명령어는 문자를 앞문자와 더해줌
                         index_col=0) # index_col=n n번째 컬럼을 인덱스로 인식
 Weekly_Sales = train_set[['Weekly_Sales']]
@@ -108,79 +103,79 @@ test_set2 = scaler.transform(test_set2)
 print(test_set2)
 
 
-# 2. 모델구성
-input1 = Input(shape=(77,))
-dense1 = Dense(100)(input1)
-batchnorm1 = BatchNormalization()(dense1)
-activ1 = Activation('relu')(batchnorm1)
-drp4 = Dropout(0.2)(activ1)
-dense2 = Dense(100)(drp4)
-batchnorm2 = BatchNormalization()(dense2)
-activ2 = Activation('relu')(batchnorm2)
-drp5 = Dropout(0.2)(activ2)
-dense3 = Dense(150)(drp5)
-batchnorm3 = BatchNormalization()(dense3)
-activ3 = Activation('relu')(batchnorm3)
-drp6 = Dropout(0.2)(activ3)
-dense4 = Dense(100)(drp6)
-batchnorm4 = BatchNormalization()(dense4)
-activ4 = Activation('relu')(batchnorm4)
-drp7 = Dropout(0.2)(activ4)
-output1 = Dense(1)(drp7)
-model = Model(inputs=input1, outputs=output1)   
+
+
+#2. 모델 구성
+
+input = Input(shape=(77, ))
+dense1 = Dense(400)(input)
+batch1 = BatchNormalization()(dense1)
+act1 = Activation('swish')(batch1)
+drp1 = Dropout(0.2)(act1)
+dense2 = Dense(200)(drp1)
+batch2 = BatchNormalization()(dense2)
+act2 = Activation('swish')(batch2)
+drp2 = Dropout(0.2)(act2)
+dense3 = Dense(400)(drp2)
+batch3 = BatchNormalization()(dense3)
+act3 = Activation('swish')(batch3)
+drp3 = Dropout(0.2)(act3)
+dense4 = Dense(200)(drp3)
+batch4 = BatchNormalization()(dense4)
+act4 = Activation('relu')(batch4)
+drp4 = Dropout(0.5)(act4)
+output = Dense(1)(drp4)
+
+
+
+model = Model(inputs = input, outputs= output)
+
+
 
 
 #3. 컴파일, 훈련
+# model.compile(loss='mae', optimizer='adam')
+# model.fit(x_train, y_train, epochs=1000, batch_size=128)
 
+model.compile(loss='mse', optimizer='adam')
 
-model.compile(loss='mse', optimizer='adam', metrics=['mae'])
+earlyStopping=EarlyStopping(monitor='loss',patience=50, mode='auto', verbose=1,restore_best_weights=True)
 
-from tensorflow.python.keras.callbacks import EarlyStopping
-
-earlyStopping = EarlyStopping(monitor='val_loss', patience=300, mode='auto', verbose=1, 
-                              restore_best_weights=True)        
-
-
-hist = model.fit(x_train, y_train, epochs=3000, batch_size=128,
-                 validation_split=0.3,
-                 callbacks=[earlyStopping],
-                 verbose=1)
-
+model.fit(x_train,y_train, validation_split=0.2, callbacks=[earlyStopping], epochs=2000, batch_size=128, verbose=1)
 
 
 #4. 평가, 예측
+loss = model.evaluate(x_test, y_test)  # test로 평가
+print('loss : ', loss)
 
-print("=============================1. 기본 출력=================================")
-loss = model.evaluate(x_test, y_test)
 y_predict = model.predict(x_test)
 
-def RMSE(a, b): 
-    return np.sqrt(mean_squared_error(a, b))
+#RMSE 함수정의, 사용
+
+def RMSE(y_test, y_predict):  # mse에 루트를 씌운다.
+    return np.sqrt(mean_squared_error(y_test, y_predict))
+
 
 rmse = RMSE(y_test, y_predict)
-
-
-from sklearn.metrics import r2_score
-r2 = r2_score(y_test, y_predict)
-
-print('loss : ', loss)
 print("RMSE : ", rmse)
-print('r2스코어 : ', r2)
-
-print(test_set2)
-
-y_summit = model.predict(test_set2)
-
-print(y_summit)
-print(y_summit.shape) # (180, 1)
-
-submission_set = pd.read_csv(path + 'sample_submission.csv', # + 명령어는 문자를 앞문자와 더해줌
-                             index_col=0) # index_col=n n번째 컬럼을 인덱스로 인식
-
-print(submission_set)
-
-submission_set['Weekly_Sales'] = y_summit
-print(submission_set)
 
 
-submission_set.to_csv(path + 'submission.csv', index = True)
+#5.csv로 내보낸다
+result = pd.read_csv(path + 'sample_submission.csv', index_col=0)
+#index_col=0 의 의미 : index col을 없애준다.
+
+test_set = test_set.astype(np.float32)
+y_summit = model.predict(test_set)
+#print(y_summit)
+print(y_summit.shape)  # (1459, 1)
+
+
+result['Weekly_Sales'] = y_summit
+
+#result 에서 지정해준 submission의 count 값에 y_summit값을 넣어준다.
+
+#.to_csv() 를 사용해서 sample_submission.csv를 완성
+
+#2
+#result = abs(result) #절대값처리.... 인데 이걸로하면 안되는디
+result.to_csv(path + 'sample_submission.csv', index=True)

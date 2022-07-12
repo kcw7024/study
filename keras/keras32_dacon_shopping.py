@@ -7,15 +7,15 @@ import pandas as pd
 from collections import Counter
 import datetime as dt
 from pyparsing import col
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, Activation
+from tensorflow.python.keras.models import Sequential, Model
+from tensorflow.python.keras.layers import Dense, Activation, Input, Dropout, Conv2D, Flatten
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 #from sklearn.linear_model import LinearRegression
 from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
-
+from keras.layers import BatchNormalization
 
 #데이터 경로 정의
 
@@ -41,9 +41,24 @@ def get_month(date) :
     month = date[3:5]
     month = int(month)
     return month
+def get_year(date) : 
+    year = date[7:]
+    year = int(year)
+    return year
+def get_day(date) : 
+    day = date[:2]
+    day = int(day)
+    return day
+
+
+
 
 train_set['Month'] = train_set['Date'].apply(get_month)
 test_set['Month'] = test_set['Date'].apply(get_month)
+train_set['Year'] = train_set['Date'].apply(get_year)
+test_set['Year'] = train_set['Date'].apply(get_year)
+train_set['Day'] = train_set['Date'].apply(get_day)
+test_set['Day'] = train_set['Date'].apply(get_day)
 
 
 #print(train_set)
@@ -72,35 +87,45 @@ x_train, x_test, y_train, y_test = train_test_split(
 )
 
 #scaler = RobustScaler()
-#scaler = MinMaxScaler()
-scaler = StandardScaler()
+scaler = MinMaxScaler()
+#scaler = StandardScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test) 
 
-# print(x_train.shape)
+
+print(x_train.shape) #(6192, 13)
 
 
 #2. 모델 구성
-model = Sequential()
-model.add(Dense(100, input_dim=11))
-model.add(BatchNormalization(100, activation='relu'))
-model.add(Dense(200, activation='relu'))
-model.add(Dense(300, activation='relu'))
-model.add(Dense(100, activation='relu'))
-model.add(Dense(200, activation='relu'))
-model.add(Dense(100, activation='relu'))
-model.add(Dense(200, activation='relu'))
-model.add(Dense(20, activation='relu'))
-model.add(Dense(1))
+
+input = Input(shape=(13, ))
+dense1 = Dense(400)(input)
+batch1 = BatchNormalization()(dense1)
+act1 = Activation('relu')(batch1)
+drp1 = Dropout(0.2)(act1)
+dense2 = Dense(200)(drp1)
+batch2 = BatchNormalization()(dense2)
+act2 = Activation('relu')(batch2)
+drp2 = Dropout(0.2)(act2)
+dense3 = Dense(400)(drp2)
+batch3 = BatchNormalization()(dense3)
+act3 = Activation('relu')(batch3)
+drp3 = Dropout(0.2)(act3)
+output = Dense(1)(drp3)
+
+
+model = Model(inputs = input, outputs= output)
+
+
 
 
 #3. 컴파일, 훈련
 # model.compile(loss='mae', optimizer='adam')
 # model.fit(x_train, y_train, epochs=1000, batch_size=128)
 
-model.compile(loss='mse', optimizer='adam', metrics=['mae'])
+model.compile(loss='mse', optimizer='adam')
 
-earlyStopping=EarlyStopping(monitor='loss',patience=100,mode='auto', verbose=1,restore_best_weights=True)
+earlyStopping=EarlyStopping(monitor='loss',patience=50, mode='auto', verbose=1,restore_best_weights=True)
 
 model.fit(x_train,y_train, validation_split=0.2, callbacks=[earlyStopping],
           epochs=2000, batch_size=128, verbose=1)
@@ -161,5 +186,13 @@ RMSE :  491779.456456335
 
 loss :  [107149369344.0, 191812.359375]
 RMSE :  327336.77610361704
+
+loss :  [231572144128.0, 399370.21875]
+RMSE :  481219.4298524854
+
+loss :  [214719266816.0, 379795.25]
+RMSE :  463378.1069933613
+
+
 
 '''

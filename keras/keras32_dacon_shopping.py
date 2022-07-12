@@ -14,7 +14,7 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 from keras.layers import BatchNormalization
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 
 
 #데이터 경로 정의
@@ -35,26 +35,38 @@ train_set = train_set.fillna(0)
 test_set = test_set.fillna(0)
 #print(train_set) #결측치 처리완료
 
+
+data = pd.concat([train_set, test_set])
+print(data)
+
 #날짜데이터를 숫자로 바꿔주고 년/월/일로 쪼개준다.
 
-train_set['Date'] = pd.to_datetime(train_set['Date'])
-train_set['year'] = train_set['Date'].dt.year
-train_set['month'] = train_set['Date'].dt.month
-train_set['day'] = train_set['Date'].dt.day
-#print(train_set) #확인.
+data['Date'] = pd.to_datetime(data['Date'])
+data['year'] = data['Date'].dt.year
+data['month'] = data['Date'].dt.month
+data['day'] = data['Date'].dt.day
+print(data) #확인.
 
-test_set['Date'] = pd.to_datetime(test_set['Date'])
-test_set['year'] = test_set['Date'].dt.year
-test_set['month'] = test_set['Date'].dt.month
-test_set['hour'] = test_set['Date'].dt.day
-#print(test_set) #확인.
+# test_set['Date'] = pd.to_datetime(test_set['Date'])
+# test_set['year'] = test_set['Date'].dt.year
+# test_set['month'] = test_set['Date'].dt.month
+# test_set['hour'] = test_set['Date'].dt.day
+# # print(test_set) #확인.
 
 
-train_set = train_set.drop(columns=['Date'])
-test_set = test_set.drop(columns=['Date'])
+data = data.drop(columns=['Date'])
+print(data)
+
+train_set = data[:len(train_set)]
+test_set = data[len(train_set):]
+
+print(train_set)
+print(test_set)
+
 
 x = train_set.drop(columns=['Weekly_Sales'])
 y = train_set['Weekly_Sales']
+
 
 x_train, x_test, y_train, y_test = train_test_split(
      x, y, train_size=0.99, random_state=777
@@ -64,41 +76,31 @@ scaler = MinMaxScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test) 
 
-
 print(x_train.shape) #(6192, 13)
-
-# x_train = x_train.values
-# y_train = y_train.values
-
-x_train.astype('int')
-y_train.astype('int')
-
-
 
 #2. 모델 구성
 
+# model = RandomForestRegressor(n_estimator=100, max_features=10, oob_score=True)
+# model.fit(x_train, y_train)
 
-model = RandomForestRegressor(n_estimator=500, max_features=10, oob_score=True)
-model.fit(x_train, y_train)
-
-
-
-
-'''
 model = Sequential()
 model.add(Dense(100, input_dim=13))
 model.add(Dense(200, activation='swish'))
+model.add(Dropout(0.25))
 model.add(Dense(300, activation='swish'))
+model.add(Dropout(0.25))
 model.add(Dense(200, activation='swish'))
+model.add(Dropout(0.25))
 model.add(Dense(100, activation='swish'))
+model.add(Dropout(0.25))
 model.add(Dense(200, activation='swish'))
+model.add(Dropout(0.25))
 model.add(Dense(300, activation='swish'))
+model.add(Dropout(0.25))
 model.add(Dense(200, activation='swish'))
-model.add(Dense(400, activation='swish'))
-model.add(Dense(200, activation='swish'))
+model.add(Dropout(0.25))
 model.add(Dense(100, activation='swish'))
 model.add(Dense(1))
-
 
 #3. 컴파일, 훈련
 # model.compile(loss='mae', optimizer='adam')
@@ -106,14 +108,13 @@ model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')
 
-earlyStopping=EarlyStopping(monitor='loss',patience=50, mode='auto', verbose=1,restore_best_weights=True)
+earlyStopping=EarlyStopping(monitor='loss',patience=10, mode='auto', verbose=1,restore_best_weights=True)
 
-model.fit(x_train,y_train, validation_split=0.2, callbacks=[earlyStopping], epochs=21000, batch_size=128, verbose=1)
+model.fit(x_train,y_train, validation_split=0.2, callbacks=[earlyStopping], epochs=100, batch_size=128, verbose=1)
 
-'''
 
 #4. 평가, 예측
-loss = model.score(x_test, y_test)  # test로 평가
+loss = model.evaluate(x_test, y_test)  # test로 평가
 print('loss : ', loss)
 
 y_predict = model.predict(x_test)
@@ -132,7 +133,7 @@ print("RMSE : ", rmse)
 result = pd.read_csv(path + 'sample_submission.csv', index_col=0)
 #index_col=0 의 의미 : index col을 없애준다.
 
-test_set = test_set.astype(np.float32)
+#test_set = test_set.astype(np.float32)
 y_summit = model.predict(test_set)
 #print(y_summit)
 print(y_summit.shape)  # (1459, 1)
@@ -183,6 +184,8 @@ RMSE :  162983.30219609317
 loss :  0.9104498499855576
 RMSE :  163201.56753344138
 
+loss :  30833950720.0
+RMSE :  175595.98262320893
 
 
 '''

@@ -1,186 +1,212 @@
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.preprocessing import MaxAbsScaler, RobustScaler
+#Dacon 쇼핑몰 문제
+
 import numpy as np
+import datetime as dt
 import pandas as pd
-from sqlalchemy import true #pandas : 엑셀땡겨올때 씀
-from tensorflow.python.keras.models import Sequential, Model, load_model
-from tensorflow.python.keras.layers import Activation, Dense, Conv2D, Flatten, MaxPooling2D, Input, Dropout
+from collections import Counter
+import datetime as dt
+from pyparsing import col
+from tensorflow.python.keras.models import Sequential, Model
+from tensorflow.python.keras.layers import Dense, Activation, Input, Dropout, Conv2D, Flatten
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
-from tensorflow.keras.utils import to_categorical
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from tensorflow.python.keras.callbacks import EarlyStopping
+from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 from keras.layers import BatchNormalization
-
-###########################폴더 생성시 현재 파일명으로 자동생성###########################################
-import inspect, os
-a = inspect.getfile(inspect.currentframe()) #현재 파일이 위치한 경로 + 현재 파일 명
-print(a)
-print(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))) #현재 파일이 위치한 경로
-print(a.split("\\")[-1]) #현재 파일 명
-current_name = a.split("\\")[-1]
-##########################밑에 filepath경로에 추가로  + current_name + '/' 삽입해야 돌아감#######################
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 
 
-#1. 데이터
-path = './_data/shopping/'
-train_set = pd.read_csv(path + 'train.csv', # + 명령어는 문자를 앞문자와 더해줌
-                        index_col=0) # index_col=n n번째 컬럼을 인덱스로 인식
-Weekly_Sales = train_set[['Weekly_Sales']]
-print(train_set)
-print(train_set.shape) # (6255, 12)
+#데이터 경로 정의
 
-test_set = pd.read_csv(path + 'test.csv', # 예측에서 쓸거임                
-                       index_col=0)
-print(test_set)
-print(test_set.shape) # (180, 11)
+path = './_data/shopping/'  # 경로 정의
+train_set = pd.read_csv(path + 'train.csv', index_col=0) 
+#print(train_set) 
+#print(train_set.shape) #(6255, 13)
+test_set = pd.read_csv(path + 'test.csv', index_col=0)
+#print(test_set)
+#print(test_set.shape) #(180, 12)
 
-print(train_set.columns)
-print(train_set.info()) # info 정보출력
-print(train_set.describe()) # describe 평균치, 중간값, 최소값 등등 출력
 
-train_set.isnull().sum().sort_values(ascending=False)
-test_set.isnull().sum().sort_values(ascending=False)
+#1. 데이터 전처리
 
-######## 년, 월 ,일 분리 ############
+# 데이터 합치기
 
-train_set["day"] = [t.dayofweek for t in pd.DatetimeIndex(train_set.Date)]
-train_set["month"] = [t.month for t in pd.DatetimeIndex(train_set.Date)]
-train_set['year'] = [t.year for t in pd.DatetimeIndex(train_set.Date)]
+#print(train_set.shape)
+#print(test_set.shape)
+data = pd.concat([train_set, test_set])
+#print(data)
 
-test_set["day"] = [t.dayofweek for t in pd.DatetimeIndex(test_set.Date)]
-test_set["month"] = [t.month for t in pd.DatetimeIndex(test_set.Date)]
-test_set['year'] = [t.year for t in pd.DatetimeIndex(test_set.Date)]
+# 결측치 처리
+data = data.fillna(0)
+#print(data)
 
-train_set.drop(['Date','Weekly_Sales'],axis=1,inplace=True) # 트레인 세트에서 데이트타임 드랍
-test_set.drop(['Date'],axis=1,inplace=True) # 트레인 세트에서 데이트타임 드랍
+# 날짜(범주형데이터) 수치화, 각각의 컬럼으로 빼주기
+def get_days(date):
+    day = date[:2]
+    day = int(day)
+    return day
 
-print(train_set)
-print(test_set)
-##########################################
+def get_month(date):
+    month = date[3:5]
+    month = int(month)
+    return month
 
-# ####################원핫인코더###################
+def get_year(date):
+    year = date[7:]
+    year = int(year)
+    return year
 
-df = pd.concat([train_set, test_set])
-print(df)
-
-alldata = pd.get_dummies(df, columns=['day','Store','month', 'year', 'IsHoliday'])
-print(alldata)
-
-train_set2 = alldata[:len(train_set)]
-test_set2 = alldata[len(train_set):]
-
-print(train_set2)
-print(test_set2)
-# train_set = pd.get_dummies(train_set, columns=['Store','month', 'year', 'IsHoliday'])
-# test_set = pd.get_dummies(test_set, columns=['Store','month', 'year', 'IsHoliday'])
+data['day'] = data['Date'].apply(get_days)
+data['year'] = data['Date'].apply(get_year)
+data['month'] = data['Date'].apply(get_month)
+#print(data) #확인!
 
 
 
+data.drop(['Date', 'Temperature'], axis=1, inplace=True)
+#print(data)
 
-###############프로모션 결측치 처리###############
+def seprate_data(concat_data):
+    train_set = concat_data[pd.notnull(concat_data['Weekly_Sales'])]
+    test_set = concat_data[pd.notnull(concat_data['Weekly_Sales'])]
+    return train_set, test_set
 
-train_set2 = train_set2.fillna(0)
-test_set2 = test_set2.fillna(0)
+train_set, test_set = seprate_data(data)
+train_set['Weekly_Sales'] = np.log1p(train_set['Weekly_Sales'])
 
-print(train_set2)
-print(test_set2)
+print(test_set.shape)
 
-##########################################
+#print(train_set)
+#print(test_set)
 
-train_set2 = pd.concat([train_set2, Weekly_Sales],axis=1)
-print(train_set2)
-
-x = train_set2.drop(['Weekly_Sales'], axis=1)
-y = train_set2['Weekly_Sales']
+x = train_set.drop(columns=['Weekly_Sales'])
+y = train_set['Weekly_Sales']
 
 
-x_train, x_test, y_train, y_test = train_test_split(x,y,
-                                                    train_size=0.7,
-                                                    random_state=66
-                                                    )
+x_train, x_test, y_train, y_test = train_test_split(
+     x, y, train_size=0.99, random_state=777
+)
 
 
 scaler = MinMaxScaler()
 x_train = scaler.fit_transform(x_train)
-x_test = scaler.fit_transform(x_test)
-test_set2 = scaler.transform(test_set2)
-
-print(test_set2)
+x_test = scaler.transform(x_test) 
 
 
-# 2. 모델구성
-input1 = Input(shape=(77,))
-dense1 = Dense(100)(input1)
-batchnorm1 = BatchNormalization()(dense1)
-activ1 = Activation('relu')(batchnorm1)
-drp4 = Dropout(0.2)(activ1)
-dense2 = Dense(100)(drp4)
-batchnorm2 = BatchNormalization()(dense2)
-activ2 = Activation('relu')(batchnorm2)
-drp5 = Dropout(0.2)(activ2)
-dense3 = Dense(150)(drp5)
-batchnorm3 = BatchNormalization()(dense3)
-activ3 = Activation('relu')(batchnorm3)
-drp6 = Dropout(0.2)(activ3)
-dense4 = Dense(100)(drp6)
-batchnorm4 = BatchNormalization()(dense4)
-activ4 = Activation('relu')(batchnorm4)
-drp7 = Dropout(0.2)(activ4)
-output1 = Dense(1)(drp7)
-model = Model(inputs=input1, outputs=output1)   
+print(x_train.shape) #(6192, 13)
+print(test_set.shape) #(6435, 14) 
+
+#2. 모델 구성
+
+
+# model = RandomForestRegressor(n_estimator=100, max_features=10, oob_score=True)
+# model.fit(x_train, y_train)
+
+model = Sequential()
+model.add(Dense(100, input_dim=12))
+model.add(Dense(200, activation='swish'))
+model.add(Dropout(0.25))
+model.add(Dense(300, activation='swish'))
+model.add(Dropout(0.25))
+model.add(Dense(200, activation='swish'))
+model.add(Dropout(0.25))
+model.add(Dense(100, activation='swish'))
+model.add(Dropout(0.25))
+model.add(Dense(200, activation='swish'))
+model.add(Dropout(0.25))
+model.add(Dense(300, activation='swish'))
+model.add(Dropout(0.25))
+model.add(Dense(200, activation='swish'))
+model.add(Dropout(0.25))
+model.add(Dense(100, activation='swish'))
+model.add(Dense(1))
 
 
 #3. 컴파일, 훈련
+# model.compile(loss='mae', optimizer='adam')
+# model.fit(x_train, y_train, epochs=1000, batch_size=128)
 
+model.compile(loss='mse', optimizer='adam')
 
-model.compile(loss='mse', optimizer='adam', metrics=['mae'])
+earlyStopping=EarlyStopping(monitor='loss',patience=10, mode='auto', verbose=1,restore_best_weights=True)
 
-from tensorflow.python.keras.callbacks import EarlyStopping
-
-earlyStopping = EarlyStopping(monitor='val_loss', patience=300, mode='auto', verbose=1, 
-                              restore_best_weights=True)        
-
-
-hist = model.fit(x_train, y_train, epochs=3000, batch_size=128,
-                 validation_split=0.3,
-                 callbacks=[earlyStopping],
-                 verbose=1)
-
+model.fit(x_train,y_train, validation_split=0.2, callbacks=[earlyStopping], epochs=10, batch_size=128, verbose=1)
 
 
 #4. 평가, 예측
+loss = model.evaluate(x_test, y_test)  # test로 평가
+print('loss : ', loss)
 
-print("=============================1. 기본 출력=================================")
-loss = model.evaluate(x_test, y_test)
 y_predict = model.predict(x_test)
 
-def RMSE(a, b): 
-    return np.sqrt(mean_squared_error(a, b))
+#RMSE 함수정의, 사용
+
+def RMSE(y_test, y_predict):  # mse에 루트를 씌운다.
+    return np.sqrt(mean_squared_error(y_test, y_predict))
+
 
 rmse = RMSE(y_test, y_predict)
-
-
-from sklearn.metrics import r2_score
-r2 = r2_score(y_test, y_predict)
-
-print('loss : ', loss)
 print("RMSE : ", rmse)
-print('r2스코어 : ', r2)
-
-print(test_set2)
-
-y_summit = model.predict(test_set2)
-
-print(y_summit)
-print(y_summit.shape) # (180, 1)
-
-submission_set = pd.read_csv(path + 'sample_submission.csv', # + 명령어는 문자를 앞문자와 더해줌
-                             index_col=0) # index_col=n n번째 컬럼을 인덱스로 인식
-
-print(submission_set)
-
-submission_set['Weekly_Sales'] = y_summit
-print(submission_set)
 
 
-submission_set.to_csv(path + 'submission.csv', index = True)
+#5.csv로 내보낸다
+result = pd.read_csv(path + 'sample_submission.csv', index_col=0)
+#index_col=0 의 의미 : index col을 없애준다.
+
+test_set = test_set.astype(np.float32)
+y_summit = model.predict(test_set)
+#print(y_summit)
+print(y_summit.shape)  # (1459, 1)
+
+
+result['Weekly_Sales'] = y_summit
+
+#result 에서 지정해준 submission의 count 값에 y_summit값을 넣어준다.
+
+#.to_csv() 를 사용해서 sample_submission.csv를 완성
+
+#2
+#result = abs(result) #절대값처리.... 인데 이걸로하면 안되는디
+result.to_csv(path + 'sample_submission.csv', index=True)
+
+
+
+
+
+'''
+
+loss :  33649528832.0
+RMSE :  183438.0710104603
+
+loss :  27267203072.0
+RMSE :  165127.8334376112
+
+loss :  24211890176.0
+RMSE :  155601.70919475352
+
+loss :  24073287680.0
+RMSE :  155155.67259426
+
+loss :  27762049024.0
+RMSE :  166619.45825564663
+
+loss :  23707613184.0
+RMSE :  153972.76323819187
+
+Randomforest 사용후 
+
+loss :  0.8970531771426602
+RMSE :  174983.71835076745
+
+loss :  0.910689218072747
+RMSE :  162983.30219609317
+
+loss :  0.9104498499855576
+RMSE :  163201.56753344138
+
+loss :  30833950720.0
+RMSE :  175595.98262320893
+
+
+'''

@@ -1,4 +1,4 @@
-#Dacon 쇼핑몰 문제
+#데이콘 쇼핑몰 매출액 예측
 
 import numpy as np
 import datetime as dt
@@ -41,17 +41,17 @@ print(data)
 
 #날짜데이터를 숫자로 바꿔주고 년/월/일로 쪼개준다.
 
-data['Date'] = pd.to_datetime(data['Date'])
-data['year'] = data['Date'].dt.year
-data['month'] = data['Date'].dt.month
-data['day'] = data['Date'].dt.day
-print(data) #확인.
+train_set['Date'] = pd.to_datetime(train_set['Date'])
+train_set['year'] = train_set['Date'].dt.year
+train_set['month'] = train_set['Date'].dt.month
+train_set['hour'] = train_set['Date'].dt.day
+# print(test_set) #확인.
 
-# test_set['Date'] = pd.to_datetime(test_set['Date'])
-# test_set['year'] = test_set['Date'].dt.year
-# test_set['month'] = test_set['Date'].dt.month
-# test_set['hour'] = test_set['Date'].dt.day
-# # print(test_set) #확인.
+test_set['Date'] = pd.to_datetime(test_set['Date'])
+test_set['year'] = test_set['Date'].dt.year
+test_set['month'] = test_set['Date'].dt.month
+test_set['hour'] = test_set['Date'].dt.day
+# print(test_set) #확인.
 
 
 data = data.drop(columns=['Date'])

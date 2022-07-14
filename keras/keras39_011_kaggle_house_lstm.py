@@ -246,28 +246,27 @@ y = train_set['SalePrice']
 #print(y.shape) #(1338, )
 
 
+# from tensorflow.keras.utils import to_categorical
+
+# y = to_categorical(y)
+
+y = pd.get_dummies(y)
+print(y.shape) #(1338, 622)
+
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.99, random_state=777
 )
 
+scaler = MinMaxScaler()
+x_train = scaler.fit_transform(x_train)
+x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진행
 
-#scaler = MinMaxScaler()
-#scaler = StandardScaler()
-#scaler = MaxAbsScaler()
-#scaler = RobustScaler()
-#x_train = scaler.fit_transform(x_train)
-#x_test = scaler.transform(x_test) #x_train이작업된 범위에 맞춰서 진행
-
-from tensorflow.keras.utils import to_categorical
-
-y_train = to_categorical(y_train)
-y_test = to_categorical(y_test)
 
 print(x_train.shape, x_test.shape) #(1324, 12) (14, 12)
 
-x_train = np.array(x_train)
-x_test = np.array(x_test)
+# x_train = np.array(x_train)
+# x_test = np.array(x_test)
 
 x_train = x_train.reshape(1324, 12, 1)
 x_test = x_test.reshape(14, 12, 1)
@@ -288,7 +287,7 @@ model.add(Dense(100, activation='relu'))
 model.add(Dense(100, activation='relu'))
 model.add(Dense(100, activation='relu'))
 model.add(Dense(100, activation='relu'))
-model.add(Dense(1))
+model.add(Dense(622))
 
 # model.summary()
 
@@ -299,12 +298,12 @@ model.compile(loss='mse', optimizer='adam')
 
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 
-earlyStopping = EarlyStopping(monitor='val_loss', patience=10, mode='min', verbose=1, restore_best_weights=True)
+earlyStopping = EarlyStopping(monitor='val_loss', patience=100, mode='min', verbose=1, restore_best_weights=True)
 #restore_best_weights=True로 하게되면 Earlystopping 전에 나오는 최적값을 가져온다
 
 start_time = time.time()
 
-hist = model.fit(x_train, y_train, epochs=1, batch_size=218,
+hist = model.fit(x_train, y_train, epochs=1000, batch_size=218,
                  validation_split=0.2,
                  callbacks=[earlyStopping],
                  verbose=1                 
@@ -328,5 +327,9 @@ print('r2 score : ' , r2)
 '''
 loss :  1300141056.0
 r2 score :  0.26411544403571785
+
+LSTM
+loss :  0.0015990047249943018
+r2 score :  -0.0015186733243593312
 
 '''

@@ -31,6 +31,7 @@ model.summary()
 # unit = output node의 갯수
 
 # param 값 구하기
+
 # DNN : unit * (feature + bias) = param
 # simpleRNN :  unit * (feature+bias+unit) = param / 연산을 한번 더 한다.
 # LSTM : 4 * unit * (feature+bias+unit) = param / = simpleRNN * 4

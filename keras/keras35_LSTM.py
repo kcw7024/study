@@ -38,7 +38,7 @@ model = Sequential()
 #RNN은 2차원으로 던져준다(Flatten없이 Dense로 받을수 있음)
 #model.add(SimpleRNN(units=10, input_length=3, input_dim=1))
 #model.add(SimpleRNN(units=10, input_length=3, input_dim=1))
-model.add(LSTM(units=200, input_shape=(3, 1))) # [batch, timesteps, feature(input_dim)]
+model.add(LSTM(units=100, input_shape=(3, 1))) # [batch, timesteps, feature(input_dim)]
 model.add(Dense(200, activation='relu'))
 model.add(Dense(300, activation='relu'))
 model.add(Dense(200, activation='relu'))

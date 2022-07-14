@@ -1,29 +1,29 @@
 #시계열데이터를 잘라주는 소스 예시
 
-# import numpy as np
+import numpy as np
 
-# a = np.array(range(1, 11))  
+a = np.array(range(1, 11))  
 
 
-# size = 4
+size = 4
 
-# def split_x(dataset, size):
-#     aaa = [] 
-#     for i in range(len(dataset) - size + 1): 
-#         subset = dataset[i : (i + size)]
-#         aaa.append(subset) 
-#     return np.array(aaa)
+def split_x(dataset, size):
+    aaa = [] 
+    for i in range(len(dataset) - size + 1): 
+        subset = dataset[i : (i + size)]
+        aaa.append(subset) 
+    return np.array(aaa)
 
-# bbb = split_x(a, size) 
+bbb = split_x(a, size) 
 
-# print(bbb)
+print(bbb)
 
-# print(bbb.shape) 
+print(bbb.shape) 
 
-# x = bbb[:, :-1]
-# y = bbb[:, -1]
+x = bbb[:, :-1]
+y = bbb[:, -1]
 
-# print(x, y)
+print(x, y)
 
 
    

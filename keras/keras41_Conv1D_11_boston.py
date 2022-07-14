@@ -2,7 +2,7 @@
 from pickletools import optimize
 from tabnanny import verbose
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, Dropout, LSTM
+from tensorflow.python.keras.layers import Dense, Dropout, LSTM, Conv1D, Flatten
 from sklearn.model_selection import train_test_split  # 훈련용과 테스트용 분리하는 모듈
 from sklearn.datasets import load_boston
 from sklearn.preprocessing import MinMaxScaler
@@ -37,7 +37,8 @@ x_test = x_test.reshape(102, 13, 1)
 # 2. 모델
 
 model = Sequential()
-model.add(LSTM(100, input_shape=(13,1)))
+model.add(Conv1D(100, 2, input_shape=(13, 1)))
+model.add(Flatten())
 model.add(Dense(100, activation='relu'))
 model.add(Dense(100, activation='relu'))
 model.add(Dense(100, activation='relu'))
@@ -74,7 +75,7 @@ earlyStopping = EarlyStopping(monitor='val_loss', patience=10, mode='min', verbo
 
 start_time = time.time()
 
-hist = model.fit(x_train, y_train, epochs=50, batch_size=128,
+hist = model.fit(x_train, y_train, epochs=2000, batch_size=128,
                  validation_split=0.2,
                  callbacks=[earlyStopping],
                  verbose=1                 
@@ -90,10 +91,8 @@ loss = model.evaluate(x_test, y_test)
 print('loss : ', loss)
 
 y_predict = model.predict(x_test)
-
-print(y_predict.shape)
-print(y_test.shape)
-
+# print(x_test.shape)
+# print(y_predict.shape)
 
 from sklearn.metrics import r2_score
 r2 = r2_score(y_test, y_predict)
@@ -107,7 +106,8 @@ r2 score :  0.7180569176045343
 loss :  23.97797966003418
 r2 score :  0.7064936637306685
 
-
+loss :  26.71713638305664
+r2 score :  0.6729645902274248
 
 
 '''

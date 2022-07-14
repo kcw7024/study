@@ -5,6 +5,7 @@ import numpy as np
 x = np.array([1,2,3]) #input 레이어에 들어가는 형태 
 y = np.array([1,2,3])
 
+
 #2. 모델구성
 
 from tensorflow.python.keras.models import Sequential

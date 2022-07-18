@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, LSTM, Dropout
+from tensorflow.python.keras.layers import Dense, LSTM, Dropout, GRU
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 import math
@@ -11,40 +11,28 @@ from sklearn.preprocessing import MinMaxScaler
 
 
 
+
 path = './_data/kaggle_jena/'
-df_weather=pd.read_csv(path + 'jena_climate_2009_2016.csv', index_col=0)
-df_weather.describe()
+datasets=pd.read_csv(path + 'jena_climate_2009_2016.csv', index_col=0)
+datasets.describe()
+  
+#datetime을 숫자형식으로 변환해줘야함 
+datasets['Date Time'] = pd.to_datetime(datasets['Date Time'])
 
-#print(df_weather.columns)
+#1-2. 자료형으로 변환한datetime을 년/월/일/시간으로 나누어 컬럼을 생성해준다
+datasets['year'] = datasets['Date Time'].dt.year
+datasets['month'] = datasets['Date Time'].dt.month
+datasets['day'] = datasets['Date Time'].dt.day
+datasets['hour'] = datasets['Date Time'].dt.hour
 
-#날짜 datetime 포맷으로 변환
-# pd.to_datetime(df_weather['Date Time'], format='%Y%m%d')
-# # 0      2020-01-07
-# # 1      2020-01-06
-# # 2      2020-01-03
-# # 3      2020-01-02
-# # 4      2019-12-30
+#1-3. 가공전의datetime과 day, year을 삭제해준다 
+# 숫자형으로 나타나는 컬럼을 제외하고 나머지는 제거한다.
+datasets.drop(['Date Time'], inplace=True, axis=1)
 
-# df_weather['일자'] = pd.to_datetime(df_weather['Date Time'], format='%Y%m%d')
-# df_weather['연도'] =df_weather['Date Time'].dt.year
-# df_weather['월'] =df_weather['Date Time'].dt.month
-# df_weather['일'] =df_weather['Date Time'].dt.day
+print(datasets.describe())
 
 
 
-#Normalization 정규화
-
-scaler = MinMaxScaler()
-scale_cols = ['p (mbar)', 'T (degC)', 'Tpot (K)', 'Tdew (degC)', 'rh (%)',
-       'VPmax (mbar)', 'VPact (mbar)', 'VPdef (mbar)', 'sh (g/kg)',
-       'H2OC (mmol/mol)', 'rho (g/m**3)', 'wv (m/s)', 'max. wv (m/s)',
-       'wd (deg)']
-df_scaled = scaler.fit_transform(df_weather[scale_cols])
-
-df_scaled = pd.DataFrame(df_scaled)
-df_scaled.columns = scale_cols
-
-#print(df_scaled)
 
 
 

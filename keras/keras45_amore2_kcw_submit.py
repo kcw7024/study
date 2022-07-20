@@ -5,7 +5,7 @@ import numpy as np
 import seaborn as sns #데이터 시각화할때 사용. 여기선 사용안했음 
 import datetime as dt
 import pandas as pd #csv 파일 사용시 주로 사용함
-from tensorflow.python.keras.models import Sequential, Model
+from tensorflow.python.keras.models import Sequential, Model, load_model
 from tensorflow.python.keras.layers import Dense, Input, Dropout, Conv2D, Flatten, LSTM, Conv1D
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
@@ -87,45 +87,72 @@ x2_test = x2_test.reshape(204, 20, 7)
 
 # 2. 모델구성
 # 2-1. 모델1
-input1 = Input(shape=(20,7))
-dense1 = Conv1D(64, 2, activation='relu', name='d1')(input1)
-dense2 = LSTM(128, activation='relu', name='d2')(dense1)
-dense3 = Dense(64, activation='relu', name='d3')(dense2)
-output1 = Dense(32, activation='relu', name='out_d1')(dense3)
+# input1 = Input(shape=(20,7))
+# dense1 = Conv1D(64, 2, activation='relu', name='d1')(input1)
+# dense2 = LSTM(128, activation='relu', name='d2')(dense1)
+# dense3 = Dense(64, activation='relu', name='d3')(dense2)
+# output1 = Dense(32, activation='relu', name='out_d1')(dense3)
 
-# 2-2. 모델2
-input2 = Input(shape=(20, 7))
-dense11 = Conv1D(64, 2, activation='relu', name='d11')(input2)
-dense12 = LSTM(128, activation='swish', name='d12')(dense11)
-dense13 = Dense(64, activation='relu', name='d13')(dense12)
-dense14 = Dense(32, activation='relu', name='d14')(dense13)
-output2 = Dense(16, activation='relu', name='out_d2')(dense14)
+# # 2-2. 모델2
+# input2 = Input(shape=(20, 7))
+# dense11 = Conv1D(64, 2, activation='relu', name='d11')(input2)
+# dense12 = LSTM(128, activation='swish', name='d12')(dense11)
+# dense13 = Dense(64, activation='relu', name='d13')(dense12)
+# dense14 = Dense(32, activation='relu', name='d14')(dense13)
+# output2 = Dense(16, activation='relu', name='out_d2')(dense14)
 
-from tensorflow.python.keras.layers import concatenate
-merge1 = concatenate([output1, output2], name='m1')
-merge2 = Dense(100, activation='relu', name='mg2')(merge1)
-merge3 = Dense(100, name='mg3')(merge2)
-last_output = Dense(1, name='last')(merge3)
+# from tensorflow.python.keras.layers import concatenate
+# merge1 = concatenate([output1, output2], name='m1')
+# merge2 = Dense(100, activation='relu', name='mg2')(merge1)
+# merge3 = Dense(100, name='mg3')(merge2)
+# last_output = Dense(1, name='last')(merge3)
 
-model = Model(inputs=[input1, input2], outputs=[last_output])
+# model = Model(inputs=[input1, input2], outputs=[last_output])
 
 
+# model.save("./amore3_model/keras46_save_model.h5")
 
-from tensorflow.python.keras.callbacks import EarlyStopping
-import time
-# 3. 컴파일, 훈련
-model.compile(loss='mse', optimizer='adam')
-start_time = time.time()
-Es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=500, restore_best_weights=True)
-fit_log = model.fit([x1_train, x2_train], y_train, epochs=20, batch_size=64, callbacks=[Es], validation_split=0.1)
-end_time = time.time()
+
+# from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
+# import time
+# # 3. 컴파일, 훈련
+# model.compile(loss='mse', optimizer='adam')
+
+# import datetime
+# date = datetime.datetime.now()
+# date = date.strftime("%m%d_%H%M") # 0707_1723 : 문자열형태로 출력된다!
+# print(date) #2022-07-07 17:21:36.266674 : 현재시간
+
+# filepath = './_ModelCheckPoint/amore3/'
+# filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
+
+# start_time = time.time()
+
+# EarlyStopping = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=800, restore_best_weights=True)
+
+# ModelCheckpoint = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, 
+#                       save_best_only=True, 
+#                       filepath="".join([filepath,'amore_',date,'_',filename]) # ""< 처음에 빈공간을 만들어주고 join으로 문자열을 묶어줌
+#                       )
+
+# fit_log = model.fit([x1_train, x2_train], y_train,
+#                     epochs=500, batch_size=64, 
+#                     callbacks=[EarlyStopping, ModelCheckpoint], 
+#                     validation_split=0.1)
+
+#end_time = time.time() - start_time
+
+model = load_model("./_ModelCheckPoint/amore6/amore_0718_2154_0065-103714392.0000.hdf5")
+model.load_weights("./_ModelCheckPoint/amore6_weights/keras46_save_weights1.h5")
 
 # 4. 평가, 예측
 loss = model.evaluate([x1_test, x2_test], y_test)
 predict = model.predict([x1_test, x2_test])
-#predict = model.predict([, ])
-# Failed to convert a NumPy array to a Tensor (Unsupported object type Timestamp).
-#print(predict.shape) # (204, 1)
 print('loss: ', loss)
-print('prdict: ', predict[:1])
-print('걸린 시간: ', end_time-start_time)
+print('19일 아모레 시가 예측 : ', predict[-1:]) 
+#print('predict: ', predict)
+#print('걸린 시간: ', end_time-start_time)
+
+# 최종 주가예측 값
+# loss:  120710024.0
+# 19일 아모레 시가 예측 :  [[136925.42]]

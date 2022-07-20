@@ -46,7 +46,7 @@ model.summary()
 #fit 다음에 save,
 #load는 compile, 모델 살리고 load
 
-model.load_weights("./_save/keras23_5_save_weights1.h5") #훈련시키기전의 내용이라 결과값이 구림: 앞에서 save 위치를그렇게 지정해줘서~save위치에따라 다름
+#model.load_weights("./_save/keras23_5_save_weights1.h5") #훈련시키기전의 내용이라 결과값이 구림: 앞에서 save 위치를그렇게 지정해줘서~save위치에따라 다름
 model.load_weights("./_save/keras23_5_save_weights2.h5")
 
 

@@ -1,6 +1,8 @@
+#넘파이 불러와서 모델링~
+#넘파이 불러와서 모델링~
 import numpy as np
 from keras.preprocessing.image import ImageDataGenerator #이미지데이터를 수치화
-
+from sklearn.model_selection import train_test_split
 
 #1. 데이터
 
@@ -21,23 +23,28 @@ test_datagen = ImageDataGenerator(
     rescale=1./255
 )
 
-xy_train = train_datagen.flow_from_directory(
-    'd:/study_data/_data/image/brain/train/',
+xy_data = train_datagen.flow_from_directory(
+    'd:/study_data/_data/image/men_women/',
     target_size=(150, 150),
-    batch_size=500, 
+    batch_size=5000, 
     class_mode='binary', #0 또는 1만 나오는 수치라서
-    color_mode='grayscale',
+    #color_mode='grayscale',
     shuffle=False           
 ) #Found 160 images belonging to 2 classes.
 
-xy_test = test_datagen.flow_from_directory(
-    'd:/study_data/_data/image/brain/test/',
-    target_size=(150, 150),
-    batch_size=500, #y값 범위지정
-    class_mode='binary', #0 또는 1만 나오는 수치라서
-    color_mode='grayscale',
-    shuffle=False           
-) #Found 120 images belonging to 2 classes.
+mbin = train_datagen.flow_from_directory(
+     'd:/study_data/_data/image/pic/',
+     target_size=(150,150)
+)
+
+# xy_test = test_datagen.flow_from_directory(
+#     'd:/study_data/_data/image/men_women/test/',
+#     target_size=(150, 150),
+#     batch_size=500, #y값 범위지정
+#     class_mode='binary', #0 또는 1만 나오는 수치라서
+#     color_mode='grayscale',
+#     shuffle=False           
+# ) #Found 120 images belonging to 2 classes.
 
 #print(xy_train) # <keras.preprocessing.image.DirectoryIterator object at 0x000002D4F9755F70>
 
@@ -51,14 +58,24 @@ xy_test = test_datagen.flow_from_directory(
 #print(xy_train[0][1])
 #print(xy_train[31][2]) #error
 
-print(xy_train[0][0].shape, xy_train[0][1].shape)   #(160, 150, 150, 1) (160,)
-print(xy_test[0][0].shape, xy_test[0][1].shape)     #(120, 150, 150, 1) (120,)
+
+x = xy_data[0][0]
+y = xy_data[0][1]
+mbin = mbin[0][0]
+
+#print(x.shape, y.shape)
+
+x_train, x_test, y_train, y_test = train_test_split(
+     x, y, train_size=0.7, shuffle=True
+    )
+
 
 #수치화한 데이터를 저장한다.
-np.save('d:/study_data/_save/_npy/keras46_5_train_x.npy', arr=xy_train[0][0]) # train x값
-np.save('d:/study_data/_save/_npy/keras46_5_train_y.npy', arr=xy_train[0][1]) # train y값
-np.save('d:/study_data/_save/_npy/keras46_5_test_x.npy', arr=xy_test[0][0]) # test x값
-np.save('d:/study_data/_save/_npy/keras46_5_test_y.npy', arr=xy_test[0][1]) # test y값
+np.save('d:/study_data/_save/_npy/keras47_4_train_x.npy', arr=x_train) # train x값
+np.save('d:/study_data/_save/_npy/keras47_4_train_y.npy', arr=y_train) # train y값
+np.save('d:/study_data/_save/_npy/keras47_4_test_x.npy', arr=x_test) # test x값
+np.save('d:/study_data/_save/_npy/keras47_4_test_y.npy', arr=y_test) # test y값
+np.save('d:/study_data/_save/_npy/keras47_4_mbin.npy', arr=mbin) # test y값
 
 
 

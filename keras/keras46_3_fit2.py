@@ -6,14 +6,14 @@ from keras.preprocessing.image import ImageDataGenerator #이미지데이터를 
 
 train_datagen = ImageDataGenerator(
     rescale=1./255,             #스케일링
-    # horizontal_flip=True,       #수평으로 뒤집어준다
-    # vertical_flip=True,         #수직으로 뒤집어준다 
-    # width_shift_range=0.1,      #가로로 움직이는 범위          
-    # height_shift_range=0.1,     #세로로 움직이는 범위
-    # rotation_range=5,           #이미지 회전           
-    # zoom_range=1.2,             #임의 확대/축소 범위
-    # shear_range=0.7,            #임의 전단 변환 (shearing transformation) 범위 #짜부~
-    # fill_mode='nearest'         #이미지를 회전, 이동하거나 축소할 때 생기는 공간을 채우는 방식    
+    horizontal_flip=True,       #수평으로 뒤집어준다
+    vertical_flip=True,         #수직으로 뒤집어준다 
+    width_shift_range=0.1,      #가로로 움직이는 범위          
+    height_shift_range=0.1,     #세로로 움직이는 범위
+    rotation_range=5,           #이미지 회전           
+    zoom_range=1.2,             #임의 확대/축소 범위
+    shear_range=0.7,            #임의 전단 변환 (shearing transformation) 범위 #짜부~
+    fill_mode='nearest'         #이미지를 회전, 이동하거나 축소할 때 생기는 공간을 채우는 방식    
 )
 
 #평가데이터이기때문에 이미지 증폭은 하면 X
@@ -23,8 +23,8 @@ test_datagen = ImageDataGenerator(
 
 xy_train = train_datagen.flow_from_directory(
     'd:/study_data/_data/image/brain/train/',
-    target_size=(150, 150),
-    batch_size=500, 
+    target_size=(200, 200),
+    batch_size=5, 
     class_mode='binary', #0 또는 1만 나오는 수치라서
     color_mode='grayscale',
     shuffle=False           
@@ -32,8 +32,8 @@ xy_train = train_datagen.flow_from_directory(
 
 xy_test = test_datagen.flow_from_directory(
     'd:/study_data/_data/image/brain/test/',
-    target_size=(150, 150),
-    batch_size=500, #y값 범위지정
+    target_size=(200, 200),
+    batch_size=5, #y값 범위지정
     class_mode='binary', #0 또는 1만 나오는 수치라서
     color_mode='grayscale',
     shuffle=False           
@@ -47,23 +47,21 @@ xy_test = test_datagen.flow_from_directory(
  
 #print(xy_train[0])
 #print(xy_train[31][0].shape) #(5, 150, 150, 3) / 컬러
-#print(xy_train[0][0])
-#print(xy_train[0][1])
+#print(xy_train[10][0])
+#print(xy_train[10][1])
 #print(xy_train[31][2]) #error
 
-print(xy_train[0][0].shape, xy_train[0][1].shape)   #(160, 150, 150, 1) (160,)
-print(xy_test[0][0].shape, xy_test[0][1].shape)     #(120, 150, 150, 1) (120,)
+#print(xy_train[10][0].shape, xy_train[10][1].shape)
 
-#수치화한 데이터를 저장한다.
-np.save('d:/study_data/_save/_npy/keras46_5_train_x.npy', arr=xy_train[0][0]) # train x값
-np.save('d:/study_data/_save/_npy/keras46_5_train_y.npy', arr=xy_train[0][1]) # train y값
-np.save('d:/study_data/_save/_npy/keras46_5_test_x.npy', arr=xy_test[0][0]) # test x값
-np.save('d:/study_data/_save/_npy/keras46_5_test_y.npy', arr=xy_test[0][1]) # test y값
+# print(type(xy_train))           # <class 'keras.preprocessing.image.DirectoryIterator'>
+# print(type(xy_train[0]))        # <class 'tuple'>
+# print(type(xy_train[0][0]))     # <class 'numpy.ndarray'>
+# print(type(xy_train[0][1]))     # <class 'numpy.ndarray'>
 
-
+# 현재 5, 200, 200, 1 짜리 데이터가 32 덩어리
 
 #2. 모델
-'''
+
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense, Conv2D, Flatten
 
@@ -82,10 +80,23 @@ model.add(Dense(1, activation='sigmoid')) #흑백이라 이진분류 ~
 #3. 컴파일, 훈련
 model.compile(loss = 'binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 #model.fit(xy_train[0][0], xy_train[0][1]) #배치를 최대로 잡으면 이방법도 가능
-hist = model.fit_generator(xy_train, epochs=200, 
+# hist = model.fit_generator(xy_train, epochs=200, 
+#                     steps_per_epoch=33, #전체데이터/batch=160/5=32
+#                     validation_data=xy_test,
+#                     validation_steps=4, #생성기에서 만들어 낼 단계(샘플 배치)의 총 개수. 보통은 검증 데이터셋의 샘플 수를 배치 크기로 나눈 값을 갖습니다.
+#                     )
+########################fit_generator 대신 fit 써도 됨!
+# hist = model.fit(xy_train, epochs=200, 
+#                     steps_per_epoch=33, #전체데이터/batch=160/5=32
+#                     validation_data=xy_test,
+#                     validation_steps=4, #생성기에서 만들어 낼 단계(샘플 배치)의 총 개수. 보통은 검증 데이터셋의 샘플 수를 배치 크기로 나눈 값을 갖습니다.
+#                     )
+#######################fit이 먹힌다는 얘기는 validation_split 먹힌다~~~
+hist = model.fit(xy_train, epochs=200, 
                     steps_per_epoch=33, #전체데이터/batch=160/5=32
-                    validation_data=xy_test,
-                    validation_steps=4, #생성기에서 만들어 낼 단계(샘플 배치)의 총 개수. 보통은 검증 데이터셋의 샘플 수를 배치 크기로 나눈 값을 갖습니다.
+                    #validation_data=xy_test,
+                    #validation_steps=4, #생성기에서 만들어 낼 단계(샘플 배치)의 총 개수. 보통은 검증 데이터셋의 샘플 수를 배치 크기로 나눈 값을 갖습니다.
+                    validation_split=0.2
                     )
 
 accuracy = hist.history['accuracy']
@@ -121,4 +132,3 @@ plt.xlabel('epochs') #횟수당
 #plt.legend(loc='upper right') #label 값 명칭의 위치
 plt.legend()
 plt.show()
-'''

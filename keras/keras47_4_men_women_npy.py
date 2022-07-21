@@ -19,7 +19,7 @@ x_train = np.load('d:/study_data/_save/_npy/keras47_4_train_x.npy')
 y_train = np.load('d:/study_data/_save/_npy/keras47_4_train_y.npy')
 x_test = np.load('d:/study_data/_save/_npy/keras47_4_test_x.npy')
 y_test = np.load('d:/study_data/_save/_npy/keras47_4_test_y.npy')
-mbin = np.load('d:/study_data/_save/_npy/keras47_4_mbin.npy')
+test = np.load('d:/study_data/_save/_npy/keras47_4_test.npy')
 
 print(x_train)
 print(x_train.shape) #(500, 150, 150, 1)
@@ -70,8 +70,10 @@ print('val_loss : ', val_loss[-1])
 
 #4. 평가, 훈련
 
-y_predict = model.predict(mbin)
-print(y_predict)
+y_predict = model.predict(test)
+print('확률 : ', y_predict)
+
+# 확률 :  [[0.9999746]]
 
 # loss :  0.6947375535964966
 # val_accuracy :  1.0

@@ -30,7 +30,7 @@ xy_data = xy_datagen.flow_from_directory(
     class_mode='categorical', 
     #color_mode='grayscale',
     shuffle=False           
-) #Found 160 images belonging to 2 classes.
+) #Found 2520 images belonging to 3 classes.
 
 
 print(xy_data) # <keras.preprocessing.image.DirectoryIterator object at 0x000002D4F9755F70>

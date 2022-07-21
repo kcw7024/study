@@ -32,7 +32,7 @@ xy_data = train_datagen.flow_from_directory(
     shuffle=False           
 ) #Found 160 images belonging to 2 classes.
 
-mbin = train_datagen.flow_from_directory(
+test = train_datagen.flow_from_directory(
      'd:/study_data/_data/image/pic/',
      target_size=(150,150)
 )
@@ -61,7 +61,7 @@ mbin = train_datagen.flow_from_directory(
 
 x = xy_data[0][0]
 y = xy_data[0][1]
-mbin = mbin[0][0]
+test = test[0][0]
 
 #print(x.shape, y.shape)
 
@@ -75,7 +75,7 @@ np.save('d:/study_data/_save/_npy/keras47_4_train_x.npy', arr=x_train) # train x
 np.save('d:/study_data/_save/_npy/keras47_4_train_y.npy', arr=y_train) # train y값
 np.save('d:/study_data/_save/_npy/keras47_4_test_x.npy', arr=x_test) # test x값
 np.save('d:/study_data/_save/_npy/keras47_4_test_y.npy', arr=y_test) # test y값
-np.save('d:/study_data/_save/_npy/keras47_4_mbin.npy', arr=mbin) # test y값
+np.save('d:/study_data/_save/_npy/keras47_4_test.npy', arr=test) # test y값
 
 
 

@@ -62,10 +62,10 @@ print('val_accuracy : ', val_accuracy[-1])
 print('accuracy : ', accuracy[-1])
 print('val_loss : ', val_loss[-1])
 
-# loss :  0.6947375535964966
-# val_accuracy :  1.0
-# accuracy :  0.3030303120613098
-# val_loss :  0.6914277672767639
+# loss :  1.1152097911804049e-08
+# val_accuracy :  0.9971671104431152
+# accuracy :  1.0
+# val_loss :  0.007653249893337488
 
 # import matplotlib
 # import matplotlib.pyplot as plt #그려보자~

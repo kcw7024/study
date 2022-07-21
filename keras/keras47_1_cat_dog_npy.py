@@ -62,20 +62,20 @@ print('val_loss : ', val_loss[-1])
 # accuracy :  0.3030303120613098
 # val_loss :  0.6914277672767639
 
-import matplotlib
-import matplotlib.pyplot as plt #그려보자~
-matplotlib.rcParams['font.family'] ='Malgun Gothic'
-matplotlib.rcParams['axes.unicode_minus'] =False
+# import matplotlib
+# import matplotlib.pyplot as plt #그려보자~
+# matplotlib.rcParams['font.family'] ='Malgun Gothic'
+# matplotlib.rcParams['axes.unicode_minus'] =False
 
-plt.figure(figsize=(9,6))
-plt.plot(hist.history['loss'], marker='_', c='red', label='loss')
-plt.plot(hist.history['val_accuracy'], marker='_', c='blue', label='val_accuracy')
-plt.plot(hist.history['accuracy'], marker='_', c='green', label='accuracy')
-plt.plot(hist.history['val_loss'], marker='_', c='black', label='val_loss')
-plt.grid()
-plt.title('고영희 갱얼쥐')
-plt.ylabel('loss')
-plt.xlabel('epochs') #횟수당
-#plt.legend(loc='upper right') #label 값 명칭의 위치
-plt.legend()
-plt.show()
+# plt.figure(figsize=(9,6))
+# plt.plot(hist.history['loss'], marker='_', c='red', label='loss')
+# plt.plot(hist.history['val_accuracy'], marker='_', c='blue', label='val_accuracy')
+# plt.plot(hist.history['accuracy'], marker='_', c='green', label='accuracy')
+# plt.plot(hist.history['val_loss'], marker='_', c='black', label='val_loss')
+# plt.grid()
+# plt.title('고영희 갱얼쥐')
+# plt.ylabel('loss')
+# plt.xlabel('epochs') #횟수당
+# #plt.legend(loc='upper right') #label 값 명칭의 위치
+# plt.legend()
+# plt.show()

@@ -16,7 +16,10 @@ train_datagen = ImageDataGenerator(
     shear_range=0.7,
     fill_mode='nearest'
 )
+test_datagen = ImageDataGenerator(
+    rescale=1./255,
 
+)
 augument_size = 10 #증폭
 randidx = np.random.randint(x_train.shape[0], size=augument_size) #(60000)
 # x_train.shape[0] 범위내에서 augment_size 만큼 정수값을 뽑아준다
@@ -53,7 +56,7 @@ y_train = np.concatenate((y_train, y_augmented))
 
 print(x_train.shape, y_train.shape) # (100000, 28, 28, 1) (100000,) 
 
-x_data = train_datagen.flow(
+x_data = test_datagen.flow(
     x_train.reshape(-1, 28, 28, 1), # x
     np.zeros(20), # y 
     batch_size=20,

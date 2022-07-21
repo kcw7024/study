@@ -71,7 +71,7 @@ print('val_loss : ', val_loss[-1])
 #4. 평가, 훈련
 
 y_predict = model.predict(test)
-print('확률 : ', y_predict)
+print('여성일 확률 : ', y_predict)
 
 # 확률 :  [[0.9999746]]
 

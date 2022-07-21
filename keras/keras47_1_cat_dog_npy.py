@@ -44,7 +44,7 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(loss ='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 #배치를 최대로 잡으면 이방법도 가능
-hist = model.fit(x_train, y_train, epochs=100, batch_size=15, validation_split=0.2) 
+hist = model.fit(x_train, y_train, epochs=10, batch_size=15, validation_split=0.2) 
 
 accuracy = hist.history['accuracy']
 val_accuracy = hist.history['val_accuracy']
@@ -57,10 +57,10 @@ print('val_accuracy : ', val_accuracy[-1])
 print('accuracy : ', accuracy[-1])
 print('val_loss : ', val_loss[-1])
 
-# loss :  0.6947375535964966
-# val_accuracy :  1.0
-# accuracy :  0.3030303120613098
-# val_loss :  0.6914277672767639
+# loss :  0.006034356076270342
+# val_accuracy :  0.502186119556427
+# accuracy :  0.9987508058547974
+# val_loss :  4.035338878631592
 
 # import matplotlib
 # import matplotlib.pyplot as plt #그려보자~

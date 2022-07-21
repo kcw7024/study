@@ -29,17 +29,29 @@ x_data = train_datagen.flow(
     np.zeros(augument_size), # y 
     batch_size=augument_size,
     shuffle=True
-).next()
+)#.next()
+
+#.next() 사용시 앞의 shape를 건너뛴다.
+
+# print(x_data) #<keras.preprocessing.image.NumpyArrayIterator object at 0x00000246025CA790>
+# print(x_data[0]) # 
+# print(x_data[0][0].shape)  #next()를사용후 (28, 28, 1)
+# print(x_data[0][1].shape)  #next()를사용후 (28, 28, 1)
+
+#.next() 사용하지 않을때
 
 print(x_data) #<keras.preprocessing.image.NumpyArrayIterator object at 0x00000246025CA790>
-print(x_data[0])
-print(x_data[0][0].shape) #x값 (100, 28, 28, 1)   #next()를사용후 (28, 28, 1)
-print(x_data[0][1].shape) #y값 (100,)             #next()를사용후 (28, 28, 1)
+print(x_data[0]) # 첫번째 배치, x와 y가 모두 포함
+print(x_data[0][0].shape) #x값 (100, 28, 28, 1)   
+print(x_data[0][1].shape) #y값 (100,) 
+            
 
 import matplotlib.pyplot as plt
 plt.figure(figsize=(7,7))
 for i in range(49):
     plt.subplot(7, 7, i+1)
     plt.axis('off')
-    plt.imshow(x_data[0][i],cmap='gray')
+#   plt.imshow(x_data[0][i],cmap='gray') #next 사용할때, 첫번째 shape을 건너뛴다.
+    plt.imshow(x_data[0][0][i],cmap='gray') # next 사용하지 않을때.
 plt.show()
+

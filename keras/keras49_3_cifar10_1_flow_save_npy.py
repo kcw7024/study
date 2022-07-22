@@ -39,6 +39,13 @@ x_augmented  = train_datagen.flow(x_augmented, y_augmented, batch_size=augument_
 x_train = np.concatenate((x_train, x_augmented))
 y_train = np.concatenate((y_train, y_augmented))
 
+# from sklearn.preprocessing import MinMaxScaler
+
+# scaler = MinMaxScaler()
+# x_train = scaler.fit_transform(x_train)
+# x_test = scaler.transform(x_test) 
+
+
 # xy_train  = test_datagen.flow(x_train, y_train, batch_size=batch_size, shuffle=False)
 # xy_test = test_datagen.flow(x_test, y_test, batch_size=batch_size, shuffle=False)
 

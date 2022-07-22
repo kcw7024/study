@@ -39,7 +39,7 @@ model.add(Dense(100, activation='relu'))
 model.add(Dense(100, activation='relu'))
 model.add(Dense(100, activation='relu'))
 model.add(Dense(100, activation='relu'))
-model.add(Dense(1, activation='sigmoid')) #흑백이라 이진분류 ~
+model.add(Dense(1, activation='sigmoid')) 
 
 #3. 컴파일, 훈련
 

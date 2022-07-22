@@ -16,7 +16,7 @@ train_datagen = ImageDataGenerator(
     fill_mode='nearest'
 )
 
-augument_size = 100 #증폭
+augument_size = 100 #증폭시킬 값
 
 print(x_train[0].shape) # (28, 28)
 print(x_train[0].reshape(28*28).shape) #(784,)

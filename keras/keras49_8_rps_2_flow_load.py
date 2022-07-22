@@ -38,7 +38,7 @@ model.add(Dense(100, activation='relu'))
 model.add(Dense(100, activation='relu'))
 model.add(Dense(100, activation='relu'))
 model.add(Dense(100, activation='relu'))
-model.add(Dense(3, activation='softmax')) #흑백이라 이진분류 ~
+model.add(Dense(3, activation='softmax')) 
 
 #3. 컴파일, 훈련
 
@@ -46,7 +46,7 @@ model.compile(loss ='sparse_categorical_crossentropy', optimizer='adam', metrics
 
 #배치를 최대로 잡으면 이방법도 가능
 
-hist = model.fit(x_train, y_train, epochs=2, batch_size=1, validation_split=0.2) 
+hist = model.fit(x_train, y_train, epochs=30, batch_size=1, validation_split=0.2) 
 
 accuracy = hist.history['accuracy']
 val_accuracy = hist.history['val_accuracy']

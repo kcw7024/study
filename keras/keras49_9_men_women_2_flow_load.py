@@ -47,7 +47,7 @@ model.compile(loss ='binary_crossentropy', optimizer='adam', metrics=['accuracy'
 
 #배치를 최대로 잡으면 이방법도 가능
 
-hist = model.fit(x_train, y_train, epochs=5, batch_size=1, validation_split=0.2) 
+hist = model.fit(x_train, y_train, epochs=2, batch_size=1, validation_split=0.2) 
 
 accuracy = hist.history['accuracy']
 val_accuracy = hist.history['val_accuracy']

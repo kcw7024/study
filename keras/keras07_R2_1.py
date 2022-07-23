@@ -15,6 +15,9 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.7, shuffle=True, random_state=66
 )
 
+print(x_train.shape, y_train.shape) #(14,) (14,)
+print(x_test.shape, y_test.shape) #(6,) (6,)
+
 # 2. 모델구성
  
 model = Sequential()
@@ -26,7 +29,7 @@ model.add(Dense(1))
 
 # 3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam') #회귀모델 형식
-model.fit(x_train, y_train, epochs=1000, batch_size=1)
+model.fit(x_train, y_train, epochs=1, batch_size=1)
 
 # 4. 평가, 예측 
 loss = model.evaluate(x_test, y_test)

@@ -67,6 +67,3 @@ print('acc : ', acc)
 
 
 
-
-
-asdasds

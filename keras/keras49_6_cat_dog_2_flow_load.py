@@ -13,10 +13,11 @@ from keras.preprocessing.image import ImageDataGenerator #이미지데이터를 
 # np.save('d:/study_data/_save/_npy/keras46_5_test_x.npy', arr=xy_test[0][0]) # test x값
 # np.save('d:/study_data/_save/_npy/keras46_5_test_y.npy', arr=xy_test[0][1]) # test y값
 
-x_train = np.load('d:/study_data/_save/_npy/keras49_5_train_x.npy')
-y_train = np.load('d:/study_data/_save/_npy/keras49_5_train_y.npy')
-x_test = np.load('d:/study_data/_save/_npy/keras49_5_test_x.npy')
-y_test = np.load('d:/study_data/_save/_npy/keras49_5_test_y.npy')
+x_train = np.load('d:/study_data/_save/_npy/keras49_6_train_x.npy')
+y_train = np.load('d:/study_data/_save/_npy/keras49_6_train_y.npy')
+x_test = np.load('d:/study_data/_save/_npy/keras49_6_test_x.npy')
+y_test = np.load('d:/study_data/_save/_npy/keras49_6_test_y.npy')
+test = np.load('d:/study_data/_save/_npy/keras49_6_test.npy')
 
 #print(x_train)
 print(x_train.shape) #(40000, 28, 28, 1)

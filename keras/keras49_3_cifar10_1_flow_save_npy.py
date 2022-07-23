@@ -1,4 +1,3 @@
-from grpc import AuthMetadataContext
 from tensorflow.keras.datasets import cifar10
 from keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.utils import to_categorical

@@ -29,7 +29,7 @@ print(x)
 # 길이가 맞지 않기때문에 가장 큰 요소에 맞춰 적은 곳에 0을 채워넣어준다
 # 너무 클때는 잘라서 버린다.(ex 30000개~ 너무 긺)
 
-from keras.preprocessing.sequence import pad_sequences
+from keras_preprocessing.sequence import pad_sequences
 
 pad_x = pad_sequences(x, padding='pre', maxlen=5, truncating='post') #maxlen = 최대글자수 지정   truncating= 
 print(pad_x)

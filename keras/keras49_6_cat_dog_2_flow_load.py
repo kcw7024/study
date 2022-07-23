@@ -13,16 +13,18 @@ from keras.preprocessing.image import ImageDataGenerator #이미지데이터를 
 # np.save('d:/study_data/_save/_npy/keras46_5_test_x.npy', arr=xy_test[0][0]) # test x값
 # np.save('d:/study_data/_save/_npy/keras46_5_test_y.npy', arr=xy_test[0][1]) # test y값
 
-x_train = np.load('d:/study_data/_save/_npy/keras49_5_train_x.npy')
-y_train = np.load('d:/study_data/_save/_npy/keras49_5_train_y.npy')
-x_test = np.load('d:/study_data/_save/_npy/keras49_5_test_x.npy')
-y_test = np.load('d:/study_data/_save/_npy/keras49_5_test_y.npy')
+x_train = np.load('d:/study_data/_save/_npy/keras49_6_train_x.npy')
+y_train = np.load('d:/study_data/_save/_npy/keras49_6_train_y.npy')
+x_test = np.load('d:/study_data/_save/_npy/keras49_6_test_x.npy')
+y_test = np.load('d:/study_data/_save/_npy/keras49_6_test_y.npy')
+test = np.load('d:/study_data/_save/_npy/keras49_6_test.npy')
+
 
 #print(x_train)
-print(x_train.shape) #(40000, 28, 28, 1)
-print(y_train.shape) #(40000,)
-print(x_test.shape)  #(40000, 28, 28, 1)
-print(y_test.shape)  #(40000,)
+print(x_train.shape) #(100000, 32, 32, 3)
+print(y_train.shape) #(100000, 1)
+print(x_test.shape)  #(100000, 32, 32, 3)
+print(y_test.shape)  #(10000, 1)
 
 #2. 모델
 
@@ -31,7 +33,7 @@ from tensorflow.python.keras.layers import Dense, Conv2D, Flatten
 
 
 model = Sequential()
-model.add(Conv2D(32, (2,2), input_shape=(28, 28, 1), activation='relu'))
+model.add(Conv2D(32, (2,2), input_shape=(32, 32, 3), activation='relu'))
 model.add(Conv2D(32, (3,3), activation='relu'))
 model.add(Flatten())
 model.add(Dense(100, activation='relu'))
@@ -61,10 +63,23 @@ print('val_accuracy : ', val_accuracy[-1])
 print('accuracy : ', accuracy[-1])
 print('val_loss : ', val_loss[-1])
 
+
+
+y_predict = model.predict(test)
+print('강아지일 확률 : ', y_predict)
+
+
+
+
+
+
+
 # loss :  0.6947375535964966
 # val_accuracy :  1.0
 # accuracy :  0.3030303120613098
 # val_loss :  0.6914277672767639
+
+
 
 
 # loss :  0.28313571214675903

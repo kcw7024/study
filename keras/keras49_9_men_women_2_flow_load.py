@@ -19,10 +19,10 @@ y_test = np.load('d:/study_data/_save/_npy/keras49_9_test_y.npy')
 test = np.load('d:/study_data/_save/_npy/keras49_9_test.npy')
 
 print(x_train)
-print(x_train.shape) #(350, 150, 150, 1)
-print(y_train.shape) #(150, 150, 150, 1)
-print(x_test.shape)  #(350,)
-print(y_test.shape)  #(150,)
+print(x_train.shape) #(3316, 150, 150, 3)
+print(y_train.shape) #(3316,)
+print(x_test.shape)  #(993, 150, 150, 3)
+print(y_test.shape)  #(993,)
 
 #2. 모델
 

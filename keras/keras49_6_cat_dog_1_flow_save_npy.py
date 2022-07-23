@@ -36,9 +36,17 @@ xy_test = test_datagen.flow_from_directory(
     shuffle=False
 )          
 
+test = train_datagen.flow_from_directory(
+     'd:/study_data/_data/image/dog_pic/',
+     target_size=(150,150)
+)
+
 print(x_train.shape) #(50000, 32, 32, 3) 
 
-augument_size = 50000 #증폭
+
+test = test[0][0]
+
+augument_size = 1000 #증폭
 batch_size = 64
 
 randidx = np.random.randint(x_train.shape[0], size=augument_size) #(60000)
@@ -59,10 +67,11 @@ y_train = np.concatenate((y_train, y_augmented))
 # xy_train  = test_datagen.flow(x_train, y_train, batch_size=batch_size, shuffle=False)
 # xy_test = test_datagen.flow(x_test, y_test, batch_size=batch_size, shuffle=False)
 
-np.save('d:/study_data/_save/_npy/keras49_4_train_x.npy', arr=x_train) # train x값
-np.save('d:/study_data/_save/_npy/keras49_4_train_y.npy', arr=y_train) # train y값
-np.save('d:/study_data/_save/_npy/keras49_4_test_x.npy', arr=x_test) # test x값
-np.save('d:/study_data/_save/_npy/keras49_4_test_y.npy', arr=y_test) # test y값
+np.save('d:/study_data/_save/_npy/keras49_6_train_x.npy', arr=x_train) # train x값
+np.save('d:/study_data/_save/_npy/keras49_6_train_y.npy', arr=y_train) # train y값
+np.save('d:/study_data/_save/_npy/keras49_6_test_x.npy', arr=x_test) # test x값
+np.save('d:/study_data/_save/_npy/keras49_6_test_y.npy', arr=y_test) # test y값
+np.save('d:/study_data/_save/_npy/keras49_6_test.npy', arr=test) 
 
 
 

@@ -36,20 +36,24 @@ xy_test = test_datagen.flow_from_directory(
     shuffle=False
 )          
 
-test = train_datagen.flow_from_directory(
+test = test_datagen.flow_from_directory(
      'd:/study_data/_data/image/dog_pic/',
-     target_size=(150,150)
+     target_size=(32, 32)
 )
 
 print(x_train.shape) #(50000, 32, 32, 3) 
 
 
 test = test[0][0]
+print(test.shape) #(1, 32, 32, 3)
+
+
 
 augument_size = 1000 #증폭
 batch_size = 64
 
 randidx = np.random.randint(x_train.shape[0], size=augument_size) #(60000)
+print(randidx)
 
 x_augmented = x_train[randidx].copy()
 y_augmented = y_train[randidx].copy()
@@ -59,7 +63,7 @@ y_augmented = y_train[randidx].copy()
 #x_augmented = x_augmented.reshape(x_augmented.shape[0], x_augmented.shape[1], x_augmented.shape[2], 1)
 
 x_augmented  = train_datagen.flow(x_augmented, y_augmented, batch_size=augument_size, shuffle=False).next()[0]
-y_augmented  = train_datagen.flow(x_augmented, y_augmented, batch_size=augument_size, shuffle=False).next()[1]
+#y_augmented  = train_datagen.flow(x_augmented, y_augmented, batch_size=augument_size, shuffle=False).next()[1]
 
 x_train = np.concatenate((x_train, x_augmented))
 y_train = np.concatenate((y_train, y_augmented))

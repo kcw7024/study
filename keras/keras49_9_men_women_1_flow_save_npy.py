@@ -66,7 +66,7 @@ y_augmented = y_train[randidx].copy()
 #x_augmented = x_augmented.reshape(x_augmented.shape[0], x_augmented.shape[1], x_augmented.shape[2], 1)
 
 x_augmented  = train_datagen.flow(x_augmented, y_augmented, batch_size=augument_size, shuffle=False).next()[0]
-y_augmented  = train_datagen.flow(x_augmented, y_augmented, batch_size=augument_size, shuffle=False).next()[1]
+#y_augmented  = train_datagen.flow(x_augmented, y_augmented, batch_size=augument_size, shuffle=False).next()[1]
 
 x_train = np.concatenate((x_train, x_augmented))
 y_train = np.concatenate((y_train, y_augmented))

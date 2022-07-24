@@ -47,8 +47,8 @@ model.add(Dense(1, activation='softmax'))
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 #model.fit(xy_train[0][0], xy_train[0][1]) #배치를 최대로 잡으면 이방법도 가능
 hist = model.fit(x_train, y_train, 
-                 epochs=10, 
-                 steps_per_epoch=33, #전체데이터/batch=160/5=32
+                 epochs=1, 
+                 #steps_per_epoch=33, #전체데이터/batch=160/5=32
                  validation_split=0.2
                  )
 
@@ -65,8 +65,8 @@ print('val_loss : ', val_loss[-1])
 
 
 
-y_predict = model.predict(test)
-print('강아지일 확률 : ', y_predict)
+# y_predict = model.predict(test)
+# print('강아지일 확률 : ', y_predict)
 
 
 

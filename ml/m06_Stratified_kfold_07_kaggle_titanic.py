@@ -140,7 +140,7 @@ print('ACC : ', scores, '\n cross_val_score : ', round(np.mean(scores), 4))
 
 y_predict = cross_val_predict(model, x_test, y_test, cv = kfold)
 print(y_predict)
-#
+
 acc = accuracy_score(y_test, y_predict)
 print('cross_val_predict ACC : ', acc)
 # cross_val_predict ACC :  0.8324022346368715

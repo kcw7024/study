@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from sklearn.datasets import load_iris
 from sqlalchemy import false
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, KFold, cross_val_score, cross_val_predict, StratifiedKFold
 from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.metrics import r2_score, accuracy_score
 import matplotlib.pyplot as plt
@@ -34,6 +34,10 @@ x_train, x_test, y_train, y_test = train_test_split(x,y,
                                                     random_state=66
                                                     )
 
+n_splits = 5
+kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=100)
+
+
 # scaler = MinMaxScaler()
 # scaler = StandardScaler()
 # scaler = MaxAbsScaler()
@@ -57,51 +61,21 @@ from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor 
 
 
-model = LinearSVC()
+model = RandomForestClassifier()
 
 #3. 컴파일 훈련
+#model.fit(x_train, y_train)
+scores = cross_val_score(model, x_train, y_train, cv=kfold)
+#scores = cross_val_score(model, x, y, cv=5)
 
-model.fit(x_train, y_train)
+print('ACC : ', scores, '\n cross_val_score : ', round(np.mean(scores), 4))
 
-#4. 평가, 예측
-# loss, acc= model.evaluate(x_test, y_test)
-# print('loss : ', loss)
-# print('accuracy : ', acc)
+#ACC :  [0.94852598 0.94607952 0.9465098  0.94697631 0.94685337] 
+#cross_val_score :  0.947 
 
-results= model.score(x_test, y_test)
-print('accuracy : ', results)
+y_predict = cross_val_predict(model, x_test, y_test, cv = kfold)
+print(y_predict)
 
-
-y_predict = model.predict(x_test)
-y_predict = np.argmax(y_predict, axis= 1)  # 판다스 겟더미 쓸때는 tf.argmax sklearn 원핫인코딩 쓸때는 np
-y_test = np.argmax(y_test, axis= 1)
-# y_predict = to_categorical(y_predict)
-# y_test = np.argmax(y_test, axis= 1)
-
-
-acc= accuracy_score(y_test, y_predict)
-print('acc스코어 : ', acc) 
-
-'''
-1. LinearSVC 
-accuracy :  0.7124219753993024
-
-2. SVC
-accuracy :  0.9814814814814815
-
-3. Perceptron
-accuracy :  0.9814814814814815
-
-4. LogisticRegression
-accuracy :  0.9814814814814815
-
-5. KNeighborsClassifier
-accuracy :  0.9444444444444444
-
-6. DecisionTreeClassifier
-accuracy :  0.9629629629629629
-
-7. RandomForestClassifier
-accuracy :  1.0
-
-'''
+acc = accuracy_score(y_test, y_predict)
+print('cross_val_predict ACC : ', acc)
+#cross_val_predict ACC :  0.92211882687718

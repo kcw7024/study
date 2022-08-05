@@ -19,6 +19,8 @@ from sklearn.datasets import fetch_covtype
 import tensorflow as tf
 from sklearn.svm import LinearSVC, LinearSVR
 
+from sklearn.experimental import enable_halving_search_cv #아직 정식버전이 아니라서 해줘야함.
+from sklearn.model_selection import HalvingRandomSearchCV
 
 #1. 데이터
 
@@ -70,7 +72,7 @@ from sklearn.tree import DecisionTreeClassifier #결정트리방식의 분류모
 from sklearn.ensemble import RandomForestClassifier #DecisionTree가 앙상블로 되어있는 분류모델 
 
 #model = SVC(C=1, kernel='linear', degree=3)
-model = RandomizedSearchCV(RandomForestClassifier(), parameters, cv=kfold, verbose=1,
+model = HalvingRandomSearchCV(RandomForestClassifier(), parameters, cv=kfold, verbose=1,
                      refit=True, n_jobs=-1) # 42 * 5(kfold) = 210
 #n_jobs = CPU갯수 정의 (-1:제일마지막숫자라서 전부다 쓴다는 뜻.)
 #refit = True면 가장 최적의 하이퍼 파라미터를 찾은 뒤 입력된 estimator 객체를 해당 하이퍼 파라미터로 재학습
@@ -97,13 +99,45 @@ print("최적 튠 ACC : ", accuracy_score(y_test, y_pred_best))
 print("걸린시간 : ", round(end-start, 2))
 
 '''
-최적의 매개변수 :  RandomForestClassifier(min_samples_split=11, n_jobs=2)
-최적의 파라미터 :  {'n_jobs': 2, 'min_samples_split': 11}
-best_score_ :  0.9365416960197267
-model.score :  0.9433518450523224
-accuracy_score : 0.9433518450523224
-최적 튠 ACC :  0.9433518450523224
-걸린시간 :  871.24
+n_iterations: 5
+n_required_iterations: 5
+n_possible_iterations: 8
+min_resources_: 70
+max_resources_: 406708
+aggressive_elimination: False
+factor: 3
+----------
+iter: 0
+n_candidates: 144
+n_resources: 70
+Fitting 5 folds for each of 144 candidates, totalling 720 fits
+----------
+iter: 1
+n_candidates: 48
+n_resources: 210
+Fitting 5 folds for each of 48 candidates, totalling 240 fits
+----------
+iter: 2
+n_candidates: 16
+n_resources: 630
+Fitting 5 folds for each of 16 candidates, totalling 80 fits
+----------
+iter: 3
+n_candidates: 6
+n_resources: 1890
+Fitting 5 folds for each of 6 candidates, totalling 30 fits
+----------
+iter: 4
+n_candidates: 2
+n_resources: 5670
+Fitting 5 folds for each of 2 candidates, totalling 10 fits
+최적의 매개변수 :  RandomForestClassifier(min_samples_split=11, n_jobs=4)
+최적의 파라미터 :  {'n_jobs': 4, 'min_samples_split': 11}
+best_score_ :  0.7436482252016232
+model.score :  0.9426461813842482
+accuracy_score : 0.9426461813842482
+최적 튠 ACC :  0.9426461813842482
+걸린시간 :  69.98
 
 
 '''

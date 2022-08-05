@@ -19,6 +19,8 @@ from sklearn.datasets import fetch_covtype
 import tensorflow as tf
 from sklearn.svm import LinearSVC, LinearSVR
 
+from sklearn.experimental import enable_halving_search_cv #아직 정식버전이 아니라서 해줘야함.
+from sklearn.model_selection import HalvingGridSearchCV
 
 #1. 데이터
 
@@ -70,7 +72,7 @@ from sklearn.tree import DecisionTreeClassifier #결정트리방식의 분류모
 from sklearn.ensemble import RandomForestClassifier #DecisionTree가 앙상블로 되어있는 분류모델 
 
 #model = SVC(C=1, kernel='linear', degree=3)
-model = RandomizedSearchCV(RandomForestClassifier(), parameters, cv=kfold, verbose=1,
+model = HalvingGridSearchCV(RandomForestClassifier(), parameters, cv=kfold, verbose=1,
                      refit=True, n_jobs=-1) # 42 * 5(kfold) = 210
 #n_jobs = CPU갯수 정의 (-1:제일마지막숫자라서 전부다 쓴다는 뜻.)
 #refit = True면 가장 최적의 하이퍼 파라미터를 찾은 뒤 입력된 estimator 객체를 해당 하이퍼 파라미터로 재학습

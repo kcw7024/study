@@ -68,6 +68,8 @@ for (name, algorithm) in allAlgorithms :
         print(name, '은 실행되지 않는다.')
     
     
+#cross_val_score (train 안에 validation값이 포함되어있다)    
+    
     
 '''
 

@@ -1,15 +1,11 @@
 import numpy as np
 import pandas as pd
 from collections import Counter
-from sklearn.preprocessing import MinMaxScaler
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense, Dropout
-from sklearn.model_selection import train_test_split, KFold, cross_val_predict, cross_val_score, GridSearchCV, RandomizedSearchCV
+from sklearn.model_selection import train_test_split, KFold, cross_val_predict, cross_val_score, GridSearchCV
 from sklearn.metrics import r2_score
 from tensorflow.python.keras.callbacks import EarlyStopping
-
-from sklearn.experimental import enable_halving_search_cv #아직 정식버전이 아니라서 해줘야함.
-from sklearn.model_selection import HalvingGridSearchCV
 
 encording_columns = ['MSZoning','Street','Alley','LotShape','LandContour','Utilities','LotConfig',
                     'LandSlope','Neighborhood','Condition1','Condition2','BldgType','HouseStyle',
@@ -194,60 +190,115 @@ test_set.drop(['MSZoning', 'Neighborhood' , 'Condition2', 'MasVnrType', 'ExterQu
 x = train_set.drop(['SalePrice'], axis=1)
 y = train_set['SalePrice']
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, random_state=99)
 
-n_splits = 5
-kfold = KFold(n_splits = n_splits, shuffle=True, random_state=66)
+x = np.array(x)
 
-parameters = [
-    {'n_estimators' : [100, 200], 'max_depth': [40,30,20,50], 'min_samples_leaf':[15, 30, 50, 100]}, #epochs
-    {'max_depth' : [6, 8, 10, 12], 'min_samples_split':[2, 4, 5, 20], 'n_jobs' : [-1, 3]},
-    {'min_samples_leaf' : [3, 5, 7, 10], 'n_estimators':[150, 300, 200], 'max_depth':[7, 8, 9, 10]},
-    {'min_samples_split' : [2, 3, 5, 10]},
-    {'n_jobs' : [-1, 2, 4]}    
-]
+allfeature = round(x.shape[1]*0.2, 0)
+print('자를 갯수: ', int(allfeature))
 
+
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.7, random_state=1234)
+
+import matplotlib.pyplot as plt
+
+# def plot_feature_importances(model):
+#     n_features = datasets.data.shape[1] #features
+#     plt.barh(np.arange(n_features), model.feature_importances_, align='center')
+#     plt.yticks(np.arange(n_features), datasets.feature_names)
+#     plt.xlabel('Feature Impotances')
+#     plt.ylabel('Features')
+#     plt.ylim(-1, n_features)
+#     plt.title(model)
+    
 
 #2. 모델구성
-from sklearn.svm import LinearSVC, SVC
-from sklearn.linear_model import Perceptron 
-from sklearn.linear_model import LogisticRegression, LinearRegression 
-from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
-from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor 
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor 
-from sklearn.pipeline import make_pipeline
+from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, RandomForestClassifier, GradientBoostingClassifier
+from xgboost import XGBRegressor, XGBClassifier
 
 
-# model = HalvingGridSearchCV(RandomForestRegressor(), parameters, cv=kfold, verbose=1,
-#                      refit=True, n_jobs=-1)
-
-model = make_pipeline(MinMaxScaler(), RandomForestRegressor())
+models = [DecisionTreeRegressor(),RandomForestRegressor(),GradientBoostingRegressor(),XGBRegressor()]
 
 
-#3. 컴파일 훈련
-import time
-start = time.time()
-model.fit(x_train, y_train)
-#Fitting 5 folds for each of 119 candidates, totalling 595 fits
-end = time.time()
-#print("최적의 매개변수 : ", model.best_estimator_)
-#print("최적의 파라미터 : ", model.best_params_)
-#print("best_score_ : ", model.best_score_) # train에 대한 점수
-print("model.score : ", model.score(x_test, y_test)) #test score라서 위와 값이 다름
+# for i in range(len(models)) :
+#     model = models[i]
+#     name = str(model).strip('()')
+#     model.fit(x_train, y_train)
+#     result = model.score(x_test, y_test)
+#     fimp = model.feature_importances_
+#     print("="*100)
+#     print(name,'의 결과값 : ', result)
+#     print('model.feature_importances : ', fimp)
+#     print("="*100)  
+# #     plt.subplot(2, 2, i+1)
+# #     plot_feature_importances(models[i])
+# #     if str(models[i]).startswith("XGB") : 
+# #         plt.title('XGBRegressor')
+# #     else :
+# #         plt.title(models[i])
 
-#4. 평가, 예측
-from sklearn.metrics import accuracy_score, r2_score
+# # plt.show()
 
-#y_predict = model.predict(x_test)
-#print("r2 스코어 :" , r2_score(y_test, y_predict))
 
-#y_pred_best = model.best_estimator_.predict(x_test)
-#print("최적 튠 R2 : ", r2_score(y_test, y_pred_best))
-#print("걸린시간 : ", round(end-start, 2))
+for model in models:
+    model.fit(x_train, y_train)
+    score = model.score(x_test, y_test)
+    if str(model).startswith('XGB'):
+        print('XGB 의 스코어: ', score)
+    else:
+        print(str(model).strip('()'), '의 스코어: ', score)
+        
+    featurelist = []
+    for a in range(int(allfeature)):
+        featurelist.append(np.argsort(model.feature_importances_)[a])
+        
+    x_bf = np.delete(x, featurelist, axis=1)
+    x_train2, x_test2, y_train2, y_test2 = train_test_split(x_bf, y, shuffle=True, train_size=0.8, random_state=1234)
+    model.fit(x_train2, y_train2)
+    score = model.score(x_test2, y_test2)
+    if str(model).startswith('XGB'):
+        print('XGB 의 드랍후 스코어: ', score)
+    else:
+        print(str(model).strip('()'), '의 드랍후 스코어: ', score)
+
 
 
 
 '''
-model.score :  0.8640426357564298
+
+1. 컬럼 삭제 하기 전 결과값
+
+====================================================================================================
+DecisionTreeRegressor 의 결과값 :  0.7544954179492227
+model.feature_importances :  [0.55058333 0.02590497 0.02171629 0.07703571 0.15108041 0.00139407
+ 0.01097298 0.00594542 0.13347505 0.00099625 0.00537058 0.01552495]
+====================================================================================================
+====================================================================================================
+RandomForestRegressor 의 결과값 :  0.8664910502549923
+model.feature_importances :  [0.5610794  0.03044076 0.02247072 0.07609714 0.15388868 0.0112172
+ 0.02308442 0.00562982 0.07515839 0.00685541 0.02207307 0.01200499]
+====================================================================================================
+====================================================================================================
+GradientBoostingRegressor 의 결과값 :  0.872369769410599
+model.feature_importances :  [0.54080695 0.0122641  0.01707434 0.08545588 0.15587133 0.0130643
+ 0.042626   0.00843345 0.07537072 0.0027694  0.02699622 0.01926733]
+====================================================================================================
+====================================================================================================
+XGBRegressor 의 결과값 :  0.8439764388479273
+model.feature_importances :  [0.29954544 0.0067075  0.01096382 0.01868823 0.03533914 0.00256183
+ 0.15210424 0.03324056 0.29755455 0.00550099 0.11441717 0.02337655]
+====================================================================================================
+
+2. 컬럼 삭제 후 결과값
+
+DecisionTreeRegressor 의 스코어:  0.6160598362275305
+DecisionTreeRegressor 의 드랍후 스코어:  0.7122006442309801
+RandomForestRegressor 의 스코어:  0.8771759691441495
+RandomForestRegressor 의 드랍후 스코어:  0.8721325675288608
+GradientBoostingRegressor 의 스코어:  0.8714002714626902
+GradientBoostingRegressor 의 드랍후 스코어:  0.8765671765396149
+XGB 의 스코어:  0.8309176257625698
+XGB 의 드랍후 스코어:  0.8527746335749569
 
 '''

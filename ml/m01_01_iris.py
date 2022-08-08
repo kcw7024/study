@@ -24,12 +24,12 @@ tf.random.set_seed(66)  # y=wx 할때 w는 랜덤으로 돌아가는데 여기�
 datasets = load_iris()
 x = datasets['data']
 y = datasets['target']
-print(datasets.DESCR)
-print(datasets.feature_names)
-print(x)
-print(y)
-print(x.shape,y.shape) # (150, 4) (150,)
-print("y의 라벨값 : ", np.unique(y))  # y의 라벨값 :  [0 1 2]
+#print(datasets.DESCR)
+#print(datasets.feature_names)
+#print(x)
+#print(y)
+#print(x.shape,y.shape) # (150, 4) (150,)
+#print("y의 라벨값 : ", np.unique(y))  # y의 라벨값 :  [0 1 2]
 # y = to_categorical(y) # https://wikidocs.net/22647 케라스 원핫인코딩
 
 # y = pd.get_dummies(y)  #겟더미는 y_predict 할때 np아니고 tf.argmax로 바꾸기
@@ -43,8 +43,8 @@ x_train, x_test, y_train, y_test = train_test_split(x,y,
                                                     random_state=66
                                                     )
 
-print(y_test)
-print(y_train)
+#print(y_test)
+#print(y_train)
 
 
 #2. 모델
@@ -57,6 +57,10 @@ print(y_train)
 # model.add(Dense(3, activation='softmax'))             # softmax : 다중분류일때 아웃풋에 활성화함수로 넣어줌, 아웃풋에서 소프트맥스 활성화 함수를 씌워 주면 그 합은 무조건 1로 변함
 #                                                                  # ex 70, 20, 10 -> 0.7, 0.2, 0.1
 model = LinearSVC() # 리니어 원핫 노필요
+
+
+
+model.summary()
 
 #3. 컴파일 훈련
 

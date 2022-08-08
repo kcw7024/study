@@ -4,15 +4,12 @@ import pandas as pd
 from pandas import DataFrame 
 from tensorflow.python.keras.models import Sequential, Model
 from tensorflow.python.keras.layers import Dense, Input
-from sklearn.model_selection import train_test_split, KFold, cross_val_predict, cross_val_score, GridSearchCV, RandomizedSearchCV
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 from tensorflow.python.keras.callbacks import EarlyStopping
 import time
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-
-from sklearn.experimental import enable_halving_search_cv #아직 정식버전이 아니라서 해줘야함.
-from sklearn.model_selection import HalvingGridSearchCV
 
 # 1. 데이터
 path = 'C:/study/_data/bike_sharing/'
@@ -51,31 +48,15 @@ y = train_set['count']
 print(x.shape, y.shape) # (10886, 14) (10886,)
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8)
-
-
-n_splits = 5
-kfold = KFold(n_splits = n_splits, shuffle=True, random_state=66)
-
-parameters = [
-    {'n_estimators' : [100, 200], 'max_depth': [40,30,20,50], 'min_samples_leaf':[15, 30, 50, 100]}, #epochs
-    {'max_depth' : [6, 8, 10, 12], 'min_samples_split':[2, 4, 5, 20], 'n_jobs' : [-1, 3]},
-    {'min_samples_leaf' : [3, 5, 7, 10], 'n_estimators':[150, 300, 200], 'max_depth':[7, 8, 9, 10]},
-    {'min_samples_split' : [2, 3, 5, 10]},
-    {'n_jobs' : [-1, 2, 4]}    
-]
-
-
-
-# scaler = MinMaxScaler()
-# # scaler = StandardScaler()
-# # scaler = MaxAbsScaler() 
-# # scaler = RobustScaler()
-# scaler.fit(x_train)
-# scaler.fit(test_set)
-# test_set = scaler.transform(test_set)
-# x_train = scaler.transform(x_train)
-# x_test = scaler.transform(x_test)
-
+scaler = MinMaxScaler()
+# scaler = StandardScaler()
+# scaler = MaxAbsScaler() 
+# scaler = RobustScaler()
+scaler.fit(x_train)
+scaler.fit(test_set)
+test_set = scaler.transform(test_set)
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test)
 
 #2. 모델구성
 from sklearn.svm import LinearSVC, SVC
@@ -84,38 +65,38 @@ from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor 
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor 
-from sklearn.pipeline import make_pipeline
 
-# model = HalvingGridSearchCV(RandomForestRegressor(), parameters, cv=kfold, verbose=1,
-#                      refit=True, n_jobs=-1)
-
-model = make_pipeline(StandardScaler(), RandomForestRegressor())
+model = LinearRegression()
 
 
-#3. 컴파일 훈련
-import time
-start = time.time()
-model.fit(x_train, y_train)
-#Fitting 5 folds for each of 10 candidates, totalling 50 fits
-end = time.time()
-#print("최적의 매개변수 : ", model.best_estimator_)
-#print("최적의 파라미터 : ", model.best_params_)
-#print("best_score_ : ", model.best_score_) # train에 대한 점수
-print("model.score : ", model.score(x_test, y_test)) #test score라서 위와 값이 다름
+#3. 컴파일, 훈련
+use_models = [LinearRegression, KNeighborsRegressor, DecisionTreeRegressor, RandomForestRegressor]
 
-#4. 평가, 예측
-from sklearn.metrics import accuracy_score, r2_score
+# model.fit(x_train, y_train)
 
-#y_predict = model.predict(x_test)
-#print("r2 스코어 :" , r2_score(y_test, y_predict))
+# #4. 평가, 예측
+# result = model.score(x_test, y_test)
+# print('결과 acc : ', result)
+# y_predict = model.predict(x_test)
+# # y_predict = np.argmax(y_predict, axis= 1)
+# # y_test = tf.argmax(y_test, axis= 1)
+# acc= accuracy_score(y_test, y_predict)
+# print('acc스코어 : ', acc) 
 
-#y_pred_best = model.best_estimator_.predict(x_test)
-#print("최적 튠 R2 : ", r2_score(y_test, y_pred_best))
-#print("걸린시간 : ", round(end-start, 2))
 
+for model in use_models :
+    model = model()
+    name = str(model).strip('()')
+    model.fit(x_train, y_train)
+    result = model.score(x_test, y_test)
+    print(name,'의 ACC : ', result)
 
 
 '''
-model.score :  0.9504039435726849
+LinearRegression 의 ACC :  0.38536310247782035
+KNeighborsRegressor 의 ACC :  0.6733712930511127
+DecisionTreeRegressor 의 ACC :  0.896166931638527
+RandomForestRegressor 의 ACC :  0.9482803415711374
+
 
 '''

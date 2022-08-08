@@ -29,7 +29,7 @@ y = datasets.target
 
 x_train, x_test, y_train, y_test = train_test_split(x,y,
                                                     # train_size=0.8,
-                                                    test_size=0.1, #warning 은 test 사이즈가 너무 적어서 R2 에러남
+                                                    test_size=0.1, #warning 은 test 사이즈가 너무 적어서 R2 에러남 평가지표가 너무 적어서 떴더ㅏ~~~~
                                                     random_state=1234
                                                     )
 

@@ -98,7 +98,19 @@ print("걸린시간 : ", round(end-start, 2))
 
 '''
 
-
+[1 2 3 4 5 6 7]
+-9.416666666666666
+9.209677419354838
+-9.416666666666666
+9.161290322580646
+Fitting 5 folds for each of 144 candidates, totalling 720 fits
+최적의 매개변수 :  RandomForestClassifier()
+최적의 파라미터 :  {'min_samples_split': 2}
+best_score_ :  0.94692506821458
+model.score :  0.9529041215347898
+accuracy_score : 0.9529041215347898
+최적 튠 ACC :  0.9529041215347898
+걸린시간 :  11959.92
 
 
 '''

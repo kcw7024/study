@@ -36,10 +36,10 @@ cumsum = np.cumsum(pca_EVR)
 print(cumsum)
 
 
-import matplotlib.pyplot as plt
-plt.plot(cumsum)
-plt.grid()
-plt.show()
+# import matplotlib.pyplot as plt
+# plt.plot(cumsum)
+# plt.grid()
+# plt.show()
 
 
 '''

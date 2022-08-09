@@ -117,5 +117,10 @@ model.feature_importances :  [0.00715684 0.05944314 0.01588025 0.         0.0333
 
 2. 컬럼 삭제 후 결과값
 
+DecisionTreeClassifier 의 스코어:  0.9403371685756822
+DecisionTreeClassifier 의 드랍후 스코어:  0.9403715910948943
+RandomForestClassifier 의 스코어:  0.9563436400092941
+RandomForestClassifier 의 드랍후 스코어:  0.9572214142492018
+
 
 '''

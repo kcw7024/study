@@ -108,6 +108,7 @@ for model in models:
     model.fit(x_train, y_train)
     score = model.score(x_test, y_test)
     if str(model).startswith('XGB'):
+        print("="*90)
         print('XGB 의 스코어: ', score)
     else:
         print(str(model).strip('()'), '의 스코어: ', score)

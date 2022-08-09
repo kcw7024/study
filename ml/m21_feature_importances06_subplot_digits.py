@@ -39,7 +39,7 @@ from xgboost import XGBRegressor, XGBClassifier
 # model3 = GradientBoostingRegressor()
 # model4 = XGBRegressor()
 
-models = [DecisionTreeRegressor(),RandomForestRegressor(),GradientBoostingRegressor(),XGBRegressor()]
+models = [DecisionTreeClassifier(),RandomForestClassifier(),GradientBoostingClassifier(),XGBClassifier()]
 
 
 for i in range(len(models)) :

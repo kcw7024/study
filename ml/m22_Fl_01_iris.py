@@ -74,8 +74,10 @@ for model in models:
     model.fit(x_train, y_train)
     score = model.score(x_test, y_test)
     if str(model).startswith('XGB'):
+        print("="*90)
         print('XGB 의 스코어: ', score)
     else:
+        print("="*90)
         print(str(model).strip('()'), '의 스코어: ', score)
         
     featurelist = []
@@ -87,8 +89,10 @@ for model in models:
     model.fit(x_train2, y_train2)
     score = model.score(x_test2, y_test2)
     if str(model).startswith('XGB'):
+        print("="*90)
         print('XGB 의 드랍후 스코어: ', score)
     else:
+        print("="*90)
         print(str(model).strip('()'), '의 드랍후 스코어: ', score)
         
         

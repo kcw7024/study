@@ -68,7 +68,7 @@ import matplotlib.pyplot as plt
 # plot_feature_importances(model)
 # plt.show()
 
-from xgboost.plotting import plot_importance
+from xgboost.plotting import plot_importance #xgboost에서 제공하는 feature importances 정보를 그릴수 있음
 #feature 이미지 출력, feature명을 보고싶다면 dataframe으로 변경하여 확인가능
 plot_importance(model)
 plt.show()

@@ -20,7 +20,6 @@ print(df.corr())
 #각 컬럼별 상관관계를 알수있음
 # iris는 단순 linear 이기 때문에 정확하게 나옴
 
-
 '''
 ============================== 상관계수 히트 맵 ==============================
              sepal length sepal width petal length petal width Target(Y)
@@ -31,7 +30,6 @@ petal width      0.817941   -0.366126     0.962865    1.000000  0.956547
 Target(Y)        0.782561   -0.426658     0.949035    0.956547  1.000000
 
 '''
-
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -40,3 +38,8 @@ sns.heatmap(data=df.corr(), square=True, annot=True, cbar=True)
 
 plt.show()
 
+'''
+양의상관관계
+
+
+'''

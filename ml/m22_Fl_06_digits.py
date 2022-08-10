@@ -157,12 +157,12 @@ model.feature_importances :  [0.         0.03648211 0.01304824 0.00828797 0.0043
 
 2. 컬럼 삭제 후 결과값
 
-DecisionTreeClassifier 의 스코어:  0.8583333333333333
-DecisionTreeClassifier 의 드랍후 스코어:  0.8722222222222222
+DecisionTreeClassifier 의 스코어:  0.8583333333333333       
+DecisionTreeClassifier 의 드랍후 스코어:  0.8527777777777777
 RandomForestClassifier 의 스코어:  0.9805555555555555
 RandomForestClassifier 의 드랍후 스코어:  0.9777777777777777
 GradientBoostingClassifier 의 스코어:  0.975
-GradientBoostingClassifier 의 드랍후 스코어:  0.975
+GradientBoostingClassifier 의 드랍후 스코어:  0.9722222222222222
 XGB 의 스코어:  0.975
 XGB 의 드랍후 스코어:  0.975
 

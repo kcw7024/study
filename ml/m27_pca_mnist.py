@@ -33,7 +33,14 @@ pca_EVR = pca.explained_variance_ratio_ # PCA로 압축 후에 새로 생성된 
 cumsum = np.cumsum(pca_EVR)
 #cumsum = np.argmax(cumsum,axis=1)
 #print(cumsum)
-print(np.argwhere(cumsum >= 0.95)[0]+1)
+print("argwhere 사용 : ", np.argwhere(cumsum >= 0.95)[0]+1)
 #[154]
-
-
+print("argmax 사용 0.95 : ", np.argmax(cumsum >= 0.95)+1)
+#154
+print("argmax 사용 0.99 : ", np.argmax(cumsum >= 0.99)+1)
+print("argmax 사용 0.999 : ", np.argmax(cumsum >= 0.999)+1)
+print("argmax 사용 1.0 : ", np.argmax(cumsum >= 1.0)+1) #713
+# argmax 사용 :  154
+# argmax 사용 :  331
+# argmax 사용 :  486
+# argmax 사용 :  713

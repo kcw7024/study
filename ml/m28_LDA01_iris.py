@@ -46,7 +46,7 @@ lda = LinearDiscriminantAnalysis() # y라벨 개수보다 작아야만 한다
 lda.fit(x_train, y_train) 
 x_train = lda.transform(x_train)
 x_test = lda.transform(x_test)
-#print(x_train.shape, y_train.shape)
+print(x_train.shape, y_train.shape)
 #print(np.unique(y_train, return_counts=True))
 
 

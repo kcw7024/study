@@ -24,6 +24,7 @@ def outliers(data_out, i) :
                     (data_out[:,i]>upper_bound) | #최대값(이 이상은 이상치로 치겠다.)
                     (data_out[:,i]<lower_bound)   #최소값(이 이하는 이상치로 치겠다.)
                     )    
+    
 print("="*60)
 outliers_loc1 = outliers(aaa, 0)
 print("="*60)
@@ -36,9 +37,6 @@ print("="*60)
 # import matplotlib.pyplot as plt
 # plt.boxplot(aaa)
 # plt.show()
-
-
-
 
 
 '''

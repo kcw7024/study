@@ -39,8 +39,9 @@ test_set.drop('datetime',axis=1,inplace=True) # test_set에서 데이트타임 �
 train_set.drop('casual',axis=1,inplace=True) # casul 드랍 이유 모르겠음
 train_set.drop('registered',axis=1,inplace=True) # registered 드랍 이유 모르겠음
 
-#print(train_set.info())
-# null값이 없으므로 결측치 삭제과정 생략
+print(train_set.info())
+#null값이 없으므로 결측치 삭제과정 생략
+
 
 x = train_set.drop(['count'], axis=1)
 y = train_set['count']

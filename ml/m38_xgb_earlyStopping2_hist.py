@@ -39,8 +39,6 @@ kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=123)
 #'reg_alpha' (alpha) : [0, 0.1, 0.01, 0.001, 1, 2, 10] 디폴트 0 / 0~inf / L1 절대값 가중치 규제
 #'reg_lambda' (lambda) : [0, 0.1, 0.01, 0.001, 1, 2, 10] 디폴트 1 / 0~inf / L2 제곱 가중치 규제
 
-
-
 parameters = {'n_estimators' : [100],
               'learning_rate' : [0.1],
               'max_depth' : [3], #max_depth : 얕게잡을수록 좋다 너무 깊게잡을수록 과적합 우려 #None = 무한대
@@ -90,7 +88,7 @@ acc = accuracy_score(y_test, y_predict)
 print("진짜 최종 test 점수 : ", acc)
 
 print("="*70)
-hist = model.evals_result()
+hist = model.evals_result() 
 print(hist)
 
 # [실습]
@@ -99,7 +97,7 @@ print(hist)
 import matplotlib
 import matplotlib.pyplot as plt #그려보자~
 matplotlib.rcParams['font.family'] ='Malgun Gothic'
-matplotlib.rcParams['axes.unicode_minus'] =False
+matplotlib.rcParams['axes.unicode_minus'] = False
 
 import matplotlib.pyplot as plt
 

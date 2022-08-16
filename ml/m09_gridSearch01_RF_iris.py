@@ -68,7 +68,7 @@ print("최적의 매개변수 : ", model.best_estimator_)
 # 최적의 매개변수 :  SVC(C=1, kernel='linear')
 print("최적의 파라미터 : ", model.best_params_)
 # 최적의 파라미터 :  {'C': 1, 'degree': 3, 'kernel': 'linear'}
-print("best_score_ : ", model.best_score_) # train에 대한 점수
+print("best_score_ : ", model.best_score_) # train 에 대한 점수
 # best_score_ :  0.9916666666666668
 print("model.score : ", model.score(x_test, y_test)) #test score라서 위와 값이 다름
 # model.score :  0.9666666666666667

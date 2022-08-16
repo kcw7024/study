@@ -28,6 +28,7 @@ test_y_set = test_set.filter(regex='Y')
 # print(train_x_set.isnull().sum())
 # print(train_y_set.isnull().sum())
 
+
 #2. 모델
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.model_selection import KFold, StratifiedKFold
@@ -48,8 +49,6 @@ kfold = KFold(n_splits=n_splits, shuffle=True, random_state=123)
 #'reg_alpha' (alpha) : [0, 0.1, 0.01, 0.001, 1, 2, 10] 디폴트 0 / 0~inf / L1 절대값 가중치 규제
 #'reg_lambda' (lambda) : [0, 0.1, 0.01, 0.001, 1, 2, 10] 디폴트 1 / 0~inf / L2 제곱 가중치 규제
 
-
-
 parameters = {'n_estimators' : [100,200,300,10,20,40,50],
               'learning_rate' : [0.1, 0.3, 0.2, 1, 0.2, 0.001],
               'max_depth' : [3,2,4,6,7,10], #max_depth : 얕게잡을수록 좋다 너무 깊게잡을수록 과적합 우려 #None = 무한대
@@ -63,12 +62,11 @@ parameters = {'n_estimators' : [100,200,300,10,20,40,50],
               'reg_lambda' : [0, 0.1, 0.2, 0.01, 1, 10]
               } 
 
-
 xgb = XGBRegressor(random_state=123)
 model = RandomizedSearchCV(xgb, parameters, cv=kfold, n_jobs=8, verbose=2)
 
 model.fit(train_x_set, train_y_set)
-
+ 
 print("끝")
 
 #3. 평가
@@ -94,3 +92,17 @@ print('Done.')
 submit.to_csv(path+'submission.csv', index=False)
 
 #최상의 점수 :  0.061938888390985124
+#최상의 점수 :  0.0654938679517367
+
+# 평가지표
+# def lg_nrmse(gt, preds):
+#     # 각 Y Feature별 NRMSE 총합
+#     # Y_01 ~ Y_08 까지 20% 가중치 부여
+#     all_nrmse = []
+#     for idx in range(1,15): # ignore 'ID'
+#         rmse = metrics.mean_squared_error(gt[:,idx], preds[:,idx], squared=False)
+#         nrmse = rmse/np.mean(np.abs(gt[:,idx]))
+#         all_nrmse.append(nrmse)
+#     score = 1.2 * np.sum(all_nrmse[:8]) + 1.0 * np.sum(all_nrmse[8:14])
+#     return score
+

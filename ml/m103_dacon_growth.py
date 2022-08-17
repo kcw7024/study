@@ -225,8 +225,8 @@ for test_input_path, test_target_path in zip(test_input_list, test_target_list):
     
     
 import zipfile
-os.chdir("D:/study_data/_data/dacon_growth/test_target/")
-submission = zipfile.ZipFile("D:/study_data/_data/dacon_growth/submission_1.zip", 'w')
+os.chdir("C:/study/_data/dacon_growth/test_target")
+submission = zipfile.ZipFile("submission_2.zip", 'w')
 for path in test_target_list:
     path = path.split('/')[-1]
     submission.write(path)

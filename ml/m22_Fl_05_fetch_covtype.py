@@ -2,6 +2,7 @@ from unittest import result
 import numpy as np
 from sklearn.datasets import fetch_covtype
 from sympy import re
+from sklearn.preprocessing import LabelEncoder
 
 
 #1. 데이터
@@ -14,11 +15,17 @@ y = datasets.target
 allfeature = round(x.shape[1]*0.2, 1)
 print('자를 갯수: ', int(allfeature))
 
+
+le = LabelEncoder()
+y = le.fit_transform(y)
+
+
 from sklearn.model_selection import train_test_split
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.8, shuffle=True, random_state=1234 
 ) 
+
 
 import matplotlib.pyplot as plt
 

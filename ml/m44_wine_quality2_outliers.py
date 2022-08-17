@@ -39,8 +39,8 @@ print(datasets2.shape)
 x = datasets2[:, :11]
 y = datasets2[:, 11]
 
-def outliers(data_out, i) : 
-    quantiles_1, q2, quantiles_3 = np.percentile(data_out[:,i], [25, 50, 75]) 
+def outliers(data_out) : 
+    quantiles_1, q2, quantiles_3 = np.percentile(data_out, [25, 50, 75]) 
     print("1사분위 : ", quantiles_1)
     print("q2 : ", q2) #중위값확인
     print("3사분위 : ", quantiles_3)
@@ -55,7 +55,7 @@ def outliers(data_out, i) :
                     (data_out[:,i]<lower_bound)   #최소값(이 이하는 이상치로 치겠다.)
                     )       
 print("="*60)
-outliers_loc1 = outliers(x, 0)
+outliers_loc1 = outliers(y, 0)
 print("="*60)
 print("="*60)
 print("이상치의 위치 : ", outliers_loc1)

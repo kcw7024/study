@@ -4,7 +4,6 @@ from msilib.schema import Binary
 from tabnanny import verbose
 import numpy as np
 import pandas as pd
-
 from sklearn.ensemble import VotingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
@@ -12,6 +11,7 @@ from sklearn.datasets import load_breast_cancer, load_wine, fetch_covtype
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
@@ -23,6 +23,9 @@ datasets = fetch_covtype()
 
 # df = pd.DataFrame(datasets.data, columns=datasets.feature_names)
 # print(df.head(7))
+
+le = LabelEncoder()
+datasets.target = le.fit_transform(datasets.target)
 
 x_train, x_test, y_train, y_test = train_test_split(
     datasets.data, datasets.target, train_size=0.9, random_state=123,
@@ -101,10 +104,10 @@ LGBMClassifier 정확도 : 0.9825
 
 파라미터 튜닝 후
 
-CatBoostClassifier 정확도 : 0.9649
-XGBClassifier 정확도 : 0.9825
-LGBMClassifier 정확도 : 0.9649
-보팅 결과 :  0.9649
+CatBoostClassifier 정확도 : 0.7381
+XGBClassifier 정확도 : 0.7450
+LGBMClassifier 정확도 : 0.7145
+보팅 결과 :  0.7341
 
 '''
 

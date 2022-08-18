@@ -5,6 +5,8 @@ from sklearn.datasets import load_breast_cancer, load_iris, load_wine, fetch_cov
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import LabelEncoder
+
 
 #1. 데이터
 datasets = fetch_covtype()
@@ -15,11 +17,15 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.8, random_state=123, shuffle=True, stratify=y
 )
 
+
+le = LabelEncoder()
+y = le.fit_transform(y)
+
+
 # bagging 사용시 scale 필수
 scaler = StandardScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
-
 
 #2. 모델
 from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
@@ -32,8 +38,8 @@ model = BaggingClassifier(XGBClassifier(),
                           n_jobs=-1,
                           random_state=123
                           )
-#bagging 정리할것. 
 
+# bagging 정리할것. 
 
 #3. 훈련
 model.fit(x_train, y_train)

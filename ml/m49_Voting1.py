@@ -59,3 +59,4 @@ for model2 in classifiers :
 # hard로 했을때
 # LogisticRegression 정확도 : 0.9649
 # KNeighborsClassifier 정확도 : 0.9825
+ 

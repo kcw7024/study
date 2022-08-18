@@ -202,7 +202,6 @@ x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
 
 
-
 #2. 모델
 from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
 from sklearn.ensemble import BaggingRegressor, RandomForestRegressor

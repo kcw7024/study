@@ -1,5 +1,5 @@
 from operator import methodcaller
-from sklearn.datasets import load_boston
+from sklearn.datasets import load_boston, fetch_california_housing
 from sklearn.model_selection import train_test_split, KFold
 from sklearn.preprocessing import StandardScaler, PolynomialFeatures, MinMaxScaler, RobustScaler, MaxAbsScaler
 from sklearn.preprocessing import QuantileTransformer, PowerTransformer #scaling 
@@ -23,13 +23,14 @@ from xgboost import XGBClassifier, XGBRegressor
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 
 #1. 데이터
-datasets = load_boston()
+datasets = fetch_california_housing()
 x, y = datasets.data, datasets.target
 print(x.shape, y.shape) # (506, 13) (506,)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.2, random_state=123   
 )
+
 
 model_list = [RandomForestRegressor(), LinearRegression(), KNeighborsRegressor(), DecisionTreeRegressor(), KNeighborsRegressor()]
 
@@ -55,14 +56,45 @@ for scaler in scalers :
         results = r2_score(y_test, y_predict)
         print(model_name,":: 의 결과 : ", round(results, 4))
     
+    
 
 '''
-StandardScaler 의 결과 :  0.8242
-MinMaxScaler 의 결과 :  0.8261
-MaxAbsScaler 의 결과 :  0.8313
-RobustScaler 의 결과 :  0.8318
-QuantileTransformer 의 결과 :  0.8253
-PowerTransformer 의 결과 :  0.8332
+== StandardScaler ========================================
+RandomForestRegressor :: 의 결과 :  0.7607
+LinearRegression :: 의 결과 :  0.6052
+KNeighborsRegressor :: 의 결과 :  0.6374
+DecisionTreeRegressor :: 의 결과 :  0.5345
+KNeighborsRegressor :: 의 결과 :  0.6374
+== MinMaxScaler ========================================
+RandomForestRegressor :: 의 결과 :  0.7614
+LinearRegression :: 의 결과 :  0.6052
+KNeighborsRegressor :: 의 결과 :  0.6555
+DecisionTreeRegressor :: 의 결과 :  0.5291
+KNeighborsRegressor :: 의 결과 :  0.6555
+== MaxAbsScaler ========================================
+RandomForestRegressor :: 의 결과 :  0.762
+LinearRegression :: 의 결과 :  0.6052
+KNeighborsRegressor :: 의 결과 :  0.6555
+DecisionTreeRegressor :: 의 결과 :  0.5227
+KNeighborsRegressor :: 의 결과 :  0.6555
+== RobustScaler ========================================
+RandomForestRegressor :: 의 결과 :  0.7607
+LinearRegression :: 의 결과 :  0.6052
+KNeighborsRegressor :: 의 결과 :  0.6539
+DecisionTreeRegressor :: 의 결과 :  0.5293
+KNeighborsRegressor :: 의 결과 :  0.6539
+== QuantileTransformer ========================================
+RandomForestRegressor :: 의 결과 :  0.761
+LinearRegression :: 의 결과 :  0.5989
+KNeighborsRegressor :: 의 결과 :  0.6585
+DecisionTreeRegressor :: 의 결과 :  0.5161
+KNeighborsRegressor :: 의 결과 :  0.6585
+== PowerTransformer ========================================
+RandomForestRegressor :: 의 결과 :  0.7615
+LinearRegression :: 의 결과 :  0.5899
+KNeighborsRegressor :: 의 결과 :  0.6577
+DecisionTreeRegressor :: 의 결과 :  0.5225
+KNeighborsRegressor :: 의 결과 :  0.6577
 '''
 
 

@@ -60,6 +60,7 @@ scores = cross_val_score(model, x_train, y_train, cv=Kfold, scoring='r2')
 print("폴리 CV : ", scores)
 print("폴리 CV 나눈 값 : ", np.mean(scores))
 
+
 '''
 
 (506, 13) (506,)

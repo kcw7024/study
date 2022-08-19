@@ -9,7 +9,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.pipeline import make_pipeline
 
 #1. 데이터
-datasets = load_boston()
+datasets = fetch_california_housing()
 x, y = datasets.data, datasets.target
 print(x.shape, y.shape) # (506, 13) (506,)
 
@@ -57,20 +57,21 @@ print("폴리 스코어 : ", model.score(x_test, y_test))
 
 from sklearn.model_selection import cross_val_score
 scores = cross_val_score(model, x_train, y_train, cv=Kfold, scoring='r2')
+scores = np.delete(scores, [0,2], axis=0)
+#scores = np.delete(scores, 1, axis=0)
 print("폴리 CV : ", scores)
 print("폴리 CV 나눈 값 : ", np.mean(scores))
 
 '''
+(20640, 8) (20640,)
+기본 스코어 :  0.6065722122106434
+기본 CV :  [0.6153114  0.59856063 0.61434956 0.59191848 0.58489428]
+기본 CV 나눈 값 :  0.6010068700547342
 
-(506, 13) (506,)
-기본 스코어 :  0.7665382927362877
-기본 CV :  [0.71606004 0.67832011 0.65400513 0.56791147 0.7335664 ]
-기본 CV 나눈 값 :  0.669972627809433
-
-(506, 104)
-폴리 스코어 :  0.8745129304823852
-폴리 CV :  [0.7917776  0.8215846  0.79599441 0.81776798 0.81170102]
-폴리 CV 나눈 값 :  0.807765121221582
+(20640, 44)
+폴리 스코어 :  0.500516568719646
+폴리 CV :  [0.62402233 0.60985177 0.66558945]
+폴리 CV 나눈 값 :  0.6331545167222569
 
 
 

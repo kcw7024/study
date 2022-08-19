@@ -1,5 +1,5 @@
 from operator import methodcaller
-from sklearn.datasets import load_boston
+from sklearn.datasets import load_boston, load_breast_cancer, load_diabetes
 from sklearn.model_selection import train_test_split, KFold
 from sklearn.preprocessing import StandardScaler, PolynomialFeatures, MinMaxScaler, RobustScaler, MaxAbsScaler
 from sklearn.preprocessing import QuantileTransformer, PowerTransformer #scaling 
@@ -23,7 +23,7 @@ from xgboost import XGBClassifier, XGBRegressor
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 
 #1. 데이터
-datasets = load_boston()
+datasets = load_diabetes()
 x, y = datasets.data, datasets.target
 print(x.shape, y.shape) # (506, 13) (506,)
 
@@ -55,14 +55,45 @@ for scaler in scalers :
         results = r2_score(y_test, y_predict)
         print(model_name,":: 의 결과 : ", round(results, 4))
     
+    
 
 '''
-StandardScaler 의 결과 :  0.8242
-MinMaxScaler 의 결과 :  0.8261
-MaxAbsScaler 의 결과 :  0.8313
-RobustScaler 의 결과 :  0.8318
-QuantileTransformer 의 결과 :  0.8253
-PowerTransformer 의 결과 :  0.8332
+== StandardScaler ========================================
+RandomForestRegressor :: 의 결과 :  0.3733
+LinearRegression :: 의 결과 :  0.3378
+KNeighborsRegressor :: 의 결과 :  0.2544
+DecisionTreeRegressor :: 의 결과 :  -0.1838
+KNeighborsRegressor :: 의 결과 :  0.2544
+== MinMaxScaler ========================================
+RandomForestRegressor :: 의 결과 :  0.368
+LinearRegression :: 의 결과 :  0.3378
+KNeighborsRegressor :: 의 결과 :  0.2175
+DecisionTreeRegressor :: 의 결과 :  -0.1305
+KNeighborsRegressor :: 의 결과 :  0.2175
+== MaxAbsScaler ========================================
+RandomForestRegressor :: 의 결과 :  0.355
+LinearRegression :: 의 결과 :  0.3378
+KNeighborsRegressor :: 의 결과 :  0.2175
+DecisionTreeRegressor :: 의 결과 :  -0.1439
+KNeighborsRegressor :: 의 결과 :  0.2175
+== RobustScaler ========================================
+RandomForestRegressor :: 의 결과 :  0.3531
+LinearRegression :: 의 결과 :  0.3378
+KNeighborsRegressor :: 의 결과 :  0.2877
+DecisionTreeRegressor :: 의 결과 :  -0.2029
+KNeighborsRegressor :: 의 결과 :  0.2877
+== QuantileTransformer ========================================
+RandomForestRegressor :: 의 결과 :  0.3902
+LinearRegression :: 의 결과 :  0.2762
+KNeighborsRegressor :: 의 결과 :  0.1895
+DecisionTreeRegressor :: 의 결과 :  -0.0505
+KNeighborsRegressor :: 의 결과 :  0.1895
+== PowerTransformer ========================================
+RandomForestRegressor :: 의 결과 :  0.3673
+LinearRegression :: 의 결과 :  0.2771
+KNeighborsRegressor :: 의 결과 :  0.2544
+DecisionTreeRegressor :: 의 결과 :  -0.2489
+KNeighborsRegressor :: 의 결과 :  0.2544
 '''
 
 

@@ -24,10 +24,13 @@ x_test = scaler.transform(x_test)
 #2. 모델
 from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
 from sklearn.ensemble import BaggingRegressor, RandomForestRegressor
-#from sklearn.linear_model import LogisticRegression 
+from sklearn.linear_model import LogisticRegression, Perceptron
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree import DecisionTreeRegressor
 from xgboost import XGBClassifier, XGBRegressor
+from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
+
+
 
 model = BaggingRegressor(XGBRegressor(),
                           n_estimators=100,
@@ -36,6 +39,22 @@ model = BaggingRegressor(XGBRegressor(),
                           )
 #bagging 정리할것. 
 
+
+use_models = [Perceptron(), KNeighborsRegressor(), DecisionTreeRegressor(), RandomForestRegressor()]
+
+for model in use_models :
+    # model1 = use_models
+    model1 = BaggingRegressor(model,
+                              n_estimators=100,
+                              n_jobs=-1,
+                              random_state=123
+                              )
+    name = str(model).strip('()')    
+    #name = model.__class__.__name__
+    model1.fit(x_train, y_train)
+    result = model1.score(x_test, y_test)
+    print(name, '스코어 : ', result)
+    
 
 #3. 훈련
 model.fit(x_train, y_train)
@@ -46,14 +65,10 @@ print(model.score(x_test, y_test))
 
 
 '''
-#DecisionTreeRegressor
-0.5273824982517303
-
-#XGBRegressor
-0.5712713564199572
-
-#RandomForestRegressor
-0.5531177065533573
+Perceptron 스코어 :  0.4179965646464249
+KNeighborsRegressor 스코어 :  0.44958409224644336
+DecisionTreeRegressor 스코어 :  0.5273824982517303
+RandomForestRegressor 스코어 :  0.5531177065533573
 
 '''
 

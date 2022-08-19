@@ -16,6 +16,7 @@ x_train = np.load('d:/study_data/_save/_npy/keras49_7_train_x.npy')
 y_train = np.load('d:/study_data/_save/_npy/keras49_7_train_y.npy')
 x_test = np.load('d:/study_data/_save/_npy/keras49_7_test_x.npy')
 y_test = np.load('d:/study_data/_save/_npy/keras49_7_test_y.npy')
+test = 'D:\project\test\test\test\test.jpg'
 
 print(x_train)
 print(x_train.shape) #(350, 150, 150, 1)
@@ -46,7 +47,7 @@ model.compile(loss ='binary_crossentropy', optimizer='adam', metrics=['accuracy'
 
 #배치를 최대로 잡으면 이방법도 가능
 
-hist = model.fit(x_train, y_train, epochs=5, batch_size=1, validation_split=0.2) 
+hist = model.fit(x_train, y_train, epochs=2, batch_size=1, validation_split=0.2) 
 
 accuracy = hist.history['accuracy']
 val_accuracy = hist.history['val_accuracy']
@@ -63,6 +64,13 @@ print('val_loss : ', val_loss[-1])
 # val_accuracy :  1.0
 # accuracy :  0.3030303120613098
 # val_loss :  0.6914277672767639
+
+
+#4. 평가, 훈련
+
+y_predict = model.predict(test)
+print('여성일 확률 : ', y_predict)
+
 
 # import matplotlib
 # import matplotlib.pyplot as plt #그려보자~

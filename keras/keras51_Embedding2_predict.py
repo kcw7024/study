@@ -104,7 +104,7 @@ _________________________________________________________________
 
 #3. 컴파일, 훈련
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(pad_x, labels, epochs=5, batch_size=16)
+model.fit(pad_x, labels, epochs=500, batch_size=16)
 
 
 #4. 평가, 예측
@@ -120,7 +120,7 @@ print(x_predict)
 y_predict = model.predict(x_predict)
 print(y_predict)
 
-if y_predict >= 0.5 :
+if y_predict >= 0.4 :
     print("긍정")
 else :
     print("부정")

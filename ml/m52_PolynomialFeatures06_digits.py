@@ -60,7 +60,7 @@ model.fit(x_train, y_train)
 print("폴리 스코어 : ", model.score(x_test, y_test))
 
 from sklearn.model_selection import cross_val_score
-scores = cross_val_score(model, x_train, y_train, cv=Kfold, scoring='r2')
+scores = cross_val_score(model, x_train, y_train, cv=Kfold, scoring='accuracy')
 print("폴리 CV : ", scores)
 print("폴리 CV 나눈 값 : ", np.mean(scores))
 
@@ -72,7 +72,7 @@ print("폴리 CV 나눈 값 : ", np.mean(scores))
 
 (1797, 2145)
 폴리 스코어 :  0.9861111111111112
-폴리 CV :  [0.95352208 0.9963087  0.94705018 0.96594811 0.94666396]
-폴리 CV 나눈 값 :  0.9618986039475207
+폴리 CV :  [0.98263889 0.99652778 0.97212544 0.9825784  0.96864111]
+폴리 CV 나눈 값 :  0.9805023228803715
 
 '''

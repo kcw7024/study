@@ -59,9 +59,8 @@ model.fit(x_train, y_train)
 #4. 평가, 예측
 print(model.score(x_test, y_test)) 
 
+
 '''
 #XGBRegresor
 0.9736842105263158
-
-
 '''

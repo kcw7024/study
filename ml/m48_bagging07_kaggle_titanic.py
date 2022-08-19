@@ -170,15 +170,15 @@ use_models = [LogisticRegression(), KNeighborsClassifier(), DecisionTreeClassifi
 
 for model in use_models :
     # model1 = use_models
-    model = BaggingClassifier(model,
+    model1 = BaggingClassifier(model,
                               n_estimators=100,
                               n_jobs=-1,
                               random_state=123
                               )
-    #name = str(model).strip('()')    
-    name = model.__class__.__name__
-    model.fit(x_train, y_train)
-    result = model.score(x_test, y_test)
+    name = str(model).strip('()')    
+    #name = model.__class__.__name__
+    model1.fit(x_train, y_train)
+    result = model1.score(x_test, y_test)
     print(name, '스코어 : ', result)
 
 #3. 훈련
@@ -194,6 +194,12 @@ LogisticRegression 스코어 :  0.7966101694915254
 KNeighborsClassifier 스코어 :  0.7966101694915254
 DecisionTreeClassifier 스코어 :  0.7740112994350282
 RandomForestClassifier 스코어 :  0.8192090395480226
+
+LogisticRegression 스코어 :  0.7966101694915254
+KNeighborsClassifier 스코어 :  0.7966101694915254
+DecisionTreeClassifier 스코어 :  0.7740112994350282
+RandomForestClassifier 스코어 :  0.8192090395480226
+
 '''
 
 

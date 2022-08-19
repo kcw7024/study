@@ -29,13 +29,37 @@ from sklearn.ensemble import BaggingRegressor, RandomForestRegressor
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree import DecisionTreeRegressor
 from xgboost import XGBClassifier, XGBRegressor
+from sklearn.svm import LinearSVC, SVC
+from sklearn.linear_model import Perceptron, LogisticRegression #꼭 알ac아둘것 논리적인회귀(이지만 분류모델!!!)
+from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
+#from sklearn.linear_model import LogisticRegression 
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from xgboost import XGBClassifier
 
 model = BaggingRegressor(XGBRegressor(),
                           n_estimators=100,
                           n_jobs=-1,
                           random_state=123
-                          )
+                         )
 #bagging 정리할것. 
+
+use_models = [LogisticRegression(), KNeighborsClassifier(), DecisionTreeRegressor(), RandomForestRegressor()]
+
+for model in use_models :
+    # model1 = use_models
+    model1 = BaggingClassifier(model,
+                              n_estimators=100,
+                              n_jobs=-1,
+                              random_state=123
+                              )
+    name = str(model).strip('()')    
+    #name = model.__class__.__name__
+    model1.fit(x_train, y_train)
+    result = model1.score(x_test, y_test)
+    print(name, '스코어 : ', result)
+
+
 
 
 #3. 훈련

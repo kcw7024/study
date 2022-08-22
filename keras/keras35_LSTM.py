@@ -84,7 +84,7 @@ model.summary()
 
 #3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
-model.fit(x, y, epochs=700, batch_size=128)
+model.fit(x, y, epochs=100, batch_size=128)
 
 #4. 평가, 예측
 loss = model.evaluate(x, y)

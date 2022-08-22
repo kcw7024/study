@@ -19,7 +19,6 @@ x_test = np.load('d:/study_data/_save/_npy/keras49_6_test_x.npy')
 y_test = np.load('d:/study_data/_save/_npy/keras49_6_test_y.npy')
 test = np.load('d:/study_data/_save/_npy/keras49_6_test.npy')
 
-
 #print(x_train)
 print(x_train.shape) #(100000, 32, 32, 3)
 print(y_train.shape) #(100000, 1)

@@ -25,6 +25,8 @@ x_train, x_test, y_train, y_test = train_test_split(
 #print(datasets.feature_names)
 #print(datasets.DESCR) #데이터셋에 대한 설명
 
+#print(x_train.shape, y_train.shape) # (354, 13) (354,)
+#print(x_test.shape, y_test.shape) # (152, 13) (152,)
 
 #[실습] 아래를 완성할것
 # 1.train 0.7

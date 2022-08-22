@@ -1,9 +1,9 @@
 from tkinter.tix import Y_REGION
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D, Dropout #이미지작업(Conv2D), 데이터를 펼친다(Flatten)
-from tensorflow.keras.datasets import mnist, fashion_mnist, cifar10, cifar100
+from keras.datasets import mnist, fashion_mnist, cifar10, cifar100
 import numpy as np
-from tensorflow.keras.utils import to_categorical
+from keras.utils import to_categorical
 from sklearn.metrics import r2_score, accuracy_score
 from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.callbacks import EarlyStopping

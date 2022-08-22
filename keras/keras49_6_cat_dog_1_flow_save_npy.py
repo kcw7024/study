@@ -1,3 +1,4 @@
+import tarfile
 from grpc import AuthMetadataContext
 from tensorflow.keras.datasets import cifar100
 from keras.preprocessing.image import ImageDataGenerator
@@ -36,11 +37,29 @@ xy_test = test_datagen.flow_from_directory(
     shuffle=False
 )          
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 test = test_datagen.flow_from_directory(
+    'd:/study_data/_data/image/test_pic/',
+    target_size=(150, 150)
+)
+
+
+
+test = test[0][0]
+print(test.shape)
+
+
+=======
+test = train_datagen.flow_from_directory(
+=======
+test = test_datagen.flow_from_directory(
+>>>>>>> 65a24f789b36f175bf567f1917aad4175ac40e84
      'd:/study_data/_data/image/dog_pic/',
      target_size=(32, 32)
 )
 
+>>>>>>> 6dd0dbb9e7d3d234445719f8507bf59858d4b5d8
 print(x_train.shape) #(50000, 32, 32, 3) 
 
 
@@ -75,7 +94,11 @@ np.save('d:/study_data/_save/_npy/keras49_6_train_x.npy', arr=x_train) # train x
 np.save('d:/study_data/_save/_npy/keras49_6_train_y.npy', arr=y_train) # train y값
 np.save('d:/study_data/_save/_npy/keras49_6_test_x.npy', arr=x_test) # test x값
 np.save('d:/study_data/_save/_npy/keras49_6_test_y.npy', arr=y_test) # test y값
+<<<<<<< HEAD
+np.save('d:/study_data/_save/_npy/keras49_6_test.npy', arr=test) # test y값
+=======
 np.save('d:/study_data/_save/_npy/keras49_6_test.npy', arr=test) 
+>>>>>>> 6dd0dbb9e7d3d234445719f8507bf59858d4b5d8
 
 
 

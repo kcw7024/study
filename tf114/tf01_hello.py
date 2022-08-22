@@ -9,3 +9,4 @@ print(hello)
 sess = tf.compat.v1.Session()
 print(sess.run(hello))  # b'hello world'
 # tensorflow는 출력할때 반드시 session을 사용해야한다.(sess.run으로 사용. tensorflow2부터는 사라졌음.)
+

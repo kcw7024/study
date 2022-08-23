@@ -2,7 +2,7 @@ import pandas as pd
 import random
 import os
 import numpy as np
-
+from catboost import CatBoostRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.ensemble import RandomForestRegressor
@@ -63,10 +63,9 @@ train_y = train_df.filter(regex='Y')
 
 
 # LinearRegressor
-LR = MultiOutputRegressor(LinearRegression(
-
-)
-).fit(train_x, train_y)
+LR = MultiOutputRegressor(CatBoostRegressor(
+  
+)).fit(train_x, train_y)
 print('Done.')
 
 

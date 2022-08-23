@@ -24,6 +24,8 @@ train = optimizer.minimize(loss)
 # 3-2. 훈련
 sess = tf.compat.v1.Session()
 sess.run(tf.global_variables_initializer())  # 초기화
+print(W, b)
+
 
 for step in range(2001):
     sess.run(train)

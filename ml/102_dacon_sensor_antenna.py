@@ -72,6 +72,8 @@ model = ExtraTreesRegressor(n_estimators=200, ccp_alpha=0.0,
                             min_impurity_decrease=0.0,
                             min_samples_leaf=1, min_samples_split=2,
                             min_weight_fraction_leaf=0.0, random_state=123,)
+
+
 # model = MultiOutputRegressor(etr, parameters, n_jobs=8,)
 model.fit(train_x_set, train_y_set)
 # 평가지표

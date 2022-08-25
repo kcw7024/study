@@ -1,3 +1,4 @@
+from sklearn.metrics import r2_score
 import pandas as pd
 import random
 import os
@@ -23,9 +24,13 @@ seed_everything(42)  # Seed 고정
 path = './_data/dacon_sensor_antenna/'
 
 train_df = pd.read_csv(path + 'train.csv')
+test_df = pd.read_csv(path + 'test.csv')
 
 train_x = train_df.filter(regex='X')
 train_y = train_df.filter(regex='Y')
+
+test_x = test_df.filter(regex='X')
+test_y = test_df.filter(regex='Y')
 
 # plt.figure(figsize=(30, 5))
 # plt.plot(train_x['X_01'], label='X_01')
@@ -62,15 +67,18 @@ train_y = train_df.filter(regex='Y')
 # print('Done.')
 
 
-# LinearRegressor
+# CatBoostReressor
 LR = MultiOutputRegressor(CatBoostRegressor(
-  
+
 )).fit(train_x, train_y)
 print('Done.')
 
 
 test_x = pd.read_csv(path + 'test.csv').drop(columns=['ID'])
+test_y = pd.read_csv(path + 'test.csv').drop(columns=['ID'])
 preds = LR.predict(test_x)
+r2 = r2_score(preds, test_y)
+# print("r2 :: ", r2)
 print('Done.')
 
 submit = pd.read_csv(path + 'sample_submission.csv')
@@ -80,4 +88,4 @@ for idx, col in enumerate(submit.columns):
     submit[col] = preds[:, idx-1]
 print('Done.')
 
-submit.to_csv(path + 'submit_lr.csv', index=False)
+submit.to_csv(path + 'submit_cat.csv', index=False)

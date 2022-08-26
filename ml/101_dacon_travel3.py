@@ -197,16 +197,16 @@ train_set_clean = train_set.loc[lead_not_outlier_index]
 train_set_clean = train_set_clean.reset_index(drop=True)
 # print(train_set_clean)
 x = train_set_clean.drop(['ProdTaken', 'NumberOfChildrenVisiting', 'NumberOfPersonVisiting',
-                         'OwnCar',  'NumberOfFollowups'], axis=1)  # 'NumberOfTrips',  'MonthlyIncome',
+                         'OwnCar',  'MonthlyIncome', 'NumberOfFollowups'], axis=1)  # 'NumberOfTrips',
 # x = train_set_clean.drop(['ProdTaken'], axis=1)
 test_set = test_set.drop(['NumberOfChildrenVisiting', 'NumberOfPersonVisiting',
-                         'OwnCar',  'NumberOfFollowups'], axis=1)  # 'NumberOfTrips', 'MonthlyIncome',
+                         'OwnCar', 'MonthlyIncome', 'NumberOfFollowups'], axis=1)  # 'NumberOfTrips',
 y = train_set_clean['ProdTaken']
 print(x.shape)
 
 
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size=0.91, shuffle=True, random_state=123, stratify=y)
+    x, y, train_size=0.91, shuffle=True, random_state=1234, stratify=y)
 # acc : 0.9418604651162791
 # smote = SMOTE(random_state=123)
 # x_train,y_train = smote.fit_resample(x_train,y_train)
@@ -242,4 +242,4 @@ submission = pd.read_csv(path + 'sample_submission.csv',  # 예측에서 쓸거�
                          )
 submission['ProdTaken'] = y_summit
 
-submission.to_csv(path + 'submission_19(0825).csv', index=False)
+submission.to_csv(path + 'submission_21(0825).csv', index=False)

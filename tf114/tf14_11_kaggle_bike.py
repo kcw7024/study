@@ -51,18 +51,23 @@ print(x.shape, y.shape)  # (10886, 14) (10886,)
 
 x = np.array(x)
 
-
+y = np.array(y)
 y = y.reshape(-1, 1)
+
+print(x.shape, y.shape)  # (10886, 12) (10886, 1)
+
+# y = y.reshape(-1, 1)
 # y = pd.get_dummies(y)
+
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.8, random_state=123
 )
 
-x = tf.compat.v1.placeholder(tf.float32, shape=[None, 13])
+x = tf.compat.v1.placeholder(tf.float32, shape=[None, 12])
 y = tf.compat.v1.placeholder(tf.float32, shape=[None, 1])
 
-w = tf.compat.v1.Variable(tf.compat.v1.random_normal([13, 1]), name='weight')
+w = tf.compat.v1.Variable(tf.compat.v1.random_normal([12, 1]), name='weight')
 b = tf.compat.v1.Variable(tf.compat.v1.random_normal([1]), name='bias')
 
 hypothesis = tf.compat.v1.matmul(x, w) + b  # matmul :: 행렬곱 함수
@@ -91,3 +96,6 @@ r2 = r2_score(y_test, y_predict)
 print("R2 :: ", r2)
 
 sess.close()
+
+
+# R2 ::  0.31689872461556534

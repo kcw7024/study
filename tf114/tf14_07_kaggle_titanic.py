@@ -102,6 +102,8 @@ y = train_set['Survived']
 print(y)
 print(y.shape)  # (891,)
 
+
+
 x_train, x_test, y_train, y_test = train_test_split(x, y,
                                                     train_size=0.8,
                                                     random_state=66

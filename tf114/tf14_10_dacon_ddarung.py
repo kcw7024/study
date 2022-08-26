@@ -56,7 +56,7 @@ hypothesis = tf.compat.v1.matmul(x, w) + b  # matmul :: 행렬곱 함수
 # hypothesis = :: y의 shape값과 같아야한다.
 
 loss = tf.reduce_mean(tf.square(hypothesis-y))  # mse
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.00000001)
 train = optimizer.minimize(loss)
 
 # 3-1. 컴파일
@@ -81,3 +81,5 @@ print("R2 :: ", r2)
 # print("mae :: ", mae)
 
 sess.close()
+
+# R2 ::  -0.2639427377908956

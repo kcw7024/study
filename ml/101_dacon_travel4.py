@@ -228,57 +228,132 @@ test_set = test_set.drop(['NumberOfChildrenVisiting', 'NumberOfPersonVisiting',
 y = train_set_clean['ProdTaken']
 print(x.shape)
 
-
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size=0.91, shuffle=True, random_state=123, stratify=y)
-# acc : 0.9418604651162791
-# smote = SMOTE(random_state=123)
-# x_train,y_train = smote.fit_resample(x_train,y_train)
-
-# 2. 모델
-
-# n_splits = 6
-
-# kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=123)
-
-cat_paramets = {
-                "learning_rate": [0.20909079092170735],
-                'depth': [8],
-                'od_pval': [0.236844398775451],
-                'model_size_reg': [0.30614059763442997],
-                'l2_leaf_reg': [5.535171839105427]
-                }
-
-# cat = CatBoostClassifier(random_state=123, verbose=False, n_estimators=500)
-# model = RandomizedSearchCV(cat, cat_paramets, cv=kfold, n_jobs=-1)
-
-model = CatBoostClassifier(
-            n_estimators=500,
-            learning_rate = [0.20909079092170735],
-            depth = [8],
-            od_pval = [0.236844398775451],
-            model_size_reg = [0.30614059763442997],
-            l2_leaf_reg = [5.535171839105427]
-
+    x, y, train_size=0.8, random_state=123
 )
 
+scaler = StandardScaler()
+x_train = scaler.fit_transform(x_train)
+x_test = scaler.transform(x_test)
+
+# 2. 모델
+bayesian_params = {
+    'learning_rate' : (0.01, 10),
+    'max_depth' : (6, 16),
+    'max_leaves' : (24, 64),
+    'one_hot_max_size' : (10, 200),
+    'subsample' : (0.5, 1),
+    'colsample_bylevel' : (0.5, 1),
+    'border_count' : (10, 500),
+    'l2_leaf_reg' : (0.001, 10),
+    'od_type' : (0.01, 50),
+    'od_pval' : (0.01, 50),
+    'model_size_reg' : (0.01, 50),
+    'has_time' : (0,100)
+}
 
 
-# start_time = time.time()
-model.fit(x_train, y_train)
-# end_time = time.time()-start_time
-y_predict = model.predict(x_test)
-results = accuracy_score(y_test, y_predict)
-print('최적의 매개변수 : ', model.best_params_)
-print('최상의 점수 : ', model.best_score_)
-print('acc :', results)
-# print('걸린 시간 :', end_time)
+# "learning_rate": [0.20909079092170735],
+# 'depth': [8],
+# 'od_pval': [0.236844398775451],
+# 'model_size_reg': [0.30614059763442997],
+# 'l2_leaf_reg': [5.535171839105427]
 
-model.fit(x, y)
-y_summit = model.predict(test_set)
-y_summit = np.round(y_summit, 0)
-submission = pd.read_csv(path + 'sample_submission.csv',  # 예측에서 쓸거야!!
-                         )
-submission['ProdTaken'] = y_summit
 
-submission.to_csv(path + 'submission_24(0826).csv', index=False)
+def cat_hamsu(learning_rate, max_depth,
+            max_leaves, one_hot_max_size, 
+            subsample,colsample_bylevel, border_count, 
+            l2_leaf_reg, od_type,od_pval,
+            model_size_reg,has_time) :
+    
+    params = {
+        'n_estimators' : 500, 
+        "learning_rate" : learning_rate,
+        'max_depth' : int(round(max_depth)), # 무조건 정수형
+        'max_leaves' : int(round(max_leaves)),
+        'subsample' : max(min(subsample,1),0), # 0~1사이의 값
+        'one_hot_max_size' : max(min(one_hot_max_size,1),0),
+        'colsample_bylevel' : max(min(colsample_bylevel,1),0),
+        'border_count' : max(min(border_count,1),0),
+        'l2_leaf_reg' : max(min(l2_leaf_reg,1),0),
+        'od_type' : max(min(od_type,1),0),
+        'od_pval' : max(min(od_pval,1),0),
+        'model_size_reg' : max(min(model_size_reg,1),0),
+        'has_time' : max(min(has_time,1),0),
+    }
+
+    #  * :: 여려개의 인자를 받겠다
+    # ** :: 키워드 받겠다(딕셔너리형태)
+
+    model = CatBoostClassifier(**params)
+
+    model.fit(x_train, y_train,
+              eval_set = [(x_train, y_train), (x_test, y_test)],
+              #eval_metric='rmse',
+              verbose=0,
+              early_stopping_rounds=50
+              )
+
+    y_predict = model.predict(x_test)
+    results = accuracy_score(y_test, y_predict)
+
+    return results
+
+cat_bo = BayesianOptimization(f=cat_hamsu,
+                              pbounds=bayesian_params,
+                              random_state=123
+                              )
+
+cat_bo.maximize(init_points=5, n_iter=50)
+
+print(cat_bo.max)
+
+'''
+{'target': 0.9912280701754386, 
+    'params': {'colsample_bylevel': 0.9663807206030328, 
+    'colsample_bytree': 0.7402837722085994, 
+    'max_bin': 176.5547753662509, 
+    'max_depth': 15.620931151329858, 
+    'min_child_weight': 1.3470658368579622, 
+    'reg_alpha': 3.0664881741733976, 
+    'reg_lambda': 9.426306524716228, 
+    'subsample': 0.6927562163656839}
+    }
+'''
+
+
+# model = CatBoostClassifier(
+#     n_estimators=500,
+#     learning_rate=0.02,
+#     colsample_bylevel=[max(min(0.9663807206030328, 1), 0)],
+#     colsample_bytree=max(min(0.7402837722085994, 1), 0),
+#     max_bin=max(int(round(176.5547753662509)), 100),
+#     max_depth=int(round(15.620931151329858)),
+#     min_child_weight=int(round(1.3470658368579622)),
+#     reg_alpha=max(3.0664881741733976, 0),
+#     reg_lambda=max(9.426306524716228, 0),
+#     subsample=max(min(0.6927562163656839, 1), 0)
+# )
+
+
+# #3. 훈련
+# import time
+# start = time.time()
+# model.fit(x_train, y_train)
+# end = time.time()
+
+# #4. 평가, 예측
+# y_predict = model.predict(x_test)
+# print("accuracy_score :" , accuracy_score(y_test, y_predict))
+
+# y_pred_best = model.best_estimator_.predict(x_test)
+# print("최적 튠 ACC : ", accuracy_score(y_test, y_pred_best))
+# print("걸린시간 : ", round(end-start, 2))
+
+
+'''
+accuracy_score : 0.9649122807017544
+최적 튠 ACC :  0.9649122807017544
+걸린시간 :  3.24
+
+'''

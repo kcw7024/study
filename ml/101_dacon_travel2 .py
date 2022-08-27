@@ -18,6 +18,10 @@ train_set = pd.read_csv(path + 'train.csv', index_col=0)
 test_set = pd.read_csv(path + 'test.csv', index_col=0)
 submission = pd.read_csv(path + 'sample_submission.csv')
 
+
+
+
+#### Fe Male 수정 
 train_set['Gender'] = train_set['Gender'].str.replace('Fe Male', 'Female')
 test_set['Gender'] = test_set['Gender'].str.replace('Fe Male', 'Female')
 # print(test_set.head(30))
@@ -85,20 +89,18 @@ print(train_set)
 print(test_set)
 
 # 불필요한 컬럼 날림
+
 train_set = train_set.drop(columns=['NumberOfTrips', 'TypeofContact',
                            'NumberOfChildrenVisiting', 'NumberOfPersonVisiting', 'OwnCar', 'MonthlyIncome'])
 test_set = test_set.drop(columns=['NumberOfTrips', 'TypeofContact',
                          'NumberOfChildrenVisiting', 'NumberOfPersonVisiting', 'OwnCar', 'MonthlyIncome'])
 
-
 x = train_set.drop(['ProdTaken'], axis=1)
 y = train_set['ProdTaken']
-
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.8, random_state=72, stratify=y
 )
-
 
 bayesian_params = {
     'max_depth': (6, 16),
@@ -186,6 +188,8 @@ def xgb_hamsu(max_depth, min_child_weight,
 #     reg_lambda=max(0.001, 0),
 #     subsample=max(min(1.0, 1), 0)
 # )
+
+
 
 model = ExtraTreesClassifier(n_estimators=200, ccp_alpha=0.0, class_weight=None, criterion='gini',
                              max_depth=None, max_features='auto', max_leaf_nodes=None,

@@ -240,7 +240,7 @@ x_test = scaler.transform(x_test)
 bayesian_params = {
     'learning_rate' : (0.01, 10),
     'max_depth' : (6, 16),
-    'max_leaves' : (24, 64),
+    # 'max_leaves' : (24, 64),
     'one_hot_max_size' : (10, 200),
     'subsample' : (0.5, 1),
     'colsample_bylevel' : (0.5, 1),
@@ -249,7 +249,6 @@ bayesian_params = {
     'od_type' : (0.01, 50),
     'od_pval' : (0.01, 50),
     'model_size_reg' : (0.01, 50),
-    'has_time' : (0,100)
 }
 
 
@@ -261,16 +260,16 @@ bayesian_params = {
 
 
 def cat_hamsu(learning_rate, max_depth,
-            max_leaves, one_hot_max_size, 
+            one_hot_max_size, 
             subsample,colsample_bylevel, border_count, 
             l2_leaf_reg, od_type,od_pval,
-            model_size_reg,has_time) :
+            model_size_reg) :
     
     params = {
         'n_estimators' : 500, 
-        "learning_rate" : learning_rate,
+        'learning_rate': 0.02,
         'max_depth' : int(round(max_depth)), # 무조건 정수형
-        'max_leaves' : int(round(max_leaves)),
+        # 'max_leaves' : int(round(max_leaves)),
         'subsample' : max(min(subsample,1),0), # 0~1사이의 값
         'one_hot_max_size' : max(min(one_hot_max_size,1),0),
         'colsample_bylevel' : max(min(colsample_bylevel,1),0),
@@ -279,7 +278,6 @@ def cat_hamsu(learning_rate, max_depth,
         'od_type' : max(min(od_type,1),0),
         'od_pval' : max(min(od_pval,1),0),
         'model_size_reg' : max(min(model_size_reg,1),0),
-        'has_time' : max(min(has_time,1),0),
     }
 
     #  * :: 여려개의 인자를 받겠다
@@ -309,17 +307,17 @@ cat_bo.maximize(init_points=5, n_iter=50)
 print(cat_bo.max)
 
 '''
-{'target': 0.9912280701754386, 
-    'params': {'colsample_bylevel': 0.9663807206030328, 
-    'colsample_bytree': 0.7402837722085994, 
-    'max_bin': 176.5547753662509, 
-    'max_depth': 15.620931151329858, 
-    'min_child_weight': 1.3470658368579622, 
-    'reg_alpha': 3.0664881741733976, 
-    'reg_lambda': 9.426306524716228, 
-    'subsample': 0.6927562163656839}
-    }
-'''
+{'target': 0.9060052219321149, 
+'params': {'border_count': 349.08501863083245, 
+'colsample_bylevel': 0.8910430434208152, 
+'l2_leaf_reg': 7.257150375665365, 
+'learning_rate': 8.568833865283933,
+'max_depth': 11.617215964627862,
+'model_size_reg': 15.195634438598251,
+'od_pval': 41.992138779304966,
+'od_type': 37.421178963755835, 
+'one_hot_max_size': 101.50153950289088, 
+'subsample': 0.9403029928332964}}
 
 
 # model = CatBoostClassifier(

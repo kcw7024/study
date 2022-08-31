@@ -31,12 +31,24 @@ x_test = scaler.transform(x_train)
 # 2. 모델 구성
 
 x = tf.compat.v1.placeholder(tf.float32, shape=[None, 13])
-w = tf.Variable(tf.random_normal([13, 3]), name='weight')
-b = tf.Variable(tf.random_normal([3]), name='bias')
 y = tf.compat.v1.placeholder(tf.float32, shape=[None, 3])
-# == 이렇게 하나의 레이어
 
-hypothesis = tf.nn.softmax(tf.matmul(x, w) + b)
+w1 = tf.Variable(tf.random_normal([13, 50]), name='weight1')
+b1 = tf.Variable(tf.random_normal([50]), name='bias1')
+
+hidden1 = tf.nn.relu(tf.matmul(x, w1) + b1)
+
+w2 = tf.Variable(tf.random_normal([50, 80]), name='weight2')
+b2 = tf.Variable(tf.random_normal([80]), name='bias2')
+
+hidden2 = tf.nn.relu(tf.matmul(hidden1, w2) + b2)
+
+w3 = tf.Variable(tf.random_normal([80, 3]), name='weight3')
+b3 = tf.Variable(tf.random_normal([3]), name='bias3')
+
+hypothesis = tf.nn.softmax(tf.matmul(hidden2, w3) + b3)
+
+
 # == model.add(Dense(3, activation='sotfmax', input_dim=4))
 
 # 3-1. 컴파일
@@ -51,7 +63,7 @@ train = tf.train.GradientDescentOptimizer(learning_rate=1e-5).minimize(loss)
 sess = tf.compat.v1.Session()
 sess.run(tf.compat.v1.global_variables_initializer())
 
-epoch = 1001
+epoch = 400
 for epochs in range(epoch):
     cost_val, hy_val, _ = sess.run([loss, hypothesis, train],
                                    feed_dict={x: x_train, y: y_train})
@@ -65,7 +77,6 @@ y_test = y_test.values
 
 y_predict = np.argmax(y_predict, axis=1)
 y_test = np.argmax(y_test, axis=1)
-
 
 acc = accuracy_score(y_test, y_predict)
 print("ACC :: ", acc)

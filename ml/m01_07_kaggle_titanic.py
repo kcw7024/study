@@ -115,7 +115,7 @@ print(np.max(x_test))  # 1.0
 
 #2. 모델구성
 
-model = LinearSVC()
+model = LinearSVR()
                                                                         
 #3. 컴파일, 훈련
 model.fit(x_train, y_train)

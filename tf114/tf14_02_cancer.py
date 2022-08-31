@@ -47,7 +47,7 @@ train = optimizer.minimize(loss)
 # 3-2. 훈련
 sess = tf.compat.v1.Session()
 sess.run(tf.compat.v1.global_variables_initializer())
-epoch = 5000
+epoch = 500
 start_time = time.time()
 for epochs in range(epoch):
     cost_val, h_val, _ = sess.run([loss, hypothesis, train],
@@ -65,3 +65,6 @@ end_time = time.time()-start_time
 print('acc :', acc)
 print('걸린 시간 :', end_time)
 sess.close()
+
+# acc : 0.6291079812206573
+# 걸린 시간 : 3.6845951080322266

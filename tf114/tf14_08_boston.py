@@ -1,59 +1,52 @@
-from sklearn.model_selection import train_test_split
-from sklearn.datasets import load_diabetes, load_boston
-from sklearn.metrics import mean_absolute_error, r2_score, median_absolute_error
 import tensorflow as tf
+from sklearn.metrics import accuracy_score, r2_score, mean_absolute_error
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_boston
 import numpy as np
-import pandas as pd
-tf.compat.v1.set_random_seed(1234)
+tf.compat.v1.set_random_seed(123)
 
 # 1. 데이터
-
-datasets = load_boston()
-
-x = datasets.data
-y = datasets.target
-
-print(x.shape, y.shape)
-# (506, 13) (506,)
-
+data = load_boston()
+x, y = data.data, data.target
 y = y.reshape(-1, 1)
-# y = pd.get_dummies(y)
+print(x.shape, y.shape) # (506, 13) (506, 1)
 
-x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size=0.8, random_state=123
-)
+x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8, random_state=1234)
 
 x = tf.compat.v1.placeholder(tf.float32, shape=[None, 13])
 y = tf.compat.v1.placeholder(tf.float32, shape=[None, 1])
 
-w = tf.compat.v1.Variable(tf.compat.v1.random_normal([13, 1]), name='weight')
-b = tf.compat.v1.Variable(tf.compat.v1.random_normal([1]), name='bias')
+w = tf.compat.v1.Variable(tf.compat.v1.zeros([13,1]), name='weight')
+b = tf.compat.v1.Variable(tf.compat.v1.zeros([1]), name='bias')
 
-hypothesis = tf.compat.v1.matmul(x, w) + b  # matmul :: 행렬곱 함수
-# hypothesis = :: y의 shape값과 같아야한다.
-
-loss = tf.reduce_mean(tf.square(hypothesis-y))  # mse
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=1e-5)
-train = optimizer.minimize(loss)
+# 2. 모델
+hypothesis = tf.compat.v1.matmul(x, w) + b
 
 # 3-1. 컴파일
+loss = tf.reduce_mean(tf.square(hypothesis-y))
 
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=1e-6)
+train = optimizer.minimize(loss)
+
+# 3-2. 훈련
 sess = tf.compat.v1.Session()
-sess.run(tf.compat.v1.global_variables_initializer())
+sess.run(tf.global_variables_initializer())
 
-epoch = 2001
-for epochs in range(epoch):
-    cost_val, hy_val, _ = sess.run([loss, hypothesis, train],
-                                   feed_dict={x: x_train, y: y_train})
-    if epochs % 20 == 0:
-        print(epochs, "loss :: ", cost_val, "\n", hy_val)
+epochs = 2001
+for step in range(epochs):
+    _, hy_val, cost_val, b_val = sess.run([train,hypothesis,loss,b], feed_dict={x:x_train, y:y_train})
+    if step%20 == 0:
+        print(step, cost_val, hy_val)
+        
+print('최종: ', cost_val, hy_val)
 
+y_pred = sess.run(hypothesis, feed_dict={x:x_test, y:y_test})
 
-# 4. 평가, 예측
+r2 = r2_score(y_test, y_pred)
+print('r2: ', r2)
 
-r2 = r2_score(y_test, hy_val)
-print("R2 :: ", r2)
-mae = mean_absolute_error(y_test, hy_val)
-print("mae :: ", mae)
+mae = mean_absolute_error(y_test, y_pred)
+print('mae: ', mae)
 
-sess.close()
+# r2:  0.1072307733456479
+# mae:  7.019671792610019

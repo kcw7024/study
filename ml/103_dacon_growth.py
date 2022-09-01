@@ -20,35 +20,16 @@ warnings.filterwarnings(action='ignore')
 # warnings.filterwarnings(action='ignore')
 
 # #1. 데이터
-path = ('C:/study/_data/dacon_growth/')
-
-# train_input_list = sorted(glob.glob(path + 'train_input/*.csv'))
-# train_target_list = sorted(glob.glob(path + 'train_target/*.csv'))
-# test_input_list = sorted(glob.glob(path + 'test_input/*.csv'))
-# test_target_list = sorted(glob.glob(path + 'test_target/*.csv'))
-
-# x_train = pd.concat(map(pd.read_csv, train_input_list), ignore_index=True)
-# x_test = pd.concat(map(pd.read_csv, train_target_list), ignore_index=True)
-# y_train = pd.concat(map(pd.read_csv, test_input_list), ignore_index=True)
-# y_test = pd.concat(map(pd.read_csv, test_target_list), ignore_index=True)
-
-# #print(input_list)
-# print(x_train.shape, y_train.shape) #(2611507, 43) (285120, 42)
-# print(x_test.shape, y_test.shape) #(1813, 2) (195, 2)
-
-# #1-1. 결측치 처리
-# #결측치 확인
-# print(x_train.isnull().sum())
-# print(x_test.isnull().sum())
+path = ('D:/study_data/_data/dacon_growth/')
 
 device = torch.device(
     'cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 CFG = {
-    'EPOCHS':10,
+    'EPOCHS':7,
     'LEARNING_RATE':1e-3,
     'BATCH_SIZE':16,
-    'SEED':106
+    'SEED':72
 }
 
 
@@ -65,9 +46,9 @@ def seed_everything(seed):
 seed_everything(CFG['SEED'])  # Seed 고정
 
 all_input_list = sorted(
-    glob.glob('C:/study/_data/dacon_growth/train_input/*.csv'))
+    glob.glob('D:/study_data/_data/dacon_growth/train_input/*.csv'))
 all_target_list = sorted(
-    glob.glob('C:/study/_data/dacon_growth/train_target/*.csv'))
+    glob.glob('D:/study_data/_data/dacon_growth/train_target/*.csv'))
 
 train_input_list = all_input_list[:50]
 train_target_list = all_target_list[:50]
@@ -115,10 +96,10 @@ class CustomDataset(Dataset):
 
 
 train_dataset = CustomDataset(train_input_list, train_target_list, False)
-train_loader = DataLoader(train_dataset, batch_size = CFG['BATCH_SIZE'], shuffle=True, num_workers=6)
+train_loader = DataLoader(train_dataset, batch_size = CFG['BATCH_SIZE'], shuffle=True, num_workers=0)
 
 val_dataset = CustomDataset(val_input_list, val_target_list, False)
-val_loader = DataLoader(val_dataset, batch_size=CFG['BATCH_SIZE'], shuffle=False, num_workers=6)
+val_loader = DataLoader(val_dataset, batch_size=CFG['BATCH_SIZE'], shuffle=False, num_workers=0)
 
 
 class BaseModel(nn.Module):
@@ -188,13 +169,13 @@ def validation(model, val_loader, criterion, device):
     return np.mean(val_loss)
 
 
-# def run():
-#     torch.multiprocessing.freeze_support()
-#     print('loop')
+def run():
+    torch.multiprocessing.freeze_support()
+    print('loop')
 
 
-# if __name__ == '__main__':
-#     run()
+if __name__ == '__main__':
+    run()
 
 model = BaseModel()
 model.eval()
@@ -204,9 +185,9 @@ scheduler = None
 best_model = train(model, optimizer, train_loader, val_loader, scheduler, device)
 
 test_input_list = sorted(
-    glob.glob('C:/study/_data/dacon_growth/test_input/*.csv'))
+    glob.glob('D:/study_data/_data/dacon_growth/test_input/*.csv'))
 test_target_list = sorted(
-    glob.glob('C:/study/_data/dacon_growth/test_target/*.csv'))
+    glob.glob('D:/study_data/_data/dacon_growth/test_target/*.csv'))
 
 
 def inference_per_case(model, test_loader, test_path, device):
@@ -235,9 +216,17 @@ for test_input_path, test_target_path in zip(test_input_list, test_target_list):
     inference_per_case(best_model, test_loader, test_target_path, device)
 
 
-os.chdir("C:/study/_data/dacon_growth/test_target")
-submission = zipfile.ZipFile("submission_4.zip", 'w')
-for path in test_target_list:
-    path = path.split('/')[-1]
-    submission.write(path)
-submission.close()
+# os.chdir("D:/study_data/_data/dacon_growth/test_target")
+# submission = zipfile.ZipFile("submission_4.zip", 'w')
+# for path in test_target_list:
+#     path = path.split('/')[-1]
+#     submission.write(path)
+# submission.close()
+
+import zipfile
+filelist = ['TEST_01.csv','TEST_02.csv','TEST_03.csv','TEST_04.csv','TEST_05.csv', 'TEST_06.csv']
+os.chdir("D:\study_data\_data\dacon_growth/test_target")
+with zipfile.ZipFile("submission_10.zip", 'w') as my_zip:
+    for i in filelist:
+        my_zip.write(i)
+    my_zip.close()

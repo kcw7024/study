@@ -1,1 +1,5 @@
 _data/
+image_classifier/oracle.json
+image_classifier/tuner0.json
+image_classifier/trial_0/trial.json
+image_classifier/trial_1/trial.json

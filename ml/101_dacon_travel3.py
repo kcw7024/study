@@ -230,50 +230,41 @@ print(x.shape)
 
 
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size=0.91, shuffle=True, random_state=123, stratify=y)
+    x, y, train_size=0.91, shuffle=True, random_state=72, stratify=y)
 # acc : 0.9418604651162791
 # smote = SMOTE(random_state=123)
 # x_train,y_train = smote.fit_resample(x_train,y_train)
 
 # 2. 모델
 
-# n_splits = 6
+n_splits = 6
 
-# kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=123)
+kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=123)
 
-# cat_paramets = {
-#                 "learning_rate": [0.20909079092170735],
-#                 'depth': [8],
-#                 'od_pval': [0.236844398775451],
-#                 'model_size_reg': [0.30614059763442997],
-#                 'l2_leaf_reg': [5.535171839105427]
-#                 }
+cat_paramets = {
+                "learning_rate": [0.20909079092170735],
+                'depth': [8],
+                'od_pval': [0.236844398775451],
+                'model_size_reg': [0.30614059763442997],
+                'l2_leaf_reg': [5.535171839105427]
+                }
 
-# cat = CatBoostClassifier(random_state=123, verbose=False, n_estimators=500)
-# model = RandomizedSearchCV(cat, cat_paramets, cv=kfold, n_jobs=-1)
+cat = CatBoostClassifier(random_state=123, verbose=False, n_estimators=500)
+model = RandomizedSearchCV(cat, cat_paramets, cv=kfold, n_jobs=-1)
 
 # model = CatBoostClassifier(
 #             n_estimators=500,
-#             learning_rate = [0.20909079092170735],
-#             depth = [8],
-#             od_pval = [0.236844398775451],
-#             model_size_reg = [0.30614059763442997],
-#             l2_leaf_reg = [5.535171839105427]
+#             learning_rate = 0.02,
+#             border_count = [349.08501863083245],
+#             max_depth = [11.617215964627862],
+#             od_pval = [41.992138779304966],
+#             model_size_reg = [15.195634438598251],
+#             l2_leaf_reg = [7.257150375665365],
+#             od_type = [37.421178963755835],
+#             one_hot_max_size = [101.50153950289088],
+#             subsample = [0.9403029928332964],
+#             colsample_bylevel = [0.8910430434208152],
 # )
-
-model = CatBoostClassifier(
-            n_estimators=500,
-            learning_rate = 0.02,
-            border_count = [349.08501863083245],
-            max_depth = [11.617215964627862],
-            od_pval = [41.992138779304966],
-            model_size_reg = [15.195634438598251],
-            l2_leaf_reg = [7.257150375665365],
-            od_type = [37.421178963755835],
-            one_hot_max_size = [101.50153950289088],
-            subsample = [0.9403029928332964],
-            colsample_bylevel = [0.8910430434208152],
-)
 
 
 
@@ -294,4 +285,4 @@ submission = pd.read_csv(path + 'sample_submission.csv',  # 예측에서 쓸거�
                          )
 submission['ProdTaken'] = y_summit
 
-submission.to_csv(path + 'submission_25(0828).csv', index=False)
+submission.to_csv(path + 'submission_28(0901).csv', index=False)

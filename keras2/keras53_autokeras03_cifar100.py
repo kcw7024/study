@@ -1,11 +1,11 @@
 import autokeras as ak
-from keras.datasets import mnist, fashion_mnist , cifar10
+from keras.datasets import mnist, fashion_mnist , cifar100
 print(ak.__version__) #1,0 20
 import keras
 import time
 #데이터
 (x_train , y_train), (x_test , y_test) =\
-    keras.datasets.cifar10.load_data()
+    keras.datasets.cifar100.load_data()
     
 print(x_train.shape ,y_train.shape,x_test.shape,y_test.shape) #(50000, 32, 32, 3) (50000, 1) (10000, 32, 32, 3) (10000, 1)
 
@@ -29,3 +29,6 @@ y_pred = model.predict(x_test)
 results = model.evaluate(x_test, y_test)
 print('결과:',results)
 print('걸린시간:',round(end-start,4))
+
+# 결과: [2.4992151260375977, 0.3878999948501587]
+# 걸린시간: 3465.4287

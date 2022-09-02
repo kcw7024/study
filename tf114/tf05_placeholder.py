@@ -23,7 +23,7 @@ b = tf.compat.v1.placeholder(tf.float32)
 # 2. 수식
 add_node = a + b
 
-# 3. placeholder로 겅의한 공간, 그값에(feed_dict) 숫자를 넣어준다.
+# 3. placeholder로 정의한 공간, 그값에(feed_dict) 숫자를 넣어준다.
 print(sess.run(add_node, feed_dict={a: 3, b: 4.5}))
 print(sess.run(add_node, feed_dict={a: [1, 3], b: [2, 4]}))
 

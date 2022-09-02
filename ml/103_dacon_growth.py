@@ -26,10 +26,10 @@ device = torch.device(
     'cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 CFG = {
-    'EPOCHS':7,
+    'EPOCHS':5,
     'LEARNING_RATE':1e-3,
     'BATCH_SIZE':16,
-    'SEED':72
+    'SEED':32
 }
 
 
@@ -226,7 +226,7 @@ for test_input_path, test_target_path in zip(test_input_list, test_target_list):
 import zipfile
 filelist = ['TEST_01.csv','TEST_02.csv','TEST_03.csv','TEST_04.csv','TEST_05.csv', 'TEST_06.csv']
 os.chdir("D:\study_data\_data\dacon_growth/test_target")
-with zipfile.ZipFile("submission_10.zip", 'w') as my_zip:
+with zipfile.ZipFile("submission_13.zip", 'w') as my_zip:
     for i in filelist:
         my_zip.write(i)
     my_zip.close()

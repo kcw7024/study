@@ -167,35 +167,35 @@ NumberOfChildrenVisiting_out_index = outliers(
 Designation_out_index = outliers(train_set['Designation'])[0]
 MonthlyIncome_out_index = outliers(train_set['MonthlyIncome'])[0]
 
-lead_outlier_index = np.concatenate((  # Age_out_index,                            # acc : 0.8650306748466258
-                                    #  TypeofContact_out_index,                 # acc : 0.8920454545454546
-                                    #  CityTier_out_index,                      # acc : 0.8920454545454546
-                                    DurationOfPitch_out_index,               # acc : 0.9156976744186046
-                                    #  Gender_out_index,                        # acc : 0.8920454545454546
-                                    #  NumberOfPersonVisiting_out_index,        # acc : 0.8835227272727273
-                                    #  NumberOfFollowups_out_index,             # acc : 0.8942598187311178
-                                    #  ProductPitched_index,                    # acc : 0.8920454545454546
-                                    #  PreferredPropertyStar_out_index,         # acc : 0.8920454545454546
-                                    #  MaritalStatus_out_index,                 # acc : 0.8920454545454546
-                                    #  NumberOfTrips_out_index,                 # acc : 0.8670520231213873
-                                    #  Passport_out_index,                      # acc : 0.8920454545454546
-                                    #  PitchSatisfactionScore_out_index,        # acc : 0.8920454545454546
-                                    #  OwnCar_out_index,                        # acc : 0.8920454545454546
-                                    #  NumberOfChildrenVisiting_out_index,      # acc : 0.8920454545454546
-                                    #  Designation_out_index,                   # acc : 0.8869047619047619
-                                    #  MonthlyIncome_out_index                  # acc : 0.8932926829268293
-                                    ), axis=None)
+# lead_outlier_index = np.concatenate((  # Age_out_index,                            # acc : 0.8650306748466258
+#                                     #  TypeofContact_out_index,                 # acc : 0.8920454545454546
+#                                     #  CityTier_out_index,                      # acc : 0.8920454545454546
+#                                     DurationOfPitch_out_index,               # acc : 0.9156976744186046
+#                                     #  Gender_out_index,                        # acc : 0.8920454545454546
+#                                     #  NumberOfPersonVisiting_out_index,        # acc : 0.8835227272727273
+#                                     #  NumberOfFollowups_out_index,             # acc : 0.8942598187311178
+#                                     #  ProductPitched_index,                    # acc : 0.8920454545454546
+#                                     #  PreferredPropertyStar_out_index,         # acc : 0.8920454545454546
+#                                     #  MaritalStatus_out_index,                 # acc : 0.8920454545454546
+#                                     #  NumberOfTrips_out_index,                 # acc : 0.8670520231213873
+#                                     #  Passport_out_index,                      # acc : 0.8920454545454546
+#                                     #  PitchSatisfactionScore_out_index,        # acc : 0.8920454545454546
+#                                     #  OwnCar_out_index,                        # acc : 0.8920454545454546
+#                                     #  NumberOfChildrenVisiting_out_index,      # acc : 0.8920454545454546
+#                                     #  Designation_out_index,                   # acc : 0.8869047619047619
+#                                     #  MonthlyIncome_out_index                  # acc : 0.8932926829268293
+#                                     ), axis=None)
 
-print(len(lead_outlier_index))  # 577
-# print(lead_outlier_index)
+# print(len(lead_outlier_index))  # 577
+# # print(lead_outlier_index)
 
-lead_not_outlier_index = []
-for i in train_set.index:
-    if i not in lead_outlier_index:
-        lead_not_outlier_index.append(i)
-train_set_clean = train_set.loc[lead_not_outlier_index]
-train_set_clean = train_set_clean.reset_index(drop=True)
-# print(train_set_clean)
+# lead_not_outlier_index = []
+# for i in train_set.index:
+#     if i not in lead_outlier_index:
+#         lead_not_outlier_index.append(i)
+# train_set_clean = train_set.loc[lead_not_outlier_index]
+# train_set_clean = train_set_clean.reset_index(drop=True)
+# # print(train_set_clean)
 
 '''
 id : 샘플 아이디
@@ -219,15 +219,24 @@ Designation : (직업의) 직급
 MonthlyIncome : 월 급여
 ProdTaken : 여행 패키지 신청 여부 (0: 신청 안 함, 1: 신청함)
 '''
-
-x = train_set_clean.drop(['ProdTaken', 'NumberOfChildrenVisiting', 'NumberOfPersonVisiting',
-                           'OwnCar','MonthlyIncome', 'NumberOfFollowups'], axis=1)  # 'NumberOfTrips',
-# x = train_set_clean.drop(['ProdTaken'], axis=1)
-test_set = test_set.drop(['NumberOfChildrenVisiting', 'NumberOfPersonVisiting',
-                          'OwnCar','MonthlyIncome', 'NumberOfFollowups'], axis=1)  # 'NumberOfTrips',
-y = train_set_clean['ProdTaken']
-print(x.shape)
-
+x = train_set.drop(['ProdTaken',
+                          'NumberOfChildrenVisiting',
+                          'NumberOfPersonVisiting',
+                          'OwnCar', 
+                          'MonthlyIncome', 
+                          'NumberOfFollowups',
+                        #   'TypeofContact',
+                          ], axis=1)
+# x = train_set.drop(['ProdTaken'], axis=1)
+test_set = test_set.drop(['NumberOfChildrenVisiting',
+                          'NumberOfPersonVisiting',
+                          'OwnCar', 
+                          'MonthlyIncome', 
+                          'NumberOfFollowups',
+                        #   'TypeofContact',
+                          ], axis=1)
+y = train_set['ProdTaken']
+print(x.shape) #1911,13
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.91, shuffle=True, random_state=72, stratify=y)
@@ -285,4 +294,4 @@ submission = pd.read_csv(path + 'sample_submission.csv',  # 예측에서 쓸거�
                          )
 submission['ProdTaken'] = y_summit
 
-submission.to_csv(path + 'submission_28(0901).csv', index=False)
+submission.to_csv(path + 'submission_29(0902).csv', index=False)

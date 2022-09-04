@@ -61,8 +61,11 @@ cols = ['TypeofContact','Occupation','Gender','ProductPitched','MaritalStatus','
 from sklearn.preprocessing import LabelEncoder
 from tqdm import tqdm_notebook
 
+
+
 for col in tqdm_notebook(cols):
     le = LabelEncoder()
+    
     train_set[col]=le.fit_transform(train_set[col])
     test_set[col]=le.fit_transform(test_set[col])
 
@@ -118,10 +121,6 @@ print('best params :: ',model.best_params_)
 print('best score :: ',model.best_score_)
 print('Accuracy score ::',results)
 
-import pickle
-path2 = 'd:/study_data/_save/_cat/'
-pickle.dump(model, open(path2+'travel_save.dat', 'wb'))
-
 model.fit(x, y)
 y_summit = model.predict(test_set)
 y_summit = np.round(y_summit, 0)
@@ -129,4 +128,8 @@ submission = pd.read_csv(path + 'sample_submission.csv')
 submission['ProdTaken'] = y_summit
 
 submission.to_csv(path + 'submission_31(0902).csv', index=False)
+
+import pickle
+path2 = 'd:/study_data/_save/_cat/'
+pickle.dump(model, open(path2+'travel_save.dat', 'wb'))
 

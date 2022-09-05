@@ -122,10 +122,10 @@ print('best score :: ',model.best_score_)
 print('Accuracy score ::',results)
 
 model.fit(x, y)
-y_summit = model.predict(test_set)
-y_summit = np.round(y_summit, 0)
+y_submit = model.predict(test_set)
+y_submit = np.round(y_submit, 0)
 submission = pd.read_csv(path + 'sample_submission.csv')
-submission['ProdTaken'] = y_summit
+submission['ProdTaken'] = y_submit
 
 submission.to_csv(path + 'submission_31(0902).csv', index=False)
 

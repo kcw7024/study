@@ -216,10 +216,20 @@ x_train, x_test, y_train, y_test = train_test_split(
 x = tf.compat.v1.placeholder(tf.float32, shape=[None, 12])
 y = tf.compat.v1.placeholder(tf.float32, shape=[None, 1])
 
-w = tf.compat.v1.Variable(tf.compat.v1.random_normal([12, 1]), name='weight')
-b = tf.compat.v1.Variable(tf.compat.v1.random_normal([1]), name='bias')
+w = tf.compat.v1.Variable(tf.compat.v1.random_normal([12, 100]), name='weight')
+b = tf.compat.v1.Variable(tf.compat.v1.random_normal([100]), name='bias')
 
-hypothesis = tf.compat.v1.matmul(x, w) + b  # matmul :: 행렬곱 함수
+hidden = tf.compat.v1.matmul(x, w) + b
+
+w2 = tf.compat.v1.Variable(tf.compat.v1.random_normal([100, 40]), name='weight')
+b2 = tf.compat.v1.Variable(tf.compat.v1.random_normal([40]), name='bias')
+
+hidden2 = tf.compat.v1.matmul(hidden, w2) + b2 
+
+w3 = tf.compat.v1.Variable(tf.compat.v1.random_normal([40, 1]), name='weight')
+b3 = tf.compat.v1.Variable(tf.compat.v1.random_normal([1]), name='bias')
+
+hypothesis = tf.compat.v1.matmul(hidden2, w3) + b3  # matmul :: 행렬곱 함수
 # hypothesis = :: y의 shape값과 같아야한다.
 
 loss = tf.reduce_mean(tf.square(hypothesis-y))  # mse

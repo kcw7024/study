@@ -72,7 +72,7 @@ L4 = tf.nn.dropout(L4, rate=0.3) # rate = 0.3
 
 # Layer5 DNN
 w5 = tf.compat.v1.get_variable('w5', shape=[32, 10], 
-                     initializer=tf.contrib.layers.xavier_initializer() # 초기화
+                    #  initializer=tf.contrib.layers.xavier_initializer() # 초기화
                      )
 
 b5 = tf.compat.v1.Variable(tf.random.normal([10]), name='b5')
@@ -107,7 +107,10 @@ for epoch in range(training_epochs): # 총 30번 돈다.
         batch_loss, _ = sess.run([loss, optimizer], feed_dict=feed_dict)
         
         avg_loss += batch_loss / total_batch
-    print('Epoch : ', '%04d' %(epoch + 1), 'loss : {:.9f}'.format(avg_loss))
+        
+    prediction = tf.equal(tf.compat.v1.arg_max(hypothesis, 1), tf.argmax(y, 1))
+    acc = tf.reduce_mean(tf.cast(prediction, tf.float32))
+    print('Epoch : ', '%04d' %(epoch + 1), 'loss : {:.9f}'.format(avg_loss),  'ACC: ', acc)
 print("DONE.")
 
 

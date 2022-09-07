@@ -6,7 +6,7 @@ import numpy as np
 from keras.datasets import mnist, cifar100
 from sklearn.datasets import load_iris, load_breast_cancer
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense,Conv2D,Flatten,MaxPool2D,Input, Dropout
+from tensorflow.keras.layers import Dense,Conv2D,Flatten,MaxPool2D,Input, Dropout, Conv1D, LSTM
 from sklearn.model_selection import train_test_split
 
 import keras
@@ -35,41 +35,33 @@ x_test = x_test.reshape(171, 30)
 # y_train = to_categorical(y_train)
 # y_test = to_categorical(y_test)
 
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
-scaler = MinMaxScaler()
+scaler = StandardScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
 
-x_train = x_train.reshape(398, 5, 6, 1)
-x_test = x_test.reshape(171, 5, 6, 1)
+x_train = x_train.reshape(398, 30, 1)
+x_test = x_test.reshape(171, 30, 1)
 
 #2. 모델
 activation = 'relu'
 drop = 0.2
 optimizer = 'adam'
 
-inputs = Input(shape=(5, 6, 1), name='input')
-x = Conv2D(64, (1, 1), padding='valid',
-           activation=activation, name='hidden1')(inputs) # 27, 27, 128
-x = Dropout(drop)(x)
-# x = Conv2D(64, (2, 2), padding='same',
-#            activation=activation, name='hidden2')(x) # 13, 13, 64
-# x = Dropout(drop)(x)
-x = MaxPool2D()(x)
-x = Conv2D(32, (1, 1), padding='valid',
-           activation=activation, name='hidden3')(x) # 12, 12, 32
-x = Dropout(drop)(x)
-# x = Flatten()(x) # 25*25*32 = 20000
-x = GlobalAveragePooling2D()(x)
-x = Dense(64, activation=activation, name='hidden4')(x)
-x = Dropout(drop)(x)
-outputs = Dense(1, activation='sigmoid', name='outputs')(x)    
-
-model = Model(inputs=inputs, outputs=outputs)
+model = Sequential()
+model.add(LSTM(10,input_shape=(30,1)))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(100, activation='relu')) 
+model.add(Dense(1,activation='sigmoid'))
 
 
-# model.summary()
+# model.summary() 
 
 
 model.compile(optimizer=optimizer, metrics=['acc'], 
@@ -86,8 +78,6 @@ end = time.time()
 loss, acc = model.evaluate(x_test,y_test)
 
 print("걸린시간 : ", end-start)
-# print("model.best_score_ :", model.best_score_)
-# print("model.score :", model.score)
 
 from sklearn.metrics import accuracy_score
 

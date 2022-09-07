@@ -14,10 +14,14 @@ from tensorflow.keras.layers import GlobalAveragePooling2D
 
 #1. 데이터
 
-(x_train, y_train), (x_test, y_test) = load_iris.load_data()
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+print(x_train.shape, x_test.shape)
 
-x_train = x_train.reshape(50000, 32*32*3)
+# (60000, 28, 28) (10000, 28, 28)
+
+x_train = x_train.reshape(60000, 32*32*3)
 x_test = x_test.reshape(10000, 32*32*3)
+
 
 from tensorflow.keras.utils import to_categorical
 y_train = to_categorical(y_train)
@@ -85,3 +89,4 @@ print("acc : ", acc)
 # print("acc : ", accuracy_score(y_test, y_pred))
 
 # acc :  0.9265
+

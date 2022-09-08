@@ -67,7 +67,7 @@ for col in tqdm_notebook(cols):
     le = LabelEncoder()
     
     train_set[col]=le.fit_transform(train_set[col])
-    test_set[col]=le.fit_transform(test_set[col])
+    test_set[col]=le.transform(test_set[col])
 
 x = train_set.drop(['ProdTaken',
                           'NumberOfChildrenVisiting',

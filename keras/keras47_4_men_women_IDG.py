@@ -23,14 +23,14 @@ test_datagen = ImageDataGenerator(
     rescale=1./255
 )
 
-xy_data = train_datagen.flow_from_directory(
-    'd:/study_data/_data/image/men_women/',
-    target_size=(150, 150),
-    batch_size=5000, 
-    class_mode='binary', #0 또는 1만 나오는 수치라서
-    #color_mode='grayscale',
-    shuffle=False           
-) #Found 160 images belonging to 2 classes.
+# xy_data = train_datagen.flow_from_directory(
+#     'd:/study_data/_data/image/men_women/',
+#     target_size=(150, 150),
+#     batch_size=5000, 
+#     class_mode='binary', #0 또는 1만 나오는 수치라서
+#     #color_mode='grayscale',
+#     shuffle=False           
+# ) #Found 160 images belonging to 2 classes.
 
 test = train_datagen.flow_from_directory(
      'd:/study_data/_data/image/pic/',
@@ -59,22 +59,22 @@ test = train_datagen.flow_from_directory(
 #print(xy_train[31][2]) #error
 
 
-x = xy_data[0][0]
-y = xy_data[0][1]
+# x = xy_data[0][0]
+# y = xy_data[0][1]
 test = test[0][0]
 
 #print(x.shape, y.shape)
 
-x_train, x_test, y_train, y_test = train_test_split(
-     x, y, train_size=0.7, shuffle=True
-    )
+# x_train, x_test, y_train, y_test = train_test_split(
+#      x, y, train_size=0.7, shuffle=True
+#     )
 
 
 #수치화한 데이터를 저장한다.
-np.save('d:/study_data/_save/_npy/keras47_4_train_x.npy', arr=x_train) # train x값
-np.save('d:/study_data/_save/_npy/keras47_4_train_y.npy', arr=y_train) # train y값
-np.save('d:/study_data/_save/_npy/keras47_4_test_x.npy', arr=x_test) # test x값
-np.save('d:/study_data/_save/_npy/keras47_4_test_y.npy', arr=y_test) # test y값
+# np.save('d:/study_data/_save/_npy/keras47_4_train_x.npy', arr=x_train) # train x값
+# np.save('d:/study_data/_save/_npy/keras47_4_train_y.npy', arr=y_train) # train y값
+# np.save('d:/study_data/_save/_npy/keras47_4_test_x.npy', arr=x_test) # test x값
+# np.save('d:/study_data/_save/_npy/keras47_4_test_y.npy', arr=y_test) # test y값
 np.save('d:/study_data/_save/_npy/keras47_4_test.npy', arr=test) # test y값
 
 

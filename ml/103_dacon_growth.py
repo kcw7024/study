@@ -26,9 +26,9 @@ device = torch.device(
     'cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 CFG = {
-    'EPOCHS':5,
-    'LEARNING_RATE':1e-3,
-    'BATCH_SIZE':16,
+    'EPOCHS':1000,
+    'LEARNING_RATE':1e-4,
+    'BATCH_SIZE':128,
     'SEED':32
 }
 
@@ -41,7 +41,6 @@ def seed_everything(seed):
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = True
-
 
 seed_everything(CFG['SEED'])  # Seed 고정
 
@@ -109,6 +108,15 @@ class BaseModel(nn.Module):
                             batch_first=True, bidirectional=False)
         self.classifier = nn.Sequential(
             nn.Linear(256, 1),
+            nn.ReLU(),
+            nn.Linear(1, 64),
+            nn.ReLU(),
+            nn.Linear(64, 128),
+            nn.ReLU(),
+            nn.Linear(128, 32),
+            nn.Linear(32, 64),
+            nn.Linear(64, 32),
+            nn.Linear(32, 1),
         )
 
     def forward(self, x):
@@ -124,7 +132,7 @@ def train(model, optimizer, train_loader, val_loader, scheduler, device):
     best_loss = 9999
     best_model = None
     for epoch in range(1, CFG['EPOCHS']+1):
-        model.train()
+        model.train() 
         train_loss = []
         for X, Y in tqdm(iter(train_loader)):
             X = X.to(device)
@@ -179,7 +187,8 @@ if __name__ == '__main__':
 
 model = BaseModel()
 model.eval()
-optimizer = torch.optim.Adam(params = model.parameters(), lr = CFG["LEARNING_RATE"])
+# optimizer = torch.optim.Adam(params = model.parameters(), lr = CFG["LEARNING_RATE"])
+optimizer = torch.optim.SGD(params = model.parameters(), lr = CFG["LEARNING_RATE"])
 scheduler = None
 
 best_model = train(model, optimizer, train_loader, val_loader, scheduler, device)
@@ -226,7 +235,7 @@ for test_input_path, test_target_path in zip(test_input_list, test_target_list):
 import zipfile
 filelist = ['TEST_01.csv','TEST_02.csv','TEST_03.csv','TEST_04.csv','TEST_05.csv', 'TEST_06.csv']
 os.chdir("D:\study_data\_data\dacon_growth/test_target")
-with zipfile.ZipFile("submission_13.zip", 'w') as my_zip:
+with zipfile.ZipFile("submission_18(0915).zip", 'w') as my_zip:
     for i in filelist:
         my_zip.write(i)
     my_zip.close()

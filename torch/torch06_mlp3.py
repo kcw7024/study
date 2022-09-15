@@ -104,8 +104,8 @@ print('최종 loss :: ', loss2)
 
 # y_pred = model.predict([4])
 results = model(x_test)
-# results = results.cpu().detach().numpy()
-results = results.tolist()
+results = results.cpu().detach().numpy()
+# results = results.tolist()
 
 print('예측값 : ', results)
 

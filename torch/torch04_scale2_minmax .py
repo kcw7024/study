@@ -21,16 +21,22 @@ y = np.array([1,2,3])
 x_test = np.array([4])
 # torch는 numpy가 아니라 torchdata로 사용.(Tensor형 데이터로 변환) !필수!
 
-x = torch.FloatTensor(x).unsqueeze(1).to(DEVICE) # 첫번째자리에 쉐입을 늘려준다. -1일땐 가장 마지막자리. :: (3,) > (3,1) 로 reshape 해준다
-y = torch.FloatTensor(y).unsqueeze(-1).to(DEVICE) # (3, ) > (3, 1)
-x_test = torch.FloatTensor(x_test).unsqueeze(-1).to(DEVICE) # (3, ) > (3, 1)
+x = torch.FloatTensor(x).unsqueeze(1).to(DEVICE) 
+y = torch.FloatTensor(y).unsqueeze(-1).to(DEVICE) 
+x_test = torch.FloatTensor(x_test).unsqueeze(1).to(DEVICE) 
+
 
 print(torch.mean(x).item(), torch.std(x).item())
 
 # 스케일링
-x_test = (x_test - torch.mean(x)) / torch.std(x)
-x = (x - torch.mean(x)) / torch.std(x) # torch의 분산으로 x에서 평균값을 빼준걸 나눠준다 
-# torch.Size([3, 1]) torch.Size([3, 1])
+# x_test = (x_test - torch.mean(x)) / torch.std(x)
+x_test = (x_test - torch.min(x)) / (torch.max(x) - torch.min(x))
+x_test = x_test * (torch.max(x_test) - torch.min(x_test)) + torch.min(x_test)
+# x = (x - torch.mean(x)) / torch.max(x) # torch의 분산으로 x에서 평균값을 빼준걸 나눠준다 
+# torch.Size([3, 1]) torch.Size([3, 1]) 
+x = (x - torch.min(x)) / (torch.max(x) - torch.min(x))
+x = x * (torch.max(x) - torch.min(x)) + torch.min(x)
+
 
 print(x, y)
 print(x.shape, y.shape) # torch.Size([3, 1]) torch.Size([3, 1])
@@ -38,13 +44,8 @@ print(x.shape, y.shape) # torch.Size([3, 1]) torch.Size([3, 1])
 #2. 모델 구성
 
 # model = Sequential() : 텐서형태
-model = nn.Sequential(
-    nn.Linear(1, 4),
-    nn.Linear(4, 5),    
-    nn.Linear(5, 3),    
-    nn.Linear(3, 2),    
-    nn.Linear(2, 1),    
-).to(DEVICE)
+model = nn.Linear(1, 1).to(DEVICE) # input (x), output(y)
+
 
 #3. 컴파일, 훈련
 
@@ -71,7 +72,7 @@ def train(model, criterion, optimizer, x, y) :
     # 정방향 진행후 역전파로 훈련하여 가중치갱신, = 1 epochs
     return loss.item()
 
-epochs = 2000
+epochs = 1000
 
 for epoch in range(1, epochs+1) : 
     loss = train(model, criterion, optimizer, x, y)
@@ -93,6 +94,7 @@ loss2 = evaluate(model, criterion, x, y)
 print('최종 loss :: ', loss2)
 
 # y_pred = model.predict([4])
-results = model(torch.Tensor([[4]]).to(DEVICE))
+# results = model(torch.Tensor([[4]]).to(DEVICE))
+results = model(x_test)
 print('예측값 :: ', results.item())
 

@@ -25,6 +25,7 @@ x = torch.FloatTensor(x).unsqueeze(1).to(DEVICE) # 첫번째자리에 쉐입을 
 y = torch.FloatTensor(y).unsqueeze(-1).to(DEVICE) # (3, ) > (3, 1)
 x_test = torch.FloatTensor(x_test).unsqueeze(-1).to(DEVICE) # (3, ) > (3, 1)
 
+
 print(torch.mean(x).item(), torch.std(x).item())
 
 # 스케일링
@@ -32,19 +33,15 @@ x_test = (x_test - torch.mean(x)) / torch.std(x)
 x = (x - torch.mean(x)) / torch.std(x) # torch의 분산으로 x에서 평균값을 빼준걸 나눠준다 
 # torch.Size([3, 1]) torch.Size([3, 1])
 
+
 print(x, y)
 print(x.shape, y.shape) # torch.Size([3, 1]) torch.Size([3, 1])
 
 #2. 모델 구성
 
 # model = Sequential() : 텐서형태
-model = nn.Sequential(
-    nn.Linear(1, 4),
-    nn.Linear(4, 5),    
-    nn.Linear(5, 3),    
-    nn.Linear(3, 2),    
-    nn.Linear(2, 1),    
-).to(DEVICE)
+model = nn.Linear(1, 1).to(DEVICE) # input (x), output(y)
+
 
 #3. 컴파일, 훈련
 
@@ -94,5 +91,5 @@ print('최종 loss :: ', loss2)
 
 # y_pred = model.predict([4])
 results = model(torch.Tensor([[4]]).to(DEVICE))
-print('예측값 :: ', results.item())
+print('4의 예측값 :: ', results.item())
 

@@ -1,3 +1,4 @@
+from cProfile import run
 from calendar import EPOCH
 from inspect import Parameter
 import numpy as np
@@ -16,34 +17,45 @@ print('torch ::',torch.__version__,'사용 DEVICE ::',DEVICE)
 
 #1. 데이터
 
-x = np.array([1,2,3]) # (3, )
-y = np.array([1,2,3]) 
-x_test = np.array([4])
-# torch는 numpy가 아니라 torchdata로 사용.(Tensor형 데이터로 변환) !필수!
+x = np.array([range(10)]) #범위 함수
+y = np.array([[1,2,3,4,5,6,7,8,9,10],
+             [1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9],
+             [9,8,7,6,5,4,3,2,1,0]]
+             )
 
-x = torch.FloatTensor(x).unsqueeze(1).to(DEVICE) # 첫번째자리에 쉐입을 늘려준다. -1일땐 가장 마지막자리. :: (3,) > (3,1) 로 reshape 해준다
-y = torch.FloatTensor(y).unsqueeze(-1).to(DEVICE) # (3, ) > (3, 1)
-x_test = torch.FloatTensor(x_test).unsqueeze(-1).to(DEVICE) # (3, ) > (3, 1)
+x_test = np.array([9])
+
+x = torch.FloatTensor(np.transpose(x)).to(DEVICE) 
+y = torch.FloatTensor(np.transpose(y)).to(DEVICE) 
+x_test = torch.FloatTensor(np.transpose(x_test)).to(DEVICE)
+
+# x = torch.transpose(x, 0, 1)
+# x_test = torch.transpose(x_test, 0, 1)
+
+
+# y = torch.transpose(y).to(DEVICE)
 
 print(torch.mean(x).item(), torch.std(x).item())
 
 # 스케일링
 x_test = (x_test - torch.mean(x)) / torch.std(x)
 x = (x - torch.mean(x)) / torch.std(x) # torch의 분산으로 x에서 평균값을 빼준걸 나눠준다 
-# torch.Size([3, 1]) torch.Size([3, 1])
 
 print(x, y)
-print(x.shape, y.shape) # torch.Size([3, 1]) torch.Size([3, 1])
+print(x.shape, y.shape, x_test.shape) 
+# torch.Size([10, 1]) torch.Size([10, 3]) torch.Size([1])
 
 #2. 모델 구성
+
 
 # model = Sequential() : 텐서형태
 model = nn.Sequential(
     nn.Linear(1, 4),
     nn.Linear(4, 5),    
-    nn.Linear(5, 3),    
+    nn.Linear(5, 3),
+    nn.ReLU(),    
     nn.Linear(3, 2),    
-    nn.Linear(2, 1),    
+    nn.Linear(2, 3),    
 ).to(DEVICE)
 
 #3. 컴파일, 훈련
@@ -51,7 +63,7 @@ model = nn.Sequential(
 # loss에 대한 반환값으로 변수명을 criterion을 많이씀~
 # model.compile(loss='mse', optimizer='SGD')
 criterion = nn.MSELoss()
-optimizer  = optim.SGD(model.parameters(), lr=0.01)
+optimizer  = optim.SGD(model.parameters(), lr=0.001)
 # optim.Adam(model.Parameters(), lr=0.01)
 
 def train(model, criterion, optimizer, x, y) : 
@@ -60,18 +72,18 @@ def train(model, criterion, optimizer, x, y) :
     
     hypothesis = model(x)
     
-    # loss = criterion(hypothesis, y)
+    loss = criterion(hypothesis, y)
     # loss = nn.MSELoss()(hypothesis, y) # class이기 때문에 문법 변경ㄴ
-    loss = F.mse_loss(hypothesis, y)
-    
-    
+    # loss = F.mse_loss(hypothesis, y)
+        
     loss.backward() # 역전파
     optimizer.step() # 역전파시킨것에대한 가중치 갱신   
     # zero_grad, backward, step, 무조건 들어감. 외워버려!
     # 정방향 진행후 역전파로 훈련하여 가중치갱신, = 1 epochs
     return loss.item()
 
-epochs = 2000
+epochs = 2800
+
 
 for epoch in range(1, epochs+1) : 
     loss = train(model, criterion, optimizer, x, y)
@@ -93,6 +105,17 @@ loss2 = evaluate(model, criterion, x, y)
 print('최종 loss :: ', loss2)
 
 # y_pred = model.predict([4])
-results = model(torch.Tensor([[4]]).to(DEVICE))
-print('예측값 :: ', results.item())
+results = model(x_test.to(DEVICE))
+# print(results.item())
+# results = results.cpu().detach().numpy()
+results = results.tolist()
 
+print('예측값 :: ', results)
+# print(results.item())
+
+
+
+'''
+최종 loss ::  0.2959948778152466
+예측값 ::  [10.3093,  1.8624,  0.3259]
+'''

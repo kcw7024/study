@@ -38,7 +38,7 @@ model.add(Dense(1))
 
 # 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
-model.fit(x, y, epochs=1300, batch_size=3)
+model.fit(x, y, epochs=30, batch_size=3)
 
 # 예측 : [[10 ,1.4, 0]]
 

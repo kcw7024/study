@@ -1,7 +1,7 @@
 # logistic regression :: 논리회귀 , 이진분류에만 사용!!!! regression + sigmoid
 
 from calendar import EPOCH
-from sklearn.datasets import load_breast_cancer, load_digits, load_wine, load_boston
+from sklearn.datasets import load_breast_cancer, load_digits, load_wine, load_boston, fetch_california_housing
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -13,12 +13,34 @@ print('torch : ', torch.__version__, '사용 DEVICE : ', DEVICE)
 
 
 #1. 데이터 
-datasets = load_boston()
+datasets = fetch_california_housing()
 x = datasets.data
 y = datasets['target']
 
 x = torch.FloatTensor(x)
 y = torch.FloatTensor(y)
+
+from sklearn.model_selection import train_test_split
+
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y, train_size=0.7, shuffle=True, random_state=123, stratify=y)
+
+x_train = torch.FloatTensor(x_train)
+y_train = torch.FloatTensor(y_train).to(DEVICE)
+x_test = torch.FloatTensor(x_test)
+y_test = torch.FloatTensor(y_test).to(DEVICE)
+
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+x_train = scaler.fit_transform(x_train)
+x_test = scaler.transform(x_test)
+
+x_train = torch.FloatTensor(x_train).to(DEVICE)
+x_test = torch.FloatTensor(x_test).to(DEVICE)
+
+print(x_train.size())
+print(x_train.shape)
+
 
 from sklearn.model_selection import train_test_split
 
@@ -88,7 +110,7 @@ class Model(nn.Module) :
         return x 
     
     
-model = Model(13, 1).to(DEVICE)
+model = Model(8, 1).to(DEVICE)
 
 
 #3. 컴파일, 훈련

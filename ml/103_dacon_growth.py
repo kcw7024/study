@@ -1,3 +1,4 @@
+from calendar import EPOCH
 import zipfile
 import random
 import pandas as pd
@@ -26,10 +27,9 @@ device = torch.device(
     'cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 CFG = {
-    'EPOCHS':1000,
+    'EPOCHS':1000, 
     'LEARNING_RATE':1e-4,
-    'BATCH_SIZE':128,
-    'SEED':32
+    'BATCH_SIZE':32,'SEED':72
 }
 
 
@@ -65,6 +65,9 @@ class CustomDataset(Dataset):
         self.data_list = []
         self.label_list = []
         print('Data Pre-processing..')
+        
+        # tqdm :: 알고리즘 진행률 확인하는 시각화 라이브러리
+        
         for input_path, target_path in tqdm(zip(self.input_paths, self.target_paths)):
             input_df = pd.read_csv(input_path)
             target_df = pd.read_csv(target_path)
@@ -104,8 +107,12 @@ val_loader = DataLoader(val_dataset, batch_size=CFG['BATCH_SIZE'], shuffle=False
 class BaseModel(nn.Module):
     def __init__(self):
         super(BaseModel, self).__init__()
-        self.lstm = nn.LSTM(input_size=37, hidden_size=256,
-                            batch_first=True, bidirectional=False)
+        self.lstm = nn.LSTM(input_size=37, 
+                            hidden_size=256,
+                            batch_first=True, 
+                            bidirectional=False,
+                            )
+
         self.classifier = nn.Sequential(
             nn.Linear(256, 1),
             nn.ReLU(),
@@ -114,8 +121,11 @@ class BaseModel(nn.Module):
             nn.Linear(64, 128),
             nn.ReLU(),
             nn.Linear(128, 32),
+            nn.ReLU(),
             nn.Linear(32, 64),
+            nn.ReLU(),
             nn.Linear(64, 32),
+            nn.ReLU(),
             nn.Linear(32, 1),
         )
 
@@ -128,11 +138,12 @@ class BaseModel(nn.Module):
 def train(model, optimizer, train_loader, val_loader, scheduler, device):
     model.to(device)
     criterion = nn.L1Loss().to(device)
-
+    # EPOCHS = CFG['EPOCHS']
+    
     best_loss = 9999
     best_model = None
     for epoch in range(1, CFG['EPOCHS']+1):
-        model.train() 
+        model.train()
         train_loss = []
         for X, Y in tqdm(iter(train_loader)):
             X = X.to(device)
@@ -148,10 +159,11 @@ def train(model, optimizer, train_loader, val_loader, scheduler, device):
 
             train_loss.append(loss.item())
 
+
         val_loss = validation(model, val_loader, criterion, device)
 
         print(
-            f'Train Loss : [{np.mean(train_loss):.5f}] Valid Loss : [{val_loss:.5f}]')
+            f'EPOCHS : {epoch} Train Loss : [{np.mean(train_loss):.5f}] Valid Loss : [{val_loss:.5f}]')
 
         if scheduler is not None:
             scheduler.step()
@@ -187,8 +199,8 @@ if __name__ == '__main__':
 
 model = BaseModel()
 model.eval()
-# optimizer = torch.optim.Adam(params = model.parameters(), lr = CFG["LEARNING_RATE"])
-optimizer = torch.optim.SGD(params = model.parameters(), lr = CFG["LEARNING_RATE"])
+optimizer = torch.optim.Adam(params = model.parameters(), lr = CFG["LEARNING_RATE"])
+# optimizer = torch.optim.SGD(params = model.parameters(), lr = CFG["LEARNING_RATE"])
 scheduler = None
 
 best_model = train(model, optimizer, train_loader, val_loader, scheduler, device)
@@ -235,7 +247,7 @@ for test_input_path, test_target_path in zip(test_input_list, test_target_list):
 import zipfile
 filelist = ['TEST_01.csv','TEST_02.csv','TEST_03.csv','TEST_04.csv','TEST_05.csv', 'TEST_06.csv']
 os.chdir("D:\study_data\_data\dacon_growth/test_target")
-with zipfile.ZipFile("submission_18(0915).zip", 'w') as my_zip:
+with zipfile.ZipFile("submission_23(0917).zip", 'w') as my_zip:
     for i in filelist:
         my_zip.write(i)
     my_zip.close()

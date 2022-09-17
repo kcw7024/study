@@ -60,8 +60,8 @@ test_set = TensorDataset(x_test, y_test)
 # print(len(train_set)) # 398
 
 # x, y  배치 결합
-train_loader = DataLoader(train_set, batch_size=100, shuffle=True)
-test_loader = DataLoader(test_set, batch_size=100, shuffle=True)
+train_loader = DataLoader(train_set, batch_size=1256, shuffle=True)
+test_loader = DataLoader(test_set, batch_size=1256, shuffle=True)
 
 # print(train_loader) # <torch.utils.data.dataloader.DataLoader object at 0x000002B437F0E910>
 # print("="*30, "train_loader[0]") 
@@ -96,11 +96,11 @@ class Model(nn.Module) :
         x = self.linear3(x)
         x = self.relu(x)                                
         x = self.linear4(x)
-        x = self.sigmoid(x)
+        # x = self.sigmoid(x)
         return x 
     
     
-model = Model(54, 1).to(DEVICE)
+model = Model(54, 12).to(DEVICE)
 
 #3. 컴파일, 훈련
 
@@ -129,7 +129,8 @@ EPOCHS = 100
 
 for epoch in range(1, EPOCHS+1):
     loss = train(model, criterion, optimizer, train_loader)
-    print('epoch : {}, loss :{}'.format(epoch, loss)) 
+    if epoch %  10 == 0 : 
+        print('epoch : {}, loss :{}'.format(epoch, loss)) 
     
        
 def evaluate(model, criterion, loader):

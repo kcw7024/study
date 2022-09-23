@@ -46,7 +46,7 @@ train_set = TensorDataset(x_train, y_train) # x, y 를 합쳐준다.
 test_set = TensorDataset(x_test, y_test) 
 
 # print(train_set) # <torch.utils.data.dataset.TensorDataset object at 0x000002A121CDBF70>
-# print("="*30, "train_set[0]") 
+# print("="*30, "train_set[0]") jj
 # print(train_set[0])
 # print("="*30, "train_set[0][0]")
 # print(train_set[0][0])

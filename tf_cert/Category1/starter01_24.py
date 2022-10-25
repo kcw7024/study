@@ -55,9 +55,9 @@ pred = print(solution_model())
 # When you press the Submit and Test button, your saved .h5 model will
 # be sent to the testing infrastructure for scoring
 # and the score will be returned to you.
-# if __name__ == '__main__':
-#     model = solution_model()
-#     model.save("mymodel.h5")
+if __name__ == '__main__':
+    model = solution_model()
+    model.save("mymodel.h5")
 
 
 

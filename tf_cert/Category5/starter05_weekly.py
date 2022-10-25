@@ -46,7 +46,7 @@
 #
 # Your code will fail to be graded if the following criteria are not met:
 #
-# 1. Model input shape must be (BATCH_SIZE, N_PAST = 10, N_FEATURES = 1),
+# 1. Model input shape must be (BATCH_SIZE, N_PAST  = 10, N_FEATURES = 1),
 #    since the testing infrastructure expects a window of past N_PAST = 10
 #    observations of the 1 feature to predict the next N_FUTURE = 10
 #    observations of the same feature.

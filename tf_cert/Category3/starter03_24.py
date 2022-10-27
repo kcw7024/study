@@ -58,7 +58,7 @@ def solution_model():
 
     train_generator = train_datagen.flow_from_directory(
         'C:\study/tmp\horse-or-human/',
-        # target_size(150, 150),
+        target_size=(150, 150),
         batch_size=2000,
         class_mode='binary',
         shuffle=False        
@@ -67,7 +67,7 @@ def solution_model():
 
     validation_generator = validation_datagen.flow_from_directory(
         'C:\study/tmp\horse-or-human/',
-        # target_size(150, 150),
+        target_size=(150, 150),
         batch_size=2000,
         class_mode='binary',
         shuffle=False    
@@ -85,13 +85,14 @@ def solution_model():
         tf.keras.layers.Dense(1, activation='sigmoid'),
     ])
     
-    
+        
     model.compile(loss ='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-    model.fit(train_generator, validation_generator, epochs=2, batch_size=1)
-    
+    model.fit(train_generator, epochs=2, batch_size=1, validation_split=0.2)
     
     return model
+
+
 
 
 

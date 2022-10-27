@@ -212,7 +212,7 @@ def solution_model():
     ])
 
     # Code to train and compile the model
-    optimizer = # YOUR CODE HERE
+    optimizer =  # YOUR CODE HERE
     model.compile(
         # YOUR CODE HERE
     )

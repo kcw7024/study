@@ -19,6 +19,8 @@ print("========================== np.expand_dims(x, axis=0) ====================
 print(x, "\n", x.shape) # (1, 224, 224, 3)
 print(np.min(x), np.max(x)) # 0.0 255.0
 
+
+
 x = preprocess_input(x)
 print("========================== preprocess_input(x) ==========================")
 print(x, "\n", x.shape) # (1, 224, 224, 3)

@@ -28,7 +28,7 @@ print(x, y)
 print(x.shape, y.shape) # torch.Size([3, 1]) torch.Size([3, 1])
 
 
-'''
+
 #2. 모델 구성
 
 # model = Sequential() : 텐서형태
@@ -56,7 +56,7 @@ def train(model, criterion, optimizer, x, y) :
     # 정방향 진행후 역전파로 훈련하여 가중치갱신, = 1 epochs
     return loss.item()
 
-epochs = 910
+epochs = 10
 
 
 for epoch in range(1, epochs+1) : 
@@ -85,7 +85,7 @@ print('4의 예측값 :: ', results.item())
 
 
 
-'''
+
 
 
 # torch 는 소스에서 cpu, gpu 선택이 가능

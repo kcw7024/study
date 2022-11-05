@@ -57,7 +57,7 @@ test_set = TensorDataset(x_test, y_test)
 
 # x, y  배치 결합
 train_loader = DataLoader(train_set, batch_size=10, shuffle=True)
-test_loader = DataLoader(test_set, batch_size=10, shuffle=True)
+test_loader = DataLoader(test_set, batch_size=10, shuffle=False)
 
 # print(train_loader) # <torch.utils.data.dataloader.DataLoader object at 0x000002B437F0E910>
 # print("="*30, "train_loader[0]") 

@@ -4,3 +4,6 @@ image_classifier/tuner0.json
 image_classifier/trial_0/trial.json
 image_classifier/trial_1/trial.json
 image_classifier/
+tmp/
+horse-or-human.zip
+testdata.zip

@@ -46,7 +46,7 @@ train_set = TensorDataset(x_train, y_train) # x, y 를 합쳐준다.
 test_set = TensorDataset(x_test, y_test) 
 
 # print(train_set) # <torch.utils.data.dataset.TensorDataset object at 0x000002A121CDBF70>
-# print("="*30, "train_set[0]") jj
+# print("="*30, "train_set[0]") 
 # print(train_set[0])
 # print("="*30, "train_set[0][0]")
 # print(train_set[0][0])
@@ -153,11 +153,18 @@ score = accuracy_score(y_test.cpu(), y_pred.cpu())
 print('ACC2 : ', score)
 
 
-'''
-최종 LOSS :  5.103845278691551
-ACC1 : 0.9766
-ACC2 :  0.9766081871345029
+path = './_save/'
+torch.save(model.state_dict(), path + 'torch13_state_dict.pt')
 
+
+
+
+
+'''
+
+최종 LOSS :  3.0799693753344854
+ACC1 : 0.9825
+ACC2 :  0.9824561403508771
 
 '''
 

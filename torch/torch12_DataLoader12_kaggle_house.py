@@ -246,7 +246,7 @@ x = train_set.drop('SalePrice', axis=1)
 y = train_set['SalePrice']
 
 
-
+# Dataframe 형태라서 바꿔줘야 한다
 x = torch.Tensor(x.values)
 y = torch.Tensor(y.values)
 

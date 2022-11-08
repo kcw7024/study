@@ -27,9 +27,15 @@ device = torch.device(
     'cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 CFG = {
+<<<<<<< HEAD
+    'EPOCHS':1, 
+    'LEARNING_RATE':1e-2,
+    'BATCH_SIZE':32,
+=======
     'EPOCHS':3500, 
     'LEARNING_RATE':1e-4,
     'BATCH_SIZE':128,
+>>>>>>> 8e61b1e291cf1c96b1696ceb066a2a011d49222e
     'SEED':72
 }
 
@@ -238,6 +244,22 @@ for test_input_path, test_target_path in zip(test_input_list, test_target_list):
     inference_per_case(best_model, test_loader, test_target_path, device)
 
 
+<<<<<<< HEAD
+os.chdir("D:/study_data/_data/dacon_growth/test_target")
+submission = zipfile.ZipFile("submission_25(0917).zip", 'w')
+for path in test_target_list:
+    path = path.split('/')[-1]
+    submission.write(path)
+submission.close()
+
+# import zipfile
+# filelist = ['TEST_01.csv','TEST_02.csv','TEST_03.csv','TEST_04.csv','TEST_05.csv', 'TEST_06.csv']
+# os.chdir("D:\study_data\_data\dacon_growth/test_target")
+# with zipfile.ZipFile("submission_24(0917).zip", 'w') as my_zip:
+#     for i in filelist:
+#         my_zip.write(i)
+#     my_zip.close()
+=======
 # os.chdir("D:/study_data/_data/dacon_growth/test_target")
 # submission = zipfile.ZipFile("submission_25_0917.zip", 'w')
 # for path in test_target_list:
@@ -252,3 +274,4 @@ with zipfile.ZipFile("submission_07(0919).zip", 'w') as my_zip:
     for i in filelist:
         my_zip.write(i)
     my_zip.close()
+>>>>>>> 8e61b1e291cf1c96b1696ceb066a2a011d49222e

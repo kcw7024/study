@@ -52,7 +52,7 @@ kerastuner = kt.Hyperband(get_model,
                           max_epochs=6,
                           project_name='kerastuner-mnist'
                           )
-    
+#####
 
 kerastuner.search(x_train, y_train,
                   validation_data=(x_test, y_test), epochs=5

@@ -89,8 +89,9 @@ print(lgb_bo.max)
     'subsample': 0.5}
     }
  
- 
+      
 random_state  바꿨을때
+add
 
 {'target': 0.6213997653299669, 
     'params': {'colsample_bytree': 0.5875493964947438, 

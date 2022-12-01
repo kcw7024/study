@@ -306,6 +306,8 @@ cat_bo.maximize(init_points=5, n_iter=50)
 
 print(cat_bo.max)
 
+
+
 '''
 {'target': 0.9060052219321149, 
 'params': {'border_count': 349.08501863083245, 
@@ -334,6 +336,8 @@ print(cat_bo.max)
 # )
 
 
+
+
 # #3. 훈련
 # import time
 # start = time.time()
@@ -353,3 +357,5 @@ print(cat_bo.max)
 # accuracy_score : 0.9649122807017544
 # 최적 튠 ACC :  0.9649122807017544
 # 걸린시간 :  3.24
+'''
+

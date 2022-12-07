@@ -23,6 +23,8 @@ train_set['Age']=np.round(train_set['Age'],0).astype(int)
 test_set['Age']=np.round(test_set['Age'],0).astype(int)
 
 
+
+
 train_set['MonthlyIncome'].fillna(train_set.groupby('Designation')['MonthlyIncome'].transform('mean'), inplace=True)
 test_set['MonthlyIncome'].fillna(test_set.groupby('Designation')['MonthlyIncome'].transform('mean'), inplace=True)
 # print(train_set.describe) #(1955, 19)

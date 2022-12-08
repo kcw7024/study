@@ -20,7 +20,7 @@ test_set['TypeofContact'].fillna('Self Enquiry', inplace=True)
 train_set['Age'].fillna(train_set.groupby('Designation')['Age'].transform('mean'), inplace=True)
 test_set['Age'].fillna(test_set.groupby('Designation')['Age'].transform('mean'), inplace=True)
 train_set['Age']=np.round(train_set['Age'],0).astype(int)
-test_set['Age']=np.round(test_set['Age'],0).astype(int)
+test_set['Age']=np.round(test_set['Age'],0).astype(int) 
 
 
 

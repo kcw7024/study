@@ -63,8 +63,6 @@ cols = ['TypeofContact','Occupation','Gender','ProductPitched','MaritalStatus','
 from sklearn.preprocessing import LabelEncoder
 from tqdm import tqdm_notebook
 
-
-
 for col in tqdm_notebook(cols):
     le = LabelEncoder()
     

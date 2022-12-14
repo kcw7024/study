@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np 
 
+
 #1. 데이터
 path = './_data/travel/'  
 train_set = pd.read_csv(path + 'train.csv', index_col=0)

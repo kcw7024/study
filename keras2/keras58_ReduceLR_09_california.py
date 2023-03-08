@@ -5,6 +5,8 @@ from tabnanny import verbose
 import numpy as np
 from keras.datasets import mnist, cifar100
 from sklearn.datasets import load_iris
+from sklearn.datasets import fetch_california_housing
+
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense,Conv2D,Flatten,MaxPool2D,Input, Dropout
 import keras
@@ -14,7 +16,9 @@ from tensorflow.keras.layers import GlobalAveragePooling2D
 
 #1. 데이터
 
-(x_train, y_train), (x_test, y_test) = load_iris.load_data()
+#(x_train, y_train), (x_test, y_test) = fetch_california_housing.load_data()
+(x_train, y_train), (x_test, y_test) = fetch_california_housing.load_data()
+
 
 x_train = x_train.reshape(50000, 32*32*3)
 x_test = x_test.reshape(10000, 32*32*3)

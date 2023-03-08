@@ -4,7 +4,7 @@ from random import vonmisesvariate
 from tabnanny import verbose
 import numpy as np
 from keras.datasets import mnist, cifar100
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_boston
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense,Conv2D,Flatten,MaxPool2D,Input, Dropout
 import keras
@@ -14,7 +14,7 @@ from tensorflow.keras.layers import GlobalAveragePooling2D
 
 #1. 데이터
 
-(x_train, y_train), (x_test, y_test) = load_iris.load_data()
+(x_train, y_train), (x_test, y_test) = load_boston.load_data()
 
 x_train = x_train.reshape(50000, 32*32*3)
 x_test = x_test.reshape(10000, 32*32*3)
@@ -66,7 +66,7 @@ from tensorflow.python.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 es = EarlyStopping(monitor='val_loss', patience=20, mode='min', verbose=1)
 reduce_lr = ReduceLROnPlateau(monitor='val_loss', patience=10, mode='auto', verbose=1, factor=0.5)
 start = time.time()
-model.fit(x_train, y_train, epochs=100, validation_split=0.4, callbacks=[es, reduce_lr], batch_size=128)
+model.fit(x_train, y_train, epochs=30, validation_split=0.4, callbacks=[es, reduce_lr], batch_size=128)
 end = time.time()
 
 loss, acc = model.evaluate(x_test,y_test)

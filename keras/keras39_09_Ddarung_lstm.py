@@ -132,10 +132,10 @@ earlyStopping = EarlyStopping(monitor='val_loss', patience=10, mode='min', verbo
 start_time = time.time()
 
 hist = model.fit(x_train, y_train, epochs=1000, batch_size=128,
-                 validation_split=0.2,
-                 callbacks=[earlyStopping],
-                 verbose=1                 
-                 )
+                validation_split=0.2,
+                callbacks=[earlyStopping],
+                verbose=1                 
+                )
 
 end_time = time.time() - start_time
 

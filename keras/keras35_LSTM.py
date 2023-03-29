@@ -39,22 +39,15 @@ model = Sequential()
 #model.add(SimpleRNN(units=10, input_length=3, input_dim=1))
 #model.add(SimpleRNN(units=10, input_length=3, input_dim=1))
 model.add(LSTM(units=100, input_shape=(3, 1))) # [batch, timesteps, feature(input_dim)]
-model.add(Dense(200, activation='relu'))
-model.add(Dense(300, activation='relu'))
-model.add(Dense(200, activation='relu'))
-model.add(Dense(300, activation='relu'))
-model.add(Dense(200, activation='relu'))
-model.add(Dense(400, activation='relu'))
-model.add(Dense(200, activation='relu'))
-model.add(Dense(500, activation='relu'))
-model.add(Dense(200, activation='relu'))
-model.add(Dense(300, activation='relu'))
-model.add(Dense(200, activation='relu'))
-model.add(Dense(400, activation='relu'))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(100, activation='relu'))
 model.add(Dense(1))
 
 
-model.summary()
+# model.summary()
 
 # unit = output node의 갯수
 
@@ -84,12 +77,12 @@ model.summary()
 
 #3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
-model.fit(x, y, epochs=100, batch_size=128)
+model.fit(x, y, epochs=1000, batch_size=32)
 
 #4. 평가, 예측
 loss = model.evaluate(x, y)
 y_pred = np.array([8,9,10]).reshape(1, 3, 1) # [[[8],[9],[10]]]
 result = model.predict(y_pred)
 print('loss : ', loss)
-print('[8,9,10]의 결과 : ', result)
+print('[8,9,10]의 결과 : ', result) 
 
